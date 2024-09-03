@@ -13,4 +13,9 @@ public class Adm extends Usuario {
     public Adm() {
 
     }
+
+    public Adm(String nome, String email) {
+        setNome(nome);
+        setEmail(email);
+    }
 }
