@@ -14,6 +14,7 @@ public class Adm extends Usuario {
 
     }
 
+    //contrutor para casos de teste
     public Adm(String nome, String email) {
         setNome(nome);
         setEmail(email);
