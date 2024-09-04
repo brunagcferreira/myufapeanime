@@ -10,6 +10,8 @@ INSERT INTO tb_usuarios (nome, email, DTYPE) VALUES('Carlos Souza', 'carlos.souz
 
 -- Inserir registros na tabela Avaliação
 INSERT INTO tb_avaliacoes(nota, comentario, usuario_id, anime_id) VALUES (4.5, 'Muito bom', 1, 1);
+INSERT INTO tb_avaliacoes(nota, comentario, usuario_id, anime_id) VALUES (5.0, 'Incrível!', 2, 2);  -- Maria Oliveira avaliou One Piece
+INSERT INTO tb_avaliacoes(nota, comentario, usuario_id, anime_id) VALUES (4.0, 'Ótimo', 3, 3);     -- Ana Silva avaliou Attack on Titan
 
 -- Adicionar animes à lista "assistindo"
 INSERT INTO tb_assistindo(usuario_id, anime_id) VALUES (1, 1);  -- Carlos Souza assistindo "Naruto"
