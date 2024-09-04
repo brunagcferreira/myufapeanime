@@ -1,13 +1,11 @@
 package br.edu.ufape.myufapeanime.myufapeanime;
 
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.*;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAdm;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAvaliacoes;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,70 +27,53 @@ public class RepositorioTests {
     @Autowired
     private InterfaceRepositorioUsuarios repositorioUsuarios;
 
+    private Adm adm;
+    private Anime anime;
+    private Avaliacao avaliacao;
+    private Usuario usuario;
+
+    @BeforeEach
+    void setUp() {
+        //criação dos objetos vazios para teste de integração
+        adm = new Adm();
+        anime = new Anime();
+        avaliacao = new Avaliacao();
+        usuario = new Usuario();
+    }
+
     @Test
     void testRepositorioAdm() {
-        //Inicialização
         long qtdAdms = repositorioAdm.count();
-        Adm adm = new Adm("AdmistradorDeAnimes", "AdmistradorDeAnimes@email.com");
-
-        //Interação
         repositorioAdm.save(adm);
         long qtdAdms2 = repositorioAdm.count();
-
-        //Verificação
         assertEquals(qtdAdms + 1, qtdAdms2);
-
-        assertThat(repositorioAdm).isNotNull();
+        assertThat(repositorioAdm.findById(adm.getId())).isPresent();
     }
 
     @Test
     void testRepositorioAnimes() {
-        // Adicione aqui os testes para o repositório de Animes
-        //Inicialização
         long qtdAnimes = repositorioAnimes.count();
-        Anime an = new Anime("Naruto", "Aventura", 320, 1000.0, 2002L, 220.0);
-
-        //Interação
-        repositorioAnimes.save(an);
+        repositorioAnimes.save(anime);
         long qtdAnimes2 = repositorioAnimes.count();
-
-        //Verificação
         assertEquals(qtdAnimes + 1, qtdAnimes2);
-
-        assertThat(repositorioAnimes).isNotNull();
+        assertThat(repositorioAnimes.findById(anime.getId())).isPresent();
     }
 
     @Test
     void testRepositorioAvaliacoes() {
-        // Adicione aqui os testes para o repositório de Avaliacoes
-        //Inicialização
         long qtdAvaliacoes = repositorioAvaliacoes.count();
-        Avaliacao av = new Avaliacao(10.0, "Incrivel");
-
-        //Interação
-        repositorioAvaliacoes.save(av);
+        repositorioAvaliacoes.save(avaliacao);
         long qtdAvaliacoes2 = repositorioAvaliacoes.count();
-
-        //Verificação
         assertEquals(qtdAvaliacoes + 1, qtdAvaliacoes2);
-
-        assertThat(repositorioAvaliacoes).isNotNull();
+        assertThat(repositorioAvaliacoes.findById(avaliacao.getId())).isPresent();
     }
 
     @Test
     void testRepositorioUsuarios() {
-        // Adicione aqui os testes para o repositório de Usuarios
-        //Inicialização
         long qtdUsuarios = repositorioUsuarios.count();
-        Usuario user = new Usuario("UsuarioDeAnimes", "UsuarioDeAnimes@email.com");
-
-        //Interação
-        repositorioUsuarios.save(user);
+        repositorioUsuarios.save(usuario);
         long qtdUsuarios2 = repositorioUsuarios.count();
-
-        //Verificação
         assertEquals(qtdUsuarios + 1, qtdUsuarios2);
-
-        assertThat(repositorioUsuarios).isNotNull();
+        assertThat(repositorioUsuarios.findById(usuario.getId())).isPresent();
     }
 }

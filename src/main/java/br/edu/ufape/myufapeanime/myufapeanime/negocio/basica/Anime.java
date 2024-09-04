@@ -38,16 +38,6 @@ public class Anime {
         this.avaliacoes = avaliacoes;
     }
 
-    //contrutor para testes
-    public Anime(String nome, String genero, int numEpisodios, Double pontuacao, Long avaliacoesTotais, Double notaMedia) {
-        this.nome = nome;
-        this.genero = genero;
-        this.numEpisodios = numEpisodios;
-        this.pontuacao = pontuacao;
-        this.avaliacoesTotais = avaliacoesTotais;
-        this.notaMedia = notaMedia;
-    }
-
     public Long getId() {
         return id;
     }
