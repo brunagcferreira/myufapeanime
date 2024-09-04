@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class RepositorioTests {
+public class IntegracaoTests {
 
     @Autowired
     private InterfaceRepositorioAdm repositorioAdm;
