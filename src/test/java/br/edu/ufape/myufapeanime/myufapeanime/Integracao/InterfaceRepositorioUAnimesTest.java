@@ -1,8 +1,8 @@
 package br.edu.ufape.myufapeanime.myufapeanime.Integracao;
 
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
-import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAdm;
+import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,21 +12,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // Implementa teste de integração para o repositório de Adms
 @SpringBootTest
-public class InterfaceRepositorioUsuarioTest {
+public class InterfaceRepositorioUAnimesTest {
     @Autowired
-    private InterfaceRepositorioUsuarios colecaoUsuario;
+    private InterfaceRepositorioAnimes colecaoAnimes;
 
     @Test
     void cadastrarTest(){
         //Inicialização
-        long qtdUsuarios = colecaoUsuario.count();
-        Usuario user = new Usuario("UsuarioDeAnimes", "UsuarioDeAnimes@email.com");
+        long qtdAnimes = colecaoAnimes.count();
+        Anime an = new Anime("Naruto", "Aventura", 320, 1000.0, 2002L, 220.0);
 
         //Interação
-        colecaoUsuario.save(user);
-        long qtdUsuarios2 = colecaoUsuario.count();
+        colecaoAnimes.save(an);
+        long qtdAnimes2 = colecaoAnimes.count();
 
         //Verificação
-        assertEquals(qtdUsuarios + 1, qtdUsuarios2);
+        assertEquals(qtdAnimes + 1, qtdAnimes2);
     }
 }

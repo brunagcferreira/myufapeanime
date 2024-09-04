@@ -31,6 +31,12 @@ public class Avaliacao {
         this.usuarioAvaliador = usuarioAvaliador;
     }
 
+    //contrutor para testes
+    public Avaliacao(Double nota, String comentario) {
+        this.nota = nota;
+        this.comentario = comentario;
+    }
+
     public Long getId() {
         return id;
     }

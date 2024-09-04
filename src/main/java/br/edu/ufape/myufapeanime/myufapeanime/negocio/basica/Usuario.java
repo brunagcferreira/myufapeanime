@@ -32,6 +32,12 @@ public class Usuario {
         this.queroAssistir = queroAssistir;
     }
 
+    //contrutor para casos de teste
+    public Usuario(String nome, String email) {
+        setNome(nome);
+        setEmail(email);
+    }
+
     public Long getId() {
         return id;
     }

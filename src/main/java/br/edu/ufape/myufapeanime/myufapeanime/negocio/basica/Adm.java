@@ -10,13 +10,12 @@ public class Adm extends Usuario {
         super(nome, email, assistindo, completo, queroAssistir);
     }
 
-    public Adm() {
-
-    }
-
     //contrutor para casos de teste
     public Adm(String nome, String email) {
-        setNome(nome);
-        setEmail(email);
+        super(nome, email);
+    }
+
+    public Adm() {
+
     }
 }

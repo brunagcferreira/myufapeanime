@@ -6,5 +6,4 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 
 @Repository
 public interface InterfaceRepositorioUsuarios extends JpaRepository<Usuario, Long> {
-
 }
