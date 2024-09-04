@@ -6,8 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "tb_animes")
 public class Anime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +24,10 @@ public class Anime {
     private List<Avaliacao> avaliacoes;
 
     public Anime() {}
+    //TODO: Fazer o contrutor de uma forma que o anime venha com suas estatiticas zeradas,
+    //pois ele é novo, e tirar do construtor a nota media, pois ela é calculada automaticamente
 
+    //TODO: Fazer também um metodo que calcula a nota média do anime
     public Anime(String nome, String genero, int numEpisodios, Double pontuacao, Long avaliacoesTotais, Double notaMedia, List<Avaliacao> avaliacoes) {
         this.nome = nome;
         this.genero = genero;

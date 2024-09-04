@@ -1,14 +1,20 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.basica;
 
-
 import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "tb_usuarios")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,10 +22,21 @@ public class Usuario {
     private String nome;
     private String email;
     @ManyToMany
+    @JoinTable(name = "tb_assistindo",
+               joinColumns = @JoinColumn(name = "usuario_id"),
+               inverseJoinColumns = @JoinColumn(name = "anime_id"))
     private List<Anime> assistindo;
+
     @ManyToMany
+    @JoinTable(name = "tb_completo",
+               joinColumns = @JoinColumn(name = "usuario_id"),
+               inverseJoinColumns = @JoinColumn(name = "anime_id"))
     private List<Anime> completo;
+
     @ManyToMany
+    @JoinTable(name = "tb_quero_assistir",
+               joinColumns = @JoinColumn(name = "usuario_id"),
+               inverseJoinColumns = @JoinColumn(name = "anime_id"))
     private List<Anime> queroAssistir;
 
     public Usuario() {}
