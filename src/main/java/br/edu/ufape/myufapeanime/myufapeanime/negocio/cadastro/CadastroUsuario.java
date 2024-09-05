@@ -59,7 +59,7 @@ public class CadastroUsuario {
 	}
 	
     //buscar por nome(pode retornar null)
-	public Optional<Usuario> findByNomeUsuario(String nome){
+	public Optional<Usuario> findByNome(String nome){
 		return repositorioUsuario.findByNomeContainingIgnoreCase(nome);
 	}
 
@@ -70,7 +70,7 @@ public class CadastroUsuario {
         return usuario.getAssistindo();
     }
 
-    //lista completo
+    //lista completos
     public List<Anime> getCompleto(Long usuarioId) throws UsuarioInexistenteException {
         Usuario usuario = repositorioUsuario.findById(usuarioId)
             .orElseThrow(() -> new UsuarioInexistenteException(usuarioId));

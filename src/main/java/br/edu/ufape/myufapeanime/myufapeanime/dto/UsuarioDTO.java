@@ -6,7 +6,7 @@ public class UsuarioDTO {
     private Long id;
     private String nome;
     private String email;
-    private List<AnimeDTO> assistindo;
+    //private List<AnimeDTO> assistindo;
 
     public UsuarioDTO() {}
 
@@ -40,13 +40,13 @@ public class UsuarioDTO {
         this.email = email;
     }
 
-    public List<AnimeDTO> getAssistindo() {
+    /*public List<AnimeDTO> getAssistindo() {
         return assistindo;
     }
 
     public void setAssistindo(List<AnimeDTO> assistindo) {
         this.assistindo = assistindo;
-    }
+    }*/
 
     
 }
