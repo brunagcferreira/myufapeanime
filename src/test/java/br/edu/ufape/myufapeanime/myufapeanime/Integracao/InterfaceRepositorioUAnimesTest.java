@@ -1,9 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.Integracao;
 
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
-import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
