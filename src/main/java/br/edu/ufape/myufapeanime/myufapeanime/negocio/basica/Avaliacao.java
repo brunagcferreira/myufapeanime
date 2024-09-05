@@ -65,4 +65,12 @@ public class Avaliacao {
         this.usuarioAvaliador = usuarioAvaliador;
     }
 
+    public Anime getAnime() {
+        return anime;
+    }
+
+    public void setAnime(Anime anime) {
+        this.anime = anime;
+    }
+
 }

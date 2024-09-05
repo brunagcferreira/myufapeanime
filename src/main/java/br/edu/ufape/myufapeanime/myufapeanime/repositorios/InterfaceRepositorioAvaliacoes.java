@@ -7,4 +7,5 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 @Repository
 public interface InterfaceRepositorioAvaliacoes extends JpaRepository<Avaliacao, Long> {
 
+
 }
