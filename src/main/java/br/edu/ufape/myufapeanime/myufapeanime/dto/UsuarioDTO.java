@@ -1,12 +1,9 @@
 package br.edu.ufape.myufapeanime.myufapeanime.dto;
 
-import java.util.List;
-
 public class UsuarioDTO {
     private Long id;
     private String nome;
     private String email;
-    //private List<AnimeDTO> assistindo;
 
     public UsuarioDTO() {}
 
@@ -39,14 +36,6 @@ public class UsuarioDTO {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    /*public List<AnimeDTO> getAssistindo() {
-        return assistindo;
-    }
-
-    public void setAssistindo(List<AnimeDTO> assistindo) {
-        this.assistindo = assistindo;
-    }*/
 
     
 }

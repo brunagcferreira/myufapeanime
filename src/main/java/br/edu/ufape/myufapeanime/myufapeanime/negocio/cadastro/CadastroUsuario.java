@@ -18,11 +18,12 @@ public class CadastroUsuario {
 
     //salvar
     public Usuario save(Usuario usuario) throws UsuarioDuplicadoException {
-		if(repositorioUsuario.existsById(usuario.getId())) {
-			throw new UsuarioDuplicadoException(usuario.getId());
-		}	
-		return repositorioUsuario.save(usuario);
-	}
+        if (repositorioUsuario.existsByEmail(usuario.getEmail())) {
+            throw new UsuarioDuplicadoException(usuario.getEmail());
+        }
+        return repositorioUsuario.save(usuario);
+    }
+
 
 	//atualizar
     public Usuario update(Usuario novo) throws UsuarioInexistenteException {
@@ -59,7 +60,7 @@ public class CadastroUsuario {
 	}
 	
     //buscar por nome(pode retornar null)
-	public Optional<Usuario> findByNome(String nome){
+	public List<Usuario> findByNome(String nome){
 		return repositorioUsuario.findByNomeContainingIgnoreCase(nome);
 	}
 

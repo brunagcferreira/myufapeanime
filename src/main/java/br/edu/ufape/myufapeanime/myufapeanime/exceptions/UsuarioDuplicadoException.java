@@ -2,15 +2,17 @@ package br.edu.ufape.myufapeanime.myufapeanime.exceptions;
 
 public class UsuarioDuplicadoException extends Exception {
     private static final long serialVersionUID = 1L;
-    private Long id;
+    private String email;
 
-    public UsuarioDuplicadoException(Long id) {
-        super("Usuário com id " + id + " já existe.");
-        this.id = id;
+    public UsuarioDuplicadoException(String email) {
+        super(email + " já cadastrado.");
+        this.email = email;
     }
 
-    public Long getId() {
-        return id;
+    public String getEmail() {
+        return email;
     }
+
+    
     
 }

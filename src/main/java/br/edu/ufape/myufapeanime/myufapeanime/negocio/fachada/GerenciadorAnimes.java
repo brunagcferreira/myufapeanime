@@ -43,7 +43,7 @@ public class GerenciadorAnimes {
         return cadastroUsuario.findById(id);
     }
     //buscar por nome(pode retornar null)
-    public Optional<Usuario> findByNomeUsuario(String nome) {
+    public List<Usuario> findByNomeUsuario(String nome) {
         return cadastroUsuario.findByNome(nome);
     }
     //lista assistindo
@@ -57,7 +57,5 @@ public class GerenciadorAnimes {
     //lista quero assistir
     public List<Anime> getQueroAssistirUsuario(Long usuarioId) throws UsuarioInexistenteException {
         return cadastroUsuario.getQueroAssistir(usuarioId);
-    }
-
-    
+    } 
 }
