@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.UsuarioDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.UsuarioResponse;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
@@ -44,9 +45,9 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {
         return gerenciador.findByIdUsuario(id)
-                .map(this::convertToDTO)  // Converte o objeto Usuario para UsuarioDTO
-                .map(ResponseEntity::ok)  // Retorna ResponseEntity com status 200 e o DTO
-                .orElseGet(() -> ResponseEntity.notFound().build());  // Retorna 404 se não encontrado
+                .map(this::convertToDTO)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     //procurar por nome
@@ -87,10 +88,8 @@ public class UsuarioController {
     @GetMapping("/{id}/completos")
     public ResponseEntity<List<AnimeDTO>> getAnimesCompletos(@PathVariable Long id) {
         try {
-            //busca a lista de animes assistidos
             List<Anime> animesAssistidos = gerenciador.getCompletosUsuario(id);
 
-            //converte os Animes para AnimeDTOs
             List<AnimeDTO> dtos = animesAssistidos.stream()
                 .map(this::convertToAnimeDTO)
                 .collect(Collectors.toList());
@@ -105,10 +104,8 @@ public class UsuarioController {
     @GetMapping("/{id}/quero-assistir")
     public ResponseEntity<List<AnimeDTO>> getAnimesQueroAssistir(@PathVariable Long id) {
         try {
-            //busca a lista de animes assistidos
             List<Anime> animesAssistidos = gerenciador.getQueroAssistirUsuario(id);
 
-            //converte os Animes para AnimeDTOs
             List<AnimeDTO> dtos = animesAssistidos.stream()
                 .map(this::convertToAnimeDTO)
                 .collect(Collectors.toList());
@@ -129,8 +126,8 @@ public class UsuarioController {
             Usuario usuario = convertToEntity(usuarioDTO);
             Usuario novoUsuario = gerenciador.saveUsuario(usuario);
             UsuarioDTO novoUsuarioDTO = convertToDTO(novoUsuario);
-            
-            return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuarioDTO);
+            UsuarioResponse response = new UsuarioResponse("Usuário cadastrado com sucesso!", novoUsuarioDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (UsuarioDuplicadoException e) {
             
@@ -141,33 +138,32 @@ public class UsuarioController {
     /*****  METODOS PUT *****/
     //update usuário existente
     @PutMapping("update/{id}")
-    public ResponseEntity<UsuarioDTO> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<Object> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
         try {
             Usuario usuario = convertToEntity(usuarioDTO);
-            usuario.setId(id);  // Garante que estamos atualizando o usuário com o ID correto
+            usuario.setId(id); 
             
-            // Chama o serviço para atualizar o usuário
             Usuario usuarioAtualizado = gerenciador.updateUsuario(usuario);
             
-            // Converte a entidade de volta para DTO
             UsuarioDTO usuarioAtualizadoDTO = convertToDTO(usuarioAtualizado);
-            
-            return ResponseEntity.ok(usuarioAtualizadoDTO);  // Retorna 200 OK com o DTO do usuário atualizado
+
+            UsuarioResponse response = new UsuarioResponse("Usuário atualizado com sucesso!", usuarioAtualizadoDTO);
+            return ResponseEntity.ok(response);
+
         } catch (UsuarioInexistenteException e) {
-            return ResponseEntity.notFound().build();  // Retorna 404 Not Found se o usuário não existir
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     /*****  METODOS DELETE *****/
-
     //apagar usuario por id
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteUsuario(@PathVariable Long id) {
         try {
-            gerenciador.deleteUsuarioById(id);  
+            gerenciador.deleteUsuarioById(id);
             return ResponseEntity.noContent().build(); 
         } catch (UsuarioInexistenteException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

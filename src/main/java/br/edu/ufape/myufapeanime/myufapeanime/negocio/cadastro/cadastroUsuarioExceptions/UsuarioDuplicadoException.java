@@ -12,7 +12,4 @@ public class UsuarioDuplicadoException extends Exception {
     public String getEmail() {
         return email;
     }
-
-    
-    
 }
