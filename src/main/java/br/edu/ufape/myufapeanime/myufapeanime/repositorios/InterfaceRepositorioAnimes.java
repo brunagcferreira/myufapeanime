@@ -6,5 +6,5 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 
 @Repository
 public interface InterfaceRepositorioAnimes extends JpaRepository<Anime, Long> {
-	
+    Anime findByNome(String nome);
 }
