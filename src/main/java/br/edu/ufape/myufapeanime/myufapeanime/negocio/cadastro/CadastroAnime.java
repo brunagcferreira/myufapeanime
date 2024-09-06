@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CadastroAnime {
     @Autowired
-    private InterfaceRepositorioAnimes animeRepository;a
+    private InterfaceRepositorioAnimes animeRepository;
 
     @Transactional
     public void salvarAnime(Anime anime) throws AnimeDuplicadoException, NomeDoAnimeVazioException, NumeroDeEpisodiosInvalidoException {
