@@ -1,8 +1,8 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
-import br.edu.ufape.myufapeanime.myufapeanime.exceptions.cadastroAnimeExceptions.AnimeDuplicadoException;
-import br.edu.ufape.myufapeanime.myufapeanime.exceptions.cadastroAnimeExceptions.NomeDoAnimeVazioException;
-import br.edu.ufape.myufapeanime.myufapeanime.exceptions.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NomeDoAnimeVazioException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import jakarta.transaction.Transactional;

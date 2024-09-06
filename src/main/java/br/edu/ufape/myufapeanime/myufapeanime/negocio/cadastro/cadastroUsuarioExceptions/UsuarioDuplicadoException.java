@@ -1,4 +1,4 @@
-package br.edu.ufape.myufapeanime.myufapeanime.exceptions;
+package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions;
 
 public class UsuarioDuplicadoException extends Exception {
     private static final long serialVersionUID = 1L;

@@ -1,4 +1,4 @@
-package br.edu.ufape.myufapeanime.myufapeanime.exceptions.cadastroAnimeExceptions;
+package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions;
 
 import java.io.Serial;
 

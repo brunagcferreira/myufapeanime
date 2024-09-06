@@ -2,10 +2,11 @@ package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
 import java.util.List;
 import java.util.Optional;
+
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import br.edu.ufape.myufapeanime.myufapeanime.exceptions.UsuarioDuplicadoException;
-import br.edu.ufape.myufapeanime.myufapeanime.exceptions.UsuarioInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
