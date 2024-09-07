@@ -1,4 +1,4 @@
-package br.edu.ufape.myufapeanime.myufapeanime.cadastro;
+package br.edu.ufape.myufapeanime.myufapeanime.TestCadastro;
 
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.DataInvalidaAnimeException;
