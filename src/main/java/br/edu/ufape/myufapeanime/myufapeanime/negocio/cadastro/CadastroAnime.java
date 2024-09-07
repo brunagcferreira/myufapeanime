@@ -1,6 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.DataInvalidaAnimeException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NomeDoAnimeVazioException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
@@ -8,6 +9,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioA
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 @Service
 public class CadastroAnime {
@@ -15,7 +17,7 @@ public class CadastroAnime {
     private InterfaceRepositorioAnimes animeRepository;
 
     @Transactional
-    public void salvarAnime(Anime anime) throws AnimeDuplicadoException, NomeDoAnimeVazioException, NumeroDeEpisodiosInvalidoException {
+    public void salvarAnime(Anime anime) throws AnimeDuplicadoException, NomeDoAnimeVazioException, NumeroDeEpisodiosInvalidoException, DataInvalidaAnimeException {
         // Verifica se o anime é nulo
         if(anime == null) {
             throw new NomeDoAnimeVazioException();
@@ -24,6 +26,11 @@ public class CadastroAnime {
         //verifica se o numero de episodios é zero ou negativo
         if(anime.getNumEpisodios() <= 0) {
             throw new NumeroDeEpisodiosInvalidoException();
+        }
+
+        //verificação de data válida
+        if (!DataLancamentoValidaAnime(anime)) {
+            throw new DataInvalidaAnimeException(anime);
         }
 
         // Converte o nome do anime para o formato padrão, com a primeira letra maiúscula e o restante minúscula
@@ -42,5 +49,16 @@ public class CadastroAnime {
         else {
             throw new AnimeDuplicadoException(anime.getNome());
         }
+    }
+
+    private boolean DataLancamentoValidaAnime(Anime anime) {
+        LocalDate hoje = LocalDate.now();
+        LocalDate animeDataLancamento = anime.getDataLancamento();
+
+        // rezam lendas que um dos primeiros animes foi feito por volta dessa data
+        LocalDate primeiroAnimeLancado = LocalDate.of(1907, 1, 1);
+
+        return animeDataLancamento != null && !animeDataLancamento.isAfter(hoje)
+                && !animeDataLancamento.isBefore(primeiroAnimeLancado);
     }
 }
