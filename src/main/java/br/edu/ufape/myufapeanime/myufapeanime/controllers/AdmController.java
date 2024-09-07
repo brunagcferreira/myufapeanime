@@ -11,26 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
-import java.security.Principal;
-
 @RestController
 @RequestMapping("/adm")
 public class AdmController {
 
-    private final InterfaceRepositorioAdm interfaceRepositorioAdm;
 
-    public AdmController(InterfaceRepositorioAdm interfaceRepositorioAdm) {
-        this.interfaceRepositorioAdm = interfaceRepositorioAdm;
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> registration(Principal principal) throws UsuarioInexistenteException {
-        Usuario usuario = (Usuario) interfaceRepositorioAdm.findByEmail(principal.getName()).orElseThrow(UsuarioInexistenteException::new);
-
-
-        if (usuario instanceof Adm) {
-            return ResponseEntity.ok("Welcome, come to registration");
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
-    }
 }

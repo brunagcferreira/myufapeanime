@@ -7,7 +7,6 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioEx
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
@@ -20,12 +19,6 @@ public class CadastroUsuario {
     @Autowired
     private InterfaceRepositorioUsuarios repositorioUsuario;
 
-    private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public CadastroUsuario(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     //salvar
     public Usuario save(Usuario usuario) throws UsuarioDuplicadoException {
@@ -33,8 +26,7 @@ public class CadastroUsuario {
             throw new UsuarioDuplicadoException(usuario.getEmail());
         }
 
-        //codificação da senha
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        //usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return repositorioUsuario.save(usuario);
     }
 
