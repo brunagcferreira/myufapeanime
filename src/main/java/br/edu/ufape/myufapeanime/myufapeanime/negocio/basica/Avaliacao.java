@@ -28,10 +28,11 @@ public class Avaliacao {
 
     public Avaliacao() {}
 
-    public Avaliacao(Double nota, String comentario, Usuario usuarioAvaliador) {
+    public Avaliacao(Double nota, String comentario, Usuario usuarioAvaliador, Anime anime) {
         this.nota = nota;
         this.comentario = comentario;
         this.usuarioAvaliador = usuarioAvaliador;
+        this.anime = anime;
     }
 
     public Long getId() {
