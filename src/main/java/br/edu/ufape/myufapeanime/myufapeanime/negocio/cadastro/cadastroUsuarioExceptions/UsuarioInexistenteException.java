@@ -1,7 +1,5 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions;
 
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
-
 import java.io.Serial;
 
 public class UsuarioInexistenteException extends Exception {
