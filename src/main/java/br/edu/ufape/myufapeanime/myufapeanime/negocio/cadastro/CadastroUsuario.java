@@ -6,6 +6,8 @@ import java.util.Optional;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
@@ -13,15 +15,26 @@ import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioU
 
 @Service
 public class CadastroUsuario {
-    
+
+    @Qualifier("interfaceRepositorioUsuarios")
     @Autowired
     private InterfaceRepositorioUsuarios repositorioUsuario;
+
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public CadastroUsuario(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     //salvar
     public Usuario save(Usuario usuario) throws UsuarioDuplicadoException {
         if (repositorioUsuario.existsByEmail(usuario.getEmail())) {
             throw new UsuarioDuplicadoException(usuario.getEmail());
         }
+
+        //codificação da senha
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return repositorioUsuario.save(usuario);
     }
 
@@ -85,6 +98,5 @@ public class CadastroUsuario {
             .orElseThrow(() -> new UsuarioInexistenteException(usuarioId));
         return usuario.getQueroAssistir();
     }
-
     
 }
