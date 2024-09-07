@@ -179,7 +179,7 @@ public class UsuarioController {
         dto.setId(anime.getId());
         dto.setNome(anime.getNome());
         dto.setGenero(anime.getGenero());
-        dto.setNumEpisodios(anime.getNumEpisodios());
+        dto.setNumeroEpisodios(anime.getNumeroEpisodios());
         return dto;
     }
 

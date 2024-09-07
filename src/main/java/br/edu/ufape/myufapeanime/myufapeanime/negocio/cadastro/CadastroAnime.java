@@ -1,10 +1,9 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NomeDoAnimeVazioException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,87 +12,61 @@ import java.util.List;
 
 @Service
 public class CadastroAnime {
+
     @Autowired
     private InterfaceRepositorioAnimes animeRepository;
 
-    //CRUD
-
     // Create
-    public Anime create(Anime novoAnime) throws AnimeDuplicadoException, NomeDoAnimeVazioException, NumeroDeEpisodiosInvalidoException {
-        // Verifica se o novoAnime é nulo
-        if(novoAnime == null || novoAnime.getNome() == null || novoAnime.getNome().isEmpty()) {
-            throw new NomeDoAnimeVazioException();
-        }
-
-        //verifica se o numero de episodios é zero ou negativo
-        if(novoAnime.getNumEpisodios() <= 0) {
+    public Anime cadastrarAnime(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
+        if (anime.getNumeroEpisodios() <= 0) {
             throw new NumeroDeEpisodiosInvalidoException();
         }
 
-        // Converte o nome do novoAnime para o formato padrão, com a primeira letra maiúscula e o restante minúscula
-        String nome = novoAnime.getNome();
-        nome = nome.trim();  // remove espaços em branco no início e no final
-        nome = nome.replaceAll("\\s+", " ");  // remove espaços em branco duplicados
-
-        nome = nome.toLowerCase();  // transforma tudo para minúsculas
-        nome = nome.substring(0, 1).toUpperCase() + nome.substring(1);  // primeira letra maiúscula
-        novoAnime.setNome(nome);
-
-        //Verifica se um novoAnime com o mesmo nome já está cadastrado
-        if(!animeRepository.existsById(novoAnime.getId())){
-            animeRepository.save(novoAnime);
+        if (animeRepository.existsByNomeContainingIgnoreCase(anime.getNome())) {
+            throw new AnimeDuplicadoException(anime.getNome());
         }
-        else {
-            throw new AnimeDuplicadoException(novoAnime.getNome());
-        }
-        return novoAnime;
+        return animeRepository.save(anime);
     }
 
-    // Read
-    public List<Anime> findAll() {
+    // Read (listar todos)
+    public List<Anime> listarAnimes() {
         return animeRepository.findAll();
     }
 
-    public List<Anime> findByNome(String nome) throws NomeDoAnimeVazioException, AnimeInexistenteException {
-        if(nome == null || nome.isEmpty()) {
-            throw new NomeDoAnimeVazioException();
-        }
-
-        List<Anime> animes = animeRepository.findByNomeContainingIgnoreCase(nome);
-
-        if(animes.isEmpty()) {
-            throw new AnimeInexistenteException(nome);
-        }
-
-        return animes;
+    // Read (listar por ID)
+    public Anime findByIdAnime(Long id) throws AnimeInexistenteException {
+        return animeRepository.findById(id).orElseThrow(() -> new AnimeInexistenteException(id));
     }
 
-    // Upadate
-    public Anime update(Anime anime) throws AnimeInexistenteException {
-        if(animeRepository.existsById(anime.getId())){
-            animeRepository.save(anime);
-        }
-        else
-        {
-            throw new AnimeInexistenteException(anime.getId());
-        }
-        animeRepository.save(anime);
-        return anime;
+    // Read (listar por nome)
+    public List<Anime> findByNomeAnime(String nome){
+        return animeRepository.findByNomeContainingIgnoreCase(nome);
     }
 
-   // Delete
-public void delete(Anime anime) throws AnimeInexistenteException {
-    if(animeRepository.existsById(anime.getId())) {
+    // Update
+    public Anime atualizarAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException {
+        Anime animeExistente = findByIdAnime(id); // Verifica se o anime existe
+
+        // Atualizar apenas os campos que não estão nulos ou têm um valor significativo
+        if (animeAtualizado.getNome() != null && !animeAtualizado.getNome().isEmpty()) {
+            animeExistente.setNome(animeAtualizado.getNome());
+        }
+
+        if (animeAtualizado.getGenero() != null && !animeAtualizado.getGenero().isEmpty()) {
+            animeExistente.setGenero(animeAtualizado.getGenero());
+        }
+
+        if (animeAtualizado.getNumeroEpisodios() > 0) { // Verifica se o número de episódios é maior que zero
+            animeExistente.setNumEpisodios(animeAtualizado.getNumeroEpisodios());
+        }
+
+        // Salva o objeto atualizado no banco
+        return animeRepository.save(animeExistente);
+    }
+
+    // Delete
+    public void deletarAnime(Long id) throws AnimeInexistenteException {
+        Anime anime = findByIdAnime(id); // Verifica se o anime existe
         animeRepository.delete(anime);
-    } else {
-        throw new AnimeInexistenteException(anime.getId());
-    }
-}
-
-    public void deleteById(Long id) throws AnimeInexistenteException {
-        if(!animeRepository.existsById(id)) {
-            throw new AnimeInexistenteException(id);
-        }
-        animeRepository.deleteById(id);
     }
 }

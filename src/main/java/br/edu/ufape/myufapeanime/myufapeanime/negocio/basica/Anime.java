@@ -14,6 +14,7 @@ public class Anime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private String genero;
     private int numEpisodios;
@@ -30,6 +31,10 @@ public class Anime {
         this.nome = nome;
         this.genero = genero;
         this.numEpisodios = numEpisodios;
+        this.pontuacao = 0.0;
+        this.avaliacoesTotais = 0L;
+        this.notaMedia = 0.0;
+        this.avaliacoes = null;
     }
 
     public Long getId() {
@@ -56,7 +61,7 @@ public class Anime {
         this.genero = genero;
     }
 
-    public int getNumEpisodios() {
+    public int getNumeroEpisodios() {
         return numEpisodios;
     }
 
@@ -72,7 +77,7 @@ public class Anime {
         this.pontuacao = pontuacao;
     }
 
-    public Long getAvaliacoesTotais() {
+    public long getAvaliacoesTotais() {
         return avaliacoesTotais;
     }
 

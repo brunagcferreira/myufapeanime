@@ -17,6 +17,9 @@ public class AvaliacaoDTO {
         this.animeAvaliado = animeAvaliado;
     }
 
+    public AvaliacaoDTO(Long id, Double nota, String comentario) {
+    }
+
     public Long getId() {
         return id;
     }

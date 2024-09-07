@@ -9,5 +9,10 @@ import java.util.List;
 @Repository
 public interface InterfaceRepositorioAnimes extends JpaRepository<Anime, Long> {
     Anime findByNome(String nome);
+
     List<Anime> findByNomeContainingIgnoreCase(String nome);
+
+    boolean existsByNome(String nome);
+
+    boolean existsByNomeContainingIgnoreCase(String nome);
 }
