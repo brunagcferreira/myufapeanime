@@ -37,6 +37,7 @@ class CadastroAnimeTest {
         Anime anime = new Anime();
         anime.setNome("Naruto");
         anime.setNumEpisodios(220);
+        anime.setDataLancamento(LocalDate.now());
 
         when(animeRepository.findByNome(any(String.class))).thenReturn(null);
 
@@ -68,6 +69,7 @@ class CadastroAnimeTest {
         Anime anime = new Anime();
         anime.setNome("Naruto");
         anime.setNumEpisodios(220);
+        anime.setDataLancamento(LocalDate.now());
 
         when(animeRepository.findByNome(any(String.class))).thenReturn(anime);
 
