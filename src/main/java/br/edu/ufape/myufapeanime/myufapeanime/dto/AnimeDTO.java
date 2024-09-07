@@ -8,8 +8,6 @@ public class AnimeDTO {
     private int numeroEpisodios;
 
     // Estatísticas que devem ser inicializadas
-    private double pontuacao;
-    private long avaliacoesTotais;
     private double notaMedia;
 
     // Construtor padrão
@@ -21,8 +19,6 @@ public class AnimeDTO {
         this.nome = nome;
         this.genero = genero;
         this.numeroEpisodios = numeroEpisodios;
-        this.pontuacao = 0.0;
-        this.avaliacoesTotais = 0;
         this.notaMedia = 0.0;
     }
 
@@ -49,22 +45,6 @@ public class AnimeDTO {
 
     public void setNumeroEpisodios(int numeroEpisodios) {
         this.numeroEpisodios = numeroEpisodios;
-    }
-
-    public double getPontuacao() {
-        return pontuacao;
-    }
-
-    public void setPontuacao(double pontuacao) {
-        this.pontuacao = pontuacao;
-    }
-
-    public long getAvaliacoesTotais() {
-        return avaliacoesTotais;
-    }
-
-    public void setAvaliacoesTotais(long avaliacoesTotais) {
-        this.avaliacoesTotais = avaliacoesTotais;
     }
 
     public double getNotaMedia() {

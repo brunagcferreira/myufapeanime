@@ -31,10 +31,6 @@ public class Anime {
         this.nome = nome;
         this.genero = genero;
         this.numEpisodios = numEpisodios;
-        this.pontuacao = 0.0;
-        this.avaliacoesTotais = 0L;
-        this.notaMedia = 0.0;
-        this.avaliacoes = null;
     }
 
     public Long getId() {

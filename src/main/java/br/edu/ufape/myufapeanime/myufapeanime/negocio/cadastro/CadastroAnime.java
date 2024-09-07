@@ -25,6 +25,11 @@ public class CadastroAnime {
         if (animeRepository.existsByNomeContainingIgnoreCase(anime.getNome())) {
             throw new AnimeDuplicadoException(anime.getNome());
         }
+
+        anime.setAvaliacoes(null);
+        anime.setAvaliacoesTotais(0L);
+        anime.setNotaMedia(0.0);
+        anime.setPontuacao(0.0);
         return animeRepository.save(anime);
     }
 
@@ -44,11 +49,14 @@ public class CadastroAnime {
     }
 
     // Update
-    public Anime atualizarAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException {
+    public Anime atualizarAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
         Anime animeExistente = findByIdAnime(id); // Verifica se o anime existe
 
         // Atualizar apenas os campos que não estão nulos ou têm um valor significativo
         if (animeAtualizado.getNome() != null && !animeAtualizado.getNome().isEmpty()) {
+            if(animeRepository.existsByNomeContainingIgnoreCase(animeAtualizado.getNome())){
+                throw new AnimeDuplicadoException(animeAtualizado.getNome());
+            }
             animeExistente.setNome(animeAtualizado.getNome());
         }
 

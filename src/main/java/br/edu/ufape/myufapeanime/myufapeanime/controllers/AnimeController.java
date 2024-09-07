@@ -1,5 +1,6 @@
 package br.edu.ufape.myufapeanime.myufapeanime.controllers;
 
+import br.edu.ufape.myufapeanime.myufapeanime.dto.AnimeComAvaliacaoDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
@@ -15,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper.convertToAnimeDTO;
-import static br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper.convertToAnimeEntity;
+import static br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper.*;
 
 
 @RestController
@@ -75,8 +75,8 @@ public class AnimeController {
     public ResponseEntity<Object> buscarAnime(@PathVariable Long id) {
         try {
             Anime anime = gerenciadorAnimes.findByIdAnime(id);
-            AnimeDTO animeDTO = convertToAnimeDTO(anime);
-            return ResponseEntity.ok(animeDTO);
+            AnimeComAvaliacaoDTO animeAvaliacaoDTO = convertToAnimeComAvaliacaoDTO(anime);
+            return ResponseEntity.ok(animeAvaliacaoDTO);
         } catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
         }
@@ -92,7 +92,7 @@ public class AnimeController {
             Anime anime = gerenciadorAnimes.atualizarAnime(id, animeAtualizado);
             AnimeDTO animeAtualizadoDTO = convertToAnimeDTO(anime);
             return ResponseEntity.ok(animeAtualizadoDTO);
-        } catch (AnimeInexistenteException e) {
+        } catch (AnimeInexistenteException | AnimeDuplicadoException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
         }
     }
