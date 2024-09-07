@@ -21,6 +21,7 @@ public class Usuario {
     private Long id;
     private String nome;
     private String email;
+    private String password;
     @ManyToMany
     @JoinTable(name = "tb_assistindo",
                joinColumns = @JoinColumn(name = "usuario_id"),
@@ -73,6 +74,11 @@ public class Usuario {
         this.email = email;
     }
 
+    public String getPassword() { return password; }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
     public List<Anime> getAssistindo() {
         return assistindo;
     }

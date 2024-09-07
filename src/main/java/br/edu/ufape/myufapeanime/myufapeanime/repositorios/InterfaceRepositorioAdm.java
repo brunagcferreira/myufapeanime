@@ -4,7 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 
-@Repository
-public interface InterfaceRepositorioAdm extends JpaRepository<Adm, Long> {
+import java.util.Optional;
 
+@Repository
+public interface InterfaceRepositorioAdm extends InterfaceRepositorioUsuarios {
+    //Optional<Adm> findAdmByEmail(String email);
+
+    Optional<Object> findByEmail(String name);
 }
