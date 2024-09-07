@@ -84,7 +84,7 @@ public class GerenciadorAnimes {
     }
 
     //atualizar
-    public Anime atualizarAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException {
+    public Anime atualizarAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
         return cadastroAnime.atualizarAnime(id, animeAtualizado);
     }
 
