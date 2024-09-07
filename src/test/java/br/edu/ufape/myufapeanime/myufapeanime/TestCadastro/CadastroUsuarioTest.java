@@ -1,4 +1,4 @@
-package br.edu.ufape.myufapeanime.myufapeanime.cadastro;
+package br.edu.ufape.myufapeanime.myufapeanime.TestCadastro;
 
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
@@ -46,12 +46,15 @@ class CadastroUsuarioTest {
     @Test
     void testSaveUsuarioDuplicado() {
         Usuario usuario = new Usuario();
-        usuario.setId(1L);
-        when(repositorioUsuario.existsById(1L)).thenReturn(true);
-
+        usuario.setEmail("email_duplicado@gmail.com");
+    
+        when(repositorioUsuario.existsByEmail(usuario.getEmail())).thenReturn(true);
+    
         assertThrows(UsuarioDuplicadoException.class, () -> cadastroUsuario.save(usuario));
-        verify(repositorioUsuario, times(0)).save(usuario); // save não é chamado
+    
+        verify(repositorioUsuario, times(0)).save(usuario);
     }
+    
 
     @Test
     void testUpdateUsuarioInexistente() {

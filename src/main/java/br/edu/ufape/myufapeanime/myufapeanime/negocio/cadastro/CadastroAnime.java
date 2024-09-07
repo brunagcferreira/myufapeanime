@@ -7,6 +7,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExce
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 import java.util.List;
 
@@ -68,5 +69,16 @@ public class CadastroAnime {
     public void deletarAnime(Long id) throws AnimeInexistenteException {
         Anime anime = findByIdAnime(id); // Verifica se o anime existe
         animeRepository.delete(anime);
+    }
+
+    private boolean DataLancamentoValidaAnime(Anime anime) {
+        LocalDate hoje = LocalDate.now();
+        LocalDate animeDataLancamento = anime.getDataLancamento();
+
+        // rezam lendas que um dos primeiros animes foi feito por volta dessa data
+        LocalDate primeiroAnimeLancado = LocalDate.of(1907, 1, 1);
+
+        return animeDataLancamento != null && !animeDataLancamento.isAfter(hoje)
+                && !animeDataLancamento.isBefore(primeiroAnimeLancado);
     }
 }
