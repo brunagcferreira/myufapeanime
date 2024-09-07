@@ -1,28 +1,32 @@
 package br.edu.ufape.myufapeanime.myufapeanime.dto;
 
+
 public class AnimeDTO {
     private Long id;
     private String nome;
     private String genero;
-    private int numEpisodios;
+    private int numeroEpisodios;
 
-    public AnimeDTO() {}
+    // Estatísticas que devem ser inicializadas
+    private double pontuacao;
+    private long avaliacoesTotais;
+    private double notaMedia;
 
-    public AnimeDTO(Long id, String nome, String genero, int numEpisodios) {
-        this.id = id;
+    // Construtor padrão
+    public AnimeDTO() {
+    }
+
+    // Construtor completo (se necessário)
+    public AnimeDTO(String nome, String genero, int numeroEpisodios) {
         this.nome = nome;
         this.genero = genero;
-        this.numEpisodios = numEpisodios;
+        this.numeroEpisodios = numeroEpisodios;
+        this.pontuacao = 0.0;
+        this.avaliacoesTotais = 0;
+        this.notaMedia = 0.0;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    // Getters e setters
     public String getNome() {
         return nome;
     }
@@ -39,13 +43,44 @@ public class AnimeDTO {
         this.genero = genero;
     }
 
-    public int getNumEpisodios() {
-        return numEpisodios;
+    public int getNumeroEpisodios() {
+        return numeroEpisodios;
     }
 
-    public void setNumEpisodios(int numEpisodios) {
-        this.numEpisodios = numEpisodios;
+    public void setNumeroEpisodios(int numeroEpisodios) {
+        this.numeroEpisodios = numeroEpisodios;
     }
 
-    
+    public double getPontuacao() {
+        return pontuacao;
+    }
+
+    public void setPontuacao(double pontuacao) {
+        this.pontuacao = pontuacao;
+    }
+
+    public long getAvaliacoesTotais() {
+        return avaliacoesTotais;
+    }
+
+    public void setAvaliacoesTotais(long avaliacoesTotais) {
+        this.avaliacoesTotais = avaliacoesTotais;
+    }
+
+    public double getNotaMedia() {
+        return notaMedia;
+    }
+
+    public void setNotaMedia(double notaMedia) {
+        this.notaMedia = notaMedia;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
+

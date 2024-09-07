@@ -1,54 +1,74 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.DataInvalidaAnimeException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NomeDoAnimeVazioException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
+import java.util.List;
+
 @Service
 public class CadastroAnime {
+
     @Autowired
     private InterfaceRepositorioAnimes animeRepository;
 
-    @Transactional
-    public void salvarAnime(Anime anime) throws AnimeDuplicadoException, NomeDoAnimeVazioException, NumeroDeEpisodiosInvalidoException, DataInvalidaAnimeException {
-        // Verifica se o anime é nulo
-        if(anime == null) {
-            throw new NomeDoAnimeVazioException();
-        }
-
-        //verifica se o numero de episodios é zero ou negativo
-        if(anime.getNumEpisodios() <= 0) {
+    // Create
+    public Anime cadastrarAnime(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
+        if (anime.getNumeroEpisodios() <= 0) {
             throw new NumeroDeEpisodiosInvalidoException();
         }
 
-        //verificação de data válida
-        if (!DataLancamentoValidaAnime(anime)) {
-            throw new DataInvalidaAnimeException(anime);
-        }
-
-        // Converte o nome do anime para o formato padrão, com a primeira letra maiúscula e o restante minúscula
-        String nome = anime.getNome();
-        nome = nome.trim();  // remove espaços em branco no início e no final
-        nome = nome.replaceAll("\\s+", " ");  // remove espaços em branco duplicados
-
-        nome = nome.toLowerCase();  // transforma tudo para minúsculas
-        nome = nome.substring(0, 1).toUpperCase() + nome.substring(1);  // primeira letra maiúscula
-        anime.setNome(nome);
-
-        //Verifica se um anime com o mesmo nome já está cadastrado
-        if(animeRepository.findByNome(anime.getNome()) == null) {
-            animeRepository.save(anime);
-        }
-        else {
+        if (animeRepository.existsByNomeContainingIgnoreCase(anime.getNome())) {
             throw new AnimeDuplicadoException(anime.getNome());
         }
+        return animeRepository.save(anime);
+    }
+
+    // Read (listar todos)
+    public List<Anime> listarAnimes() {
+        return animeRepository.findAll();
+    }
+
+    // Read (listar por ID)
+    public Anime findByIdAnime(Long id) throws AnimeInexistenteException {
+        return animeRepository.findById(id).orElseThrow(() -> new AnimeInexistenteException(id));
+    }
+
+    // Read (listar por nome)
+    public List<Anime> findByNomeAnime(String nome){
+        return animeRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
+    // Update
+    public Anime atualizarAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException {
+        Anime animeExistente = findByIdAnime(id); // Verifica se o anime existe
+
+        // Atualizar apenas os campos que não estão nulos ou têm um valor significativo
+        if (animeAtualizado.getNome() != null && !animeAtualizado.getNome().isEmpty()) {
+            animeExistente.setNome(animeAtualizado.getNome());
+        }
+
+        if (animeAtualizado.getGenero() != null && !animeAtualizado.getGenero().isEmpty()) {
+            animeExistente.setGenero(animeAtualizado.getGenero());
+        }
+
+        if (animeAtualizado.getNumeroEpisodios() > 0) { // Verifica se o número de episódios é maior que zero
+            animeExistente.setNumEpisodios(animeAtualizado.getNumeroEpisodios());
+        }
+
+        // Salva o objeto atualizado no banco
+        return animeRepository.save(animeExistente);
+    }
+
+    // Delete
+    public void deletarAnime(Long id) throws AnimeInexistenteException {
+        Anime anime = findByIdAnime(id); // Verifica se o anime existe
+        animeRepository.delete(anime);
     }
 
     private boolean DataLancamentoValidaAnime(Anime anime) {

@@ -1,6 +1,5 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.basica;
 
-import java.time.LocalDate;
 import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,10 +14,10 @@ public class Anime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private String genero;
     private int numEpisodios;
-    private LocalDate dataLancamento;
     private Double pontuacao;
     private Long avaliacoesTotais;
     private Double notaMedia;
@@ -28,11 +27,14 @@ public class Anime {
     public Anime() {}
 
     //Fazer também um metodo que calcula a nota média do anime
-    public Anime(String nome, String genero, int numEpisodios, LocalDate dataLancamento) {
+    public Anime(String nome, String genero, int numEpisodios) {
         this.nome = nome;
         this.genero = genero;
         this.numEpisodios = numEpisodios;
-        this.dataLancamento = dataLancamento;
+        this.pontuacao = 0.0;
+        this.avaliacoesTotais = 0L;
+        this.notaMedia = 0.0;
+        this.avaliacoes = null;
     }
 
     public Long getId() {
@@ -59,7 +61,7 @@ public class Anime {
         this.genero = genero;
     }
 
-    public int getNumEpisodios() {
+    public int getNumeroEpisodios() {
         return numEpisodios;
     }
 
@@ -67,13 +69,6 @@ public class Anime {
         this.numEpisodios = numEpisodios;
     }
 
-    public LocalDate getDataLancamento() {
-        return dataLancamento;
-    }
-
-    public void setDataLancamento(LocalDate dataLancamento) {
-        this.dataLancamento = dataLancamento;
-    }
     public Double getPontuacao() {
         return pontuacao;
     }
@@ -82,7 +77,7 @@ public class Anime {
         this.pontuacao = pontuacao;
     }
 
-    public Long getAvaliacoesTotais() {
+    public long getAvaliacoesTotais() {
         return avaliacoesTotais;
     }
 
