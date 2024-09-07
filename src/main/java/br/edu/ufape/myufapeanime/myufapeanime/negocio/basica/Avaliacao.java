@@ -1,7 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.basica;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,16 +18,17 @@ public class Avaliacao {
     private Double nota;
     private String comentario;
 
-    @Column(name = "usuario_id")
-    private Long usuarioAvaliador;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuarioAvaliador;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "anime_id")
     private Anime anime;
 
     public Avaliacao() {}
 
-    public Avaliacao(Double nota, String comentario, Long usuarioAvaliador) {
+    public Avaliacao(Double nota, String comentario, Usuario usuarioAvaliador) {
         this.nota = nota;
         this.comentario = comentario;
         this.usuarioAvaliador = usuarioAvaliador;
@@ -57,11 +58,11 @@ public class Avaliacao {
         this.comentario = comentario;
     }
 
-    public Long getUsuarioAvaliador() {
+    public Usuario getUsuarioAvaliador() {
         return usuarioAvaliador;
     }
 
-    public void setUsuarioAvaliador(Long usuarioAvaliador) {
+    public void setUsuarioAvaliador(Usuario usuarioAvaliador) {
         this.usuarioAvaliador = usuarioAvaliador;
     }
 

@@ -1,21 +1,31 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada;
 
 import java.util.List;
-
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroAdm;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroAnime;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroAvaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroUsuario;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 
 @Service
 public class GerenciadorAnimes {
     
     @Autowired
     private CadastroUsuario cadastroUsuario;
+    @Autowired
+    private CadastroAnime cadastroAnime;
+    @Autowired
+    private CadastroAvaliacao cadastroAvaliacao;
+    @Autowired
+    private CadastroAdm cadastroAdm;
 
     /**********IMPLEMENTAÇÃO DE CADASTRO USUARIO ********/
     //salvar
@@ -57,5 +67,16 @@ public class GerenciadorAnimes {
     //lista quero assistir
     public List<Anime> getQueroAssistirUsuario(Long usuarioId) throws UsuarioInexistenteException {
         return cadastroUsuario.getQueroAssistir(usuarioId);
-    } 
+    }
+
+    /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/
+    //buscar anime com avaliações
+    public AnimeDTO buscarAnimeComAvaliacoes(Long id) throws AnimeInexistenteException {
+        return cadastroAnime.buscarAnimeComAvaliacoes(id);
+    }
+
+    /**********IMPLEMENTAÇÃO DE CADASTRO AVALIAÇÃO ********/
+
+    /**********IMPLEMENTAÇÃO DE CADASTRO ADM ********/
+
 }

@@ -1,7 +1,10 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.basica;
 
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,12 +23,11 @@ public class Anime {
     private Double pontuacao;
     private Long avaliacoesTotais;
     private Double notaMedia;
-    @OneToMany(mappedBy = "anime")
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Avaliacao> avaliacoes;
 
     public Anime() {}
 
-    //Fazer também um metodo que calcula a nota média do anime
     public Anime(String nome, String genero, int numEpisodios) {
         this.nome = nome;
         this.genero = genero;

@@ -1,11 +1,18 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NomeDoAnimeVazioException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.AnimeDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.AvaliacaoDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +49,25 @@ public class CadastroAnime {
         else {
             throw new AnimeDuplicadoException(anime.getNome());
         }
+    }
+
+    public AnimeDTO buscarAnimeComAvaliacoes(Long id) throws AnimeInexistenteException {
+        Anime anime = animeRepository.findById(id)
+                .orElseThrow(() -> new AnimeInexistenteException());
+        //fazer sem usar programação funcional
+        //quebrar em funções menores
+        List<AvaliacaoDTO> avaliacoesDTO = anime.getAvaliacoes().stream()
+                .map(avaliacao -> new AvaliacaoDTO(
+                        avaliacao.getNota(),
+                        avaliacao.getComentario(),
+                        avaliacao.getUsuarioAvaliador().getNome()))
+                .collect(Collectors.toList());
+
+        return new AnimeDTO(
+                anime.getNome(),
+                anime.getGenero(),
+                anime.getNumEpisodios(),
+                anime.getNotaMedia(),
+                avaliacoesDTO);
     }
 }
