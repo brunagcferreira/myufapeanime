@@ -25,6 +25,11 @@ public class CadastroAnime {
         if (animeRepository.existsByNomeContainingIgnoreCase(anime.getNome())) {
             throw new AnimeDuplicadoException(anime.getNome());
         }
+
+        anime.setAvaliacoes(null);
+        anime.setAvaliacoesTotais(0L);
+        anime.setNotaMedia(0.0);
+        anime.setPontuacao(0.0);
         return animeRepository.save(anime);
     }
 
