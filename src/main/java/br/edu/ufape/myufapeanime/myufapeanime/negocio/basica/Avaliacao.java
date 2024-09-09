@@ -18,19 +18,25 @@ public class Avaliacao {
     private Double nota;
     private String comentario;
 
+
     @Column(name = "usuario_id")
     private Long usuarioAvaliador;
 
     @ManyToOne
-    @JoinColumn(name = "anime_id")
-    private Anime anime;
+    private Anime animeAvaliado;
+
+    @Column(name = "anime_id")  //@JoinColumn
+    Long animeAvaliadoId;
+
+
 
     public Avaliacao() {}
 
-    public Avaliacao(Double nota, String comentario, Long usuarioAvaliador) {
+    public Avaliacao(Double nota, String comentario, Long usuarioAvaliador, Long animeAvaliadoId) {
         this.nota = nota;
         this.comentario = comentario;
         this.usuarioAvaliador = usuarioAvaliador;
+        this.animeAvaliadoId = animeAvaliadoId;
     }
 
     public Long getId() {
@@ -65,12 +71,12 @@ public class Avaliacao {
         this.usuarioAvaliador = usuarioAvaliador;
     }
 
-    public Anime getAnime() {
-        return anime;
+    public Long getAnimeAvaliado() {
+        return animeAvaliadoId;
     }
 
-    public void setAnime(Anime anime) {
-        this.anime = anime;
+    public void setAnimeAvaliado(Long animeAvaliado) {
+        this.animeAvaliadoId = animeAvaliado;
     }
 
 }

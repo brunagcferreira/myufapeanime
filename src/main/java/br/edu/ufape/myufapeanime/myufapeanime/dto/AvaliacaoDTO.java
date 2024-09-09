@@ -10,11 +10,12 @@ public class AvaliacaoDTO {
 
     public AvaliacaoDTO() {}
 
-    public AvaliacaoDTO(Double nota, String comentario, Long usuarioAvaliador, Long animeAvaliado) {
+    public AvaliacaoDTO(Long id, Double nota, String comentario, Long usuarioAvaliador, Long animeAvaliado) {
         this.nota = nota;
         this.comentario = comentario;
         this.usuarioAvaliador = usuarioAvaliador;
         this.animeAvaliado = animeAvaliado;
+        this.id = id;
     }
 
     public AvaliacaoDTO(Long id, Double nota, String comentario) {

@@ -26,7 +26,7 @@ public class CadastroAnime {
             throw new AnimeDuplicadoException(anime.getNome());
         }
 
-        anime.setAvaliacoes(null);
+ //     anime.setAvaliacoes(null);
         anime.setAvaliacoesTotais(0L);
         anime.setNotaMedia(0.0);
         anime.setPontuacao(0.0);
