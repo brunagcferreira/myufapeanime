@@ -21,9 +21,10 @@ public class Anime {
     private Double pontuacao;
     private Long avaliacoesTotais;
     private Double notaMedia;
+    /*
     @OneToMany(mappedBy = "anime")
     private List<Avaliacao> avaliacoes;
-
+*/
     public Anime() {}
 
     //Fazer também um metodo que calcula a nota média do anime
@@ -88,7 +89,7 @@ public class Anime {
     public void setNotaMedia(Double notaMedia) {
         this.notaMedia = notaMedia;
     }
-
+/*
     public List<Avaliacao> getAvaliacoes() {
         return avaliacoes;
     }
@@ -96,5 +97,6 @@ public class Anime {
     public void setAvaliacoes(List<Avaliacao> avaliacoes) {
         this.avaliacoes = avaliacoes;
     }
+*/
 
 }

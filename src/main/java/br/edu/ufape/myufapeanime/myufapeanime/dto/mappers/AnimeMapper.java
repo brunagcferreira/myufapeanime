@@ -32,7 +32,7 @@ public class AnimeMapper {
         dto.setGenero(anime.getGenero());
         dto.setNotaMedia(anime.getNotaMedia());
         dto.setNumeroEpisodios(anime.getNumeroEpisodios());
-        dto.setAvaliacoes(anime.getAvaliacoes());
+    //  dto.setAvaliacoes(anime.getAvaliacoes());
         return dto;
     }
 
@@ -43,7 +43,7 @@ public class AnimeMapper {
         anime.setGenero(dto.getGenero());
         anime.setNotaMedia(dto.getNotaMedia());
         anime.setNumEpisodios(dto.getNumeroEpisodios());
-        anime.setAvaliacoes(dto.getAvaliacoes());
+    //  anime.setAvaliacoes(dto.getAvaliacoes());
         return anime;
     }
 
