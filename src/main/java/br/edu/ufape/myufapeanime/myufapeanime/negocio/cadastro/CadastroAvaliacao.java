@@ -33,7 +33,7 @@ public class CadastroAvaliacao {
     public Avaliacao save(Avaliacao avaliacao) /* Criar um Exception*/{
 
         Avaliacao novaAvaliacao = avaliacaoRepository.save(avaliacao);
-        atualizarPontuacaoESomarMedia(novaAvaliacao.getAnimeAvaliado(), novaAvaliacao.getNota());
+        atualizarPontuacaoESomarMedia(novaAvaliacao.getAnime(), novaAvaliacao.getNota());
 
         return novaAvaliacao;
     }
@@ -41,7 +41,7 @@ public class CadastroAvaliacao {
     // Atualizar
     public Avaliacao update(Avaliacao avaliacao) /* Criar um Exception*/ {
         Avaliacao novaAvaliacao = avaliacaoRepository.save(avaliacao);
-        atualizarPontuacaoESomarMedia(novaAvaliacao.getAnimeAvaliado(), novaAvaliacao.getNota());
+        atualizarPontuacaoESomarMedia(novaAvaliacao.getAnime(), novaAvaliacao.getNota());
 
         return novaAvaliacao;
     }
@@ -51,7 +51,7 @@ public class CadastroAvaliacao {
         Avaliacao avaliacao = avaliacaoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(""));
 
-        atualizarPontuacaoESubtrairMedia(avaliacao.getAnimeAvaliado(), avaliacao.getNota());
+        atualizarPontuacaoESubtrairMedia(avaliacao.getAnime(), avaliacao.getNota());
         avaliacaoRepository.deleteById(id);
     }
 
@@ -61,11 +61,11 @@ public class CadastroAvaliacao {
     }
 
 
-    private void atualizarPontuacaoESomarMedia(Long animeId, Double novaNota) {
-
+    private void atualizarPontuacaoESomarMedia(Anime anime, Double novaNota) {
+/*
         Anime anime = animeRepository.findById(animeId)
-                .orElseThrow(() -> new EntityNotFoundException("Anime não encontrado com ID: " + animeId));
-
+             .orElseThrow(() -> new EntityNotFoundException("Anime não encontrado com ID: " + animeId));
+*/
         anime.setPontuacao(anime.getPontuacao() + novaNota);
         anime.setAvaliacoesTotais(anime.getAvaliacoesTotais() + 1);
         Double novaMedia = anime.getPontuacao() / anime.getAvaliacoesTotais();
@@ -74,10 +74,11 @@ public class CadastroAvaliacao {
         animeRepository.save(anime);
     }
 
-    private void atualizarPontuacaoESubtrairMedia(Long animeId, Double avaliacaoNota) {
-
+    private void atualizarPontuacaoESubtrairMedia(Anime anime, Double avaliacaoNota) {
+/*
         Anime anime = animeRepository.findById(animeId)
                 .orElseThrow(() -> new EntityNotFoundException("Anime não encontrado com ID: " + animeId));
+*/
 
         anime.setPontuacao(anime.getPontuacao() - avaliacaoNota);
         anime.setAvaliacoesTotais(anime.getAvaliacoesTotais() - 1);

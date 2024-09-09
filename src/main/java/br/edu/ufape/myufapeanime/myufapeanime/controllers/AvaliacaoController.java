@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
+import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +28,9 @@ public class AvaliacaoController {
 
     @Autowired
     private GerenciadorAnimes gerenciador;
+
+    @Autowired
+    private InterfaceRepositorioAnimes animeRepository;
 
 
     /*****  METODO POST Avaliacao  *****/
@@ -83,7 +88,7 @@ public class AvaliacaoController {
         avaliacao.setNota(avaliacaoDTO.getNota());
         avaliacao.setComentario(avaliacaoDTO.getComentario());
         avaliacao.setUsuarioAvaliador(avaliacaoDTO.getUsuarioAvaliador());
-        avaliacao.setAnimeAvaliado(avaliacaoDTO.getAnimeAvaliado());
+        avaliacao.setAnime(avaliacaoDTO.getAnimeAvaliado());
 
         return avaliacao;
     }
@@ -95,7 +100,8 @@ public class AvaliacaoController {
         dto.setNota(avaliacao.getNota());
         dto.setComentario(avaliacao.getComentario());
         dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
-        dto.setAnimeAvaliado(avaliacao.getAnimeAvaliado());
+        dto.setAnimeAvaliado(avaliacao.getAnime());
+
         return dto;
     }
 }

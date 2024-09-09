@@ -21,10 +21,10 @@ public class Anime {
     private Double pontuacao;
     private Long avaliacoesTotais;
     private Double notaMedia;
-    /*
+
     @OneToMany(mappedBy = "anime")
     private List<Avaliacao> avaliacoes;
-*/
+
     public Anime() {}
 
     //Fazer também um metodo que calcula a nota média do anime
