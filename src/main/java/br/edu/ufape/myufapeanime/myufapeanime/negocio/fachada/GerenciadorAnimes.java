@@ -11,6 +11,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExce
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -114,7 +115,8 @@ public class GerenciadorAnimes {
         return cadastroAvaliacao.save(avaliacao);
     }
     // Atualizar Avaliacao
-    public Avaliacao updateAvaliacao(Avaliacao novaAvaliacao, Optional<Avaliacao> antigaAvaliacao) throws AvaliacaoNotaInvalidaException  {
+    public Avaliacao updateAvaliacao(Avaliacao novaAvaliacao, Optional<Avaliacao> antigaAvaliacao)
+            throws AvaliacaoNotaInvalidaException, AvaliacaoInexistenteException {
         return cadastroAvaliacao.update(novaAvaliacao, antigaAvaliacao);
     }
     // Apagar avaliacao por Id

@@ -8,6 +8,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
@@ -54,7 +55,8 @@ public class AvaliacaoController {
     /*****  METODOS PUT *****/
     //update usuário existente
     @PutMapping("update/{id}")
-    public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoComIdDTO avaliacaoDTO) throws AnimeInexistenteException {
+    public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoComIdDTO avaliacaoDTO)
+            throws AnimeInexistenteException {
         try {
             Optional<Avaliacao> antigaAvaliacao = gerenciador.findByIdAvaliacao(id);
             Avaliacao avaliacao = convertToEntity(avaliacaoDTO);
@@ -62,7 +64,7 @@ public class AvaliacaoController {
             Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao, antigaAvaliacao);
             AvaliacaoComIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
             return ResponseEntity.ok(avaliacaoAtualizadoDTO);
-        } catch (AvaliacaoNotaInvalidaException e){
+        } catch (AvaliacaoNotaInvalidaException | AvaliacaoInexistenteException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 

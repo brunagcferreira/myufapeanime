@@ -2,6 +2,7 @@ package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
@@ -48,11 +49,9 @@ public class CadastroAvaliacao {
         throw new AnimeInexistenteException(avaliacao.getAnime().getId());
     }
 
-
     if(avaliacaoRepository.existsAvaliacaoByAnimeAndUsuarioAvaliador(avaliacao.getAnime(),avaliacao.getUsuarioAvaliador())){
         throw new AvaliacaoDuplicadaException(avaliacao.getAnime().getId(),avaliacao.getUsuarioAvaliador());
     }
-
         Avaliacao novaAvaliacao = avaliacaoRepository.save(avaliacao);
         atualizarPontuacaoESomarMedia(novaAvaliacao.getAnime(), novaAvaliacao.getNota());
 
@@ -60,10 +59,19 @@ public class CadastroAvaliacao {
     }
 
     // Atualizar
-    public Avaliacao update(Avaliacao newAvaliacao, Optional<Avaliacao> antigaAvaliacao) throws AvaliacaoNotaInvalidaException {
+    public Avaliacao update(Avaliacao newAvaliacao, Optional<Avaliacao> antigaAvaliacao)
+            throws AvaliacaoNotaInvalidaException, AvaliacaoInexistenteException{
+
+        if(!avaliacaoRepository.existsById(newAvaliacao.getId())){
+            throw new AvaliacaoInexistenteException(newAvaliacao.getId());
+        }
+
         if(newAvaliacao.getNota() > 5 ||newAvaliacao.getNota() < 0){
             throw new AvaliacaoNotaInvalidaException(newAvaliacao.getNota());
         }
+        newAvaliacao.setAnime(antigaAvaliacao.get().getAnime());
+        newAvaliacao.setUsuarioAvaliador(antigaAvaliacao.get().getUsuarioAvaliador());
+
         double notaAntiga = antigaAvaliacao.get().getNota();
         Avaliacao novaAvaliacao = avaliacaoRepository.save(newAvaliacao);
         ManterPontuacaoESomarMedia(notaAntiga, novaAvaliacao.getAnime(), novaAvaliacao.getNota());
