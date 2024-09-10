@@ -48,11 +48,11 @@ public class CadastroAvaliacao {
         throw new AnimeInexistenteException(avaliacao.getAnime().getId());
     }
 
-/*
-    if(avaliacaoRepository.findByUsuarioAvaliador(avaliacao.getUsuarioAvaliador()).equals(avaliacao.getId())){
+
+    if(avaliacaoRepository.existsAvaliacaoByAnimeAndUsuarioAvaliador(avaliacao.getAnime(),avaliacao.getUsuarioAvaliador())){
         throw new AvaliacaoDuplicadaException(avaliacao.getAnime().getId(),avaliacao.getUsuarioAvaliador());
     }
-*/
+
         Avaliacao novaAvaliacao = avaliacaoRepository.save(avaliacao);
         atualizarPontuacaoESomarMedia(novaAvaliacao.getAnime(), novaAvaliacao.getNota());
 

@@ -13,7 +13,7 @@ public interface InterfaceRepositorioAvaliacoes extends JpaRepository<Avaliacao,
 
 
 
-
+    boolean existsAvaliacaoByAnimeAndUsuarioAvaliador(Anime anime, long usuarioAvaliador);
     Long findByUsuarioAvaliador(Long id);
     Long findByAnimeId(Long id);
 
