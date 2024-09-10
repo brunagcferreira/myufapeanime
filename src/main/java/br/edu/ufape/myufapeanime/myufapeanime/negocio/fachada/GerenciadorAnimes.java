@@ -120,7 +120,7 @@ public class GerenciadorAnimes {
         return cadastroAvaliacao.update(novaAvaliacao, antigaAvaliacao);
     }
     // Apagar avaliacao por Id
-    public void deleteAvaliacao(Long id) /* Criar um Exception */ {
+    public void deleteAvaliacao(Long id) throws AvaliacaoInexistenteException {
         cadastroAvaliacao.deleteAvaliacao(id);
     }
 

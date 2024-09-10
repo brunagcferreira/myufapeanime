@@ -80,7 +80,11 @@ public class CadastroAvaliacao {
     }
 
     // Deletar
-    public void deleteAvaliacao(Long id)  /* Criar um Exception*/ {
+    public void deleteAvaliacao(Long id) throws AvaliacaoInexistenteException {
+        if(!avaliacaoRepository.existsById(id)){
+            throw new AvaliacaoInexistenteException(id);
+        }
+
         Avaliacao avaliacao = avaliacaoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(""));
 

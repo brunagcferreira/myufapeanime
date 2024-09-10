@@ -44,9 +44,9 @@ public class AvaliacaoController {
             Avaliacao novaAvaliacao = gerenciador.saveAvaliacao(avaliacao);
             AvaliacaoComIdDTO novaAvaliacaoDTO = convertToComIdDTO(novaAvaliacao);
             return ResponseEntity.status(HttpStatus.CREATED).body(novaAvaliacaoDTO);
-        } catch (AvaliacaoNotaInvalidaException | UsuarioInexistenteException e ){
+        } catch (AvaliacaoNotaInvalidaException | UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (AnimeInexistenteException | AvaliacaoDuplicadaException e){
+        } catch (AnimeInexistenteException | AvaliacaoDuplicadaException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
 
@@ -64,7 +64,7 @@ public class AvaliacaoController {
             Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao, antigaAvaliacao);
             AvaliacaoComIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
             return ResponseEntity.ok(avaliacaoAtualizadoDTO);
-        } catch (AvaliacaoNotaInvalidaException | AvaliacaoInexistenteException e){
+        } catch (AvaliacaoNotaInvalidaException | AvaliacaoInexistenteException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
@@ -74,10 +74,13 @@ public class AvaliacaoController {
     /*****  METODO DELETE Avaliacao *****/
     //apagar usuario por id
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Object> deleteAvaliacao(@PathVariable Long id) {
-
-        gerenciador.deleteAvaliacao(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Object> deleteAvaliacao(@PathVariable Long id) throws AvaliacaoInexistenteException {
+        try {
+            gerenciador.deleteAvaliacao(id);
+            return ResponseEntity.noContent().build();
+        } catch (AvaliacaoInexistenteException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
 
     }
 
@@ -95,7 +98,7 @@ public class AvaliacaoController {
 
     //lista uma Avaliação
     @GetMapping("/list/{id}")
-    public ResponseEntity<List<AvaliacaoDTO>> findById(@PathVariable Long id)  {
+    public ResponseEntity<List<AvaliacaoDTO>> findById(@PathVariable Long id) {
         List<Avaliacao> avaliacao = gerenciador.findAllAvaliacao();
         List<AvaliacaoDTO> result = avaliacao.stream()
                 .map(this::convertToDTO)
