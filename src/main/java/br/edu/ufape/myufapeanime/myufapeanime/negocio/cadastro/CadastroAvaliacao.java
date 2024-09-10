@@ -1,19 +1,12 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
-import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAvaliacoes;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,9 +32,10 @@ public class CadastroAvaliacao {
     }
 
     // Atualizar
-    public Avaliacao update(Avaliacao avaliacao) /* Criar um Exception*/ {
-        Avaliacao novaAvaliacao = avaliacaoRepository.save(avaliacao);
-        atualizarPontuacaoESomarMedia(novaAvaliacao.getAnime(), novaAvaliacao.getNota());
+    public Avaliacao update(Avaliacao newAvaliacao, Optional<Avaliacao> antigaAvaliacao) /* Criar um Exception*/ {
+        double notaAntiga = antigaAvaliacao.get().getNota();
+        Avaliacao novaAvaliacao = avaliacaoRepository.save(newAvaliacao);
+        ManterPontuacaoESomarMedia(notaAntiga, novaAvaliacao.getAnime(), novaAvaliacao.getNota());
 
         return novaAvaliacao;
     }
@@ -60,12 +54,11 @@ public class CadastroAvaliacao {
         return avaliacaoRepository.findAll();
     }
 
-
+    // Procurar uma avaliação
+    public Optional<Avaliacao> findByIdAvaliacao(Long id)  {
+        return avaliacaoRepository.findById(id);
+    }
     private void atualizarPontuacaoESomarMedia(Anime anime, Double novaNota) {
-/*
-        Anime anime = animeRepository.findById(animeId)
-             .orElseThrow(() -> new EntityNotFoundException("Anime não encontrado com ID: " + animeId));
-*/
         anime.setPontuacao(anime.getPontuacao() + novaNota);
         anime.setAvaliacoesTotais(anime.getAvaliacoesTotais() + 1);
         Double novaMedia = anime.getPontuacao() / anime.getAvaliacoesTotais();
@@ -75,18 +68,23 @@ public class CadastroAvaliacao {
     }
 
     private void atualizarPontuacaoESubtrairMedia(Anime anime, Double avaliacaoNota) {
-/*
-        Anime anime = animeRepository.findById(animeId)
-                .orElseThrow(() -> new EntityNotFoundException("Anime não encontrado com ID: " + animeId));
-*/
 
         anime.setPontuacao(anime.getPontuacao() - avaliacaoNota);
         anime.setAvaliacoesTotais(anime.getAvaliacoesTotais() - 1);
-        if(anime.getPontuacao() <= 0.0){
+        if(anime.getPontuacao() == 0.0){
             anime.setNotaMedia(0.0);
             animeRepository.save(anime);
             return;
         }
+        Double novaMedia = anime.getPontuacao() / anime.getAvaliacoesTotais();
+        anime.setNotaMedia(novaMedia);
+
+        animeRepository.save(anime);
+    }
+
+    private void ManterPontuacaoESomarMedia(Double antigaNota, Anime anime, Double novaNota) {
+        anime.setPontuacao(anime.getPontuacao() + novaNota);
+        anime.setPontuacao(anime.getPontuacao() - antigaNota);
         Double novaMedia = anime.getPontuacao() / anime.getAvaliacoesTotais();
         anime.setNotaMedia(novaMedia);
 

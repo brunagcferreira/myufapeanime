@@ -111,18 +111,24 @@ public class GerenciadorAnimes {
         return cadastroAvaliacao.save(avaliacao);
     }
     // Atualizar Avaliacao
-    public Avaliacao updateAvaliacao(Avaliacao avaliacao)/* Criar um Exception */ {
-        return cadastroAvaliacao.update(avaliacao);
+    public Avaliacao updateAvaliacao(Avaliacao novaAvaliacao, Optional<Avaliacao> antigaAvaliacao)/* Criar um Exception */ {
+        return cadastroAvaliacao.update(novaAvaliacao, antigaAvaliacao);
     }
     // Apagar avaliacao por Id
     public void deleteAvaliacao(Long id) /* Criar um Exception */ {
         cadastroAvaliacao.deleteAvaliacao(id);
     }
 
+    //buscar por id
+    public Optional<Avaliacao> findByIdAvaliacao(Long id)  {
+        return cadastroAvaliacao.findByIdAvaliacao(id);
+    }
+
     // listar todas as Avaliações
     public List<Avaliacao> findAllAvaliacao(){
         return cadastroAvaliacao.findAll();
     }
+
 
     /*
 
