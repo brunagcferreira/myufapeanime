@@ -107,6 +107,7 @@ public class GerenciadorAnimes {
     /**********IMPLEMENTAÇÃO DE CADASTRO Avalicao ********/
     // Salvar Avaliacao
     public Avaliacao saveAvaliacao(Avaliacao avaliacao) /* Criar um Exception */{
+        // colocar DTO
         return cadastroAvaliacao.save(avaliacao);
     }
     // Atualizar Avaliacao
