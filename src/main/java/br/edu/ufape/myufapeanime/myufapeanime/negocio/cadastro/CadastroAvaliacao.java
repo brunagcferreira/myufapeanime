@@ -66,7 +66,7 @@ public class CadastroAvaliacao {
             throw new AvaliacaoInexistenteException(newAvaliacao.getId());
         }
 
-        if(newAvaliacao.getNota() > 5 ||newAvaliacao.getNota() < 0){
+        if(newAvaliacao.getNota() > 5 || newAvaliacao.getNota() < 0){
             throw new AvaliacaoNotaInvalidaException(newAvaliacao.getNota());
         }
         newAvaliacao.setAnime(antigaAvaliacao.get().getAnime());
