@@ -5,7 +5,10 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import org.springframework.http.HttpStatus;
@@ -34,27 +37,36 @@ public class AvaliacaoController {
 
     /*****  METODO POST Avaliacao  *****/
     @PostMapping("/cadastrar")
-    public ResponseEntity<Object> cadastrarAvaliacao(@RequestBody AvaliacaoComIdDTO avaliacaoComIdDTO) throws AnimeInexistenteException {
-
+    public ResponseEntity<Object> cadastrarAvaliacao(@RequestBody AvaliacaoComIdDTO avaliacaoComIdDTO) {
+        try {
             Avaliacao avaliacao = convertToEntity(avaliacaoComIdDTO);
             Avaliacao novaAvaliacao = gerenciador.saveAvaliacao(avaliacao);
-
             AvaliacaoComIdDTO novaAvaliacaoDTO = convertToComIdDTO(novaAvaliacao);
             return ResponseEntity.status(HttpStatus.CREATED).body(novaAvaliacaoDTO);
+        } catch (AvaliacaoNotaInvalidaException | UsuarioInexistenteException e ){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (AnimeInexistenteException | AvaliacaoDuplicadaException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
+
+    }
 
     /*****  METODOS PUT *****/
     //update usuário existente
     @PutMapping("update/{id}")
     public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoComIdDTO avaliacaoDTO) throws AnimeInexistenteException {
+        try {
             Optional<Avaliacao> antigaAvaliacao = gerenciador.findByIdAvaliacao(id);
             Avaliacao avaliacao = convertToEntity(avaliacaoDTO);
             avaliacao.setId(id);
             Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao, antigaAvaliacao);
             AvaliacaoComIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
+            return ResponseEntity.ok(avaliacaoAtualizadoDTO);
+        } catch (AvaliacaoNotaInvalidaException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
 
 
-        return ResponseEntity.ok(avaliacaoAtualizadoDTO);
     }
 
     /*****  METODO DELETE Avaliacao *****/
