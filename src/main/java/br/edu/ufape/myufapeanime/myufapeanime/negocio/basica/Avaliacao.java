@@ -18,25 +18,20 @@ public class Avaliacao {
     private Double nota;
     private String comentario;
 
+    @ManyToOne
+    @JoinColumn(name = "anime_id")  // Define a chave estrangeira no banco
+    private Anime anime;  // Relacionamento correto com Anime
 
     @Column(name = "usuario_id")
     private Long usuarioAvaliador;
 
-    @ManyToOne
-    private Anime animeAvaliado;
-
-    @Column(name = "anime_id")  //@JoinColumn
-    Long animeAvaliadoId;
-
-
-
     public Avaliacao() {}
 
-    public Avaliacao(Double nota, String comentario, Long usuarioAvaliador, Long animeAvaliadoId) {
+    public Avaliacao(Double nota, String comentario, Long usuarioAvaliador, Anime anime) {
         this.nota = nota;
         this.comentario = comentario;
         this.usuarioAvaliador = usuarioAvaliador;
-        this.animeAvaliadoId = animeAvaliadoId;
+        this.anime = anime;  // Passa a entidade Anime diretamente
     }
 
     public Long getId() {
@@ -71,12 +66,12 @@ public class Avaliacao {
         this.usuarioAvaliador = usuarioAvaliador;
     }
 
-    public Long getAnimeAvaliado() {
-        return animeAvaliadoId;
+    public Anime getAnime() {
+        return anime;  // Retorna o objeto Anime
     }
 
-    public void setAnimeAvaliado(Long animeAvaliado) {
-        this.animeAvaliadoId = animeAvaliado;
+    public void setAnime(Anime anime) {
+        this.anime = anime;  // Define o objeto Anime
     }
 
 }

@@ -1,30 +1,24 @@
 package br.edu.ufape.myufapeanime.myufapeanime.dto;
 
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;  // Importa a classe Anime
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 
-public class AvaliacaoDTO {
+public class AvaliacaoComIdDTO {
+
 
     private Long id;
     private Double nota;
     private String comentario;
     private Long usuarioAvaliador;
-    private Anime animeAvaliado;
+    private Long AnimeAvaliado;
 
 
-    public AvaliacaoDTO() {}
+    public AvaliacaoComIdDTO () {}
 
-    public AvaliacaoDTO(Long id, Double nota, String comentario, Long usuarioAvaliador, Anime animeAvaliado) {
-        this.id = id;
+    public AvaliacaoComIdDTO(Double nota, String comentario, Long usuarioAvaliador, Long AnimeAvaliado) {
         this.nota = nota;
         this.comentario = comentario;
         this.usuarioAvaliador = usuarioAvaliador;
-        this.animeAvaliado = animeAvaliado;
-    }
-
-    public AvaliacaoDTO(Long id, Double nota, String comentario) {
-        this.id = id;
-        this.nota = nota;
-        this.comentario = comentario;
+        this.AnimeAvaliado = AnimeAvaliado;
     }
 
     public Long getId() {
@@ -59,12 +53,11 @@ public class AvaliacaoDTO {
         this.usuarioAvaliador = usuarioAvaliador;
     }
 
-    public Anime getAnimeAvaliado() {
-        return animeAvaliado;  // Retorna o objeto Anime
+    public Long getAnimeAvaliado() {
+        return AnimeAvaliado;
     }
 
-    public void setAnimeAvaliado(Anime animeAvaliado) {
-        this.animeAvaliado = animeAvaliado;  // Define o objeto Anime
+    public void setAnimeAvaliado(Long AnimeAvaliado) {
+        this.AnimeAvaliado = AnimeAvaliado;
     }
-
 }
