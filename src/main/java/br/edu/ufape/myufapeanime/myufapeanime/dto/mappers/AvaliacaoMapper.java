@@ -4,19 +4,16 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.AvaliacaoComIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.AvaliacaoDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
+import org.springframework.beans.factory.annotation.Autowired;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
+import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 
 public class AvaliacaoMapper {
 
-    //converte AvaliacaoComIdDTO em Avaliacao
-    public static Avaliacao convertToEntity(AvaliacaoComIdDTO avaliacaoDTO) throws AnimeInexistenteException {
-        Avaliacao avaliacao = new Avaliacao();
-        avaliacao.setNota(avaliacaoDTO.getNota());
-        avaliacao.setComentario(avaliacaoDTO.getComentario());
-        avaliacao.setUsuarioAvaliador(avaliacaoDTO.getUsuarioAvaliador());
-        avaliacao.setAnime(gerenciador.findByIdAnime(avaliacaoDTO.getAnimeAvaliado()));
+    @Autowired
+    private GerenciadorAnimes gerenciador;
 
-        return avaliacao;
-    }
 
     //converte Avaliacao para AvaliacaoComIdDTO
     public static AvaliacaoComIdDTO convertToComIdDTO(Avaliacao avaliacao) {
@@ -37,10 +34,9 @@ public class AvaliacaoMapper {
         dto.setNota(avaliacao.getNota());
         dto.setComentario(avaliacao.getComentario());
         dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
-        dto.setAnimeAvaliado(avaliacao.getAnime());
+        dto.setAnimeAvaliado(avaliacao.getAnime());                             // Objeto Anime
 
         return dto;
     }
-
-
+    
 }

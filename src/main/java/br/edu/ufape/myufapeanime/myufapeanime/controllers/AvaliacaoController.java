@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper.convertToEntity;
-
 @RestController
 @RequestMapping("/avaliacao")
 public class AvaliacaoController {
@@ -126,6 +124,15 @@ public class AvaliacaoController {
         return AvaliacaoMapper.convertToDTO(avaliacao);
     }
 
+    private Avaliacao convertToEntity(AvaliacaoComIdDTO avaliacaoDTO) throws AnimeInexistenteException {
+        Avaliacao avaliacao = new Avaliacao();
+        avaliacao.setNota(avaliacaoDTO.getNota());
+        avaliacao.setComentario(avaliacaoDTO.getComentario());
+        avaliacao.setUsuarioAvaliador(avaliacaoDTO.getUsuarioAvaliador());
+        avaliacao.setAnime(gerenciador.findByIdAnime(avaliacaoDTO.getAnimeAvaliado()));
+
+        return avaliacao;
+    }
 }
 
 
