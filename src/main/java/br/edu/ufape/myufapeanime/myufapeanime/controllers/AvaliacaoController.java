@@ -1,29 +1,26 @@
 package br.edu.ufape.myufapeanime.myufapeanime.controllers;
 
-import br.edu.ufape.myufapeanime.myufapeanime.dto.*;
-import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.AvaliacaoComIdDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.AvaliacaoDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
+import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
-import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
-
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper.convertToEntity;
 
 @RestController
 @RequestMapping("/avaliacao")
@@ -121,40 +118,14 @@ public class AvaliacaoController {
     }
 
 
-    //converte AvaliacaoComIdDTO em Avaliacao
-    private Avaliacao convertToEntity(AvaliacaoComIdDTO avaliacaoDTO) throws AnimeInexistenteException {
-        Avaliacao avaliacao = new Avaliacao();
-        avaliacao.setNota(avaliacaoDTO.getNota());
-        avaliacao.setComentario(avaliacaoDTO.getComentario());
-        avaliacao.setUsuarioAvaliador(avaliacaoDTO.getUsuarioAvaliador());
-        avaliacao.setAnime(gerenciador.findByIdAnime(avaliacaoDTO.getAnimeAvaliado()));
-
-        return avaliacao;
-    }
-
-    //converte Avaliacao para AvaliacaoComIdDTO
     private AvaliacaoComIdDTO convertToComIdDTO(Avaliacao avaliacao) {
-        AvaliacaoComIdDTO dto = new AvaliacaoComIdDTO();
-        dto.setId(avaliacao.getId());
-        dto.setNota(avaliacao.getNota());
-        dto.setComentario(avaliacao.getComentario());
-        dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
-        dto.setAnimeAvaliado(avaliacao.getAnime().getId());
-
-        return dto;
+        return AvaliacaoMapper.convertToComIdDTO(avaliacao);
     }
 
-    //converte Avaliacao AvaliacaoDTO
     private AvaliacaoDTO convertToDTO(Avaliacao avaliacao) {
-        AvaliacaoDTO dto = new AvaliacaoDTO();
-        dto.setId(avaliacao.getId());
-        dto.setNota(avaliacao.getNota());
-        dto.setComentario(avaliacao.getComentario());
-        dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
-        dto.setAnimeAvaliado(avaliacao.getAnime());
-
-        return dto;
+        return AvaliacaoMapper.convertToDTO(avaliacao);
     }
+
 }
 
 
