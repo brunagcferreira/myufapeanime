@@ -98,10 +98,15 @@ public class Anime {
     }
 
     private void calcularNotaMedia() {
-        if (avaliacoesTotais == 0){
+        if (avaliacoesTotais == 0) {
             notaMedia = 0.0;
             return;
         }
         notaMedia = pontuacao / avaliacoesTotais;
     }
+
+    public List<Avaliacao> getAvaliacoes() {
+        return avaliacoes;
+    }
+}
 
