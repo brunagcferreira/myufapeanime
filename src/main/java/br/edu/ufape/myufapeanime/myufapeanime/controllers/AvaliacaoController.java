@@ -57,7 +57,7 @@ public class AvaliacaoController {
             Avaliacao avaliacao = convertToEntity(avaliacaoDTO);
             avaliacao.setId(id);
             Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao);
-            AvaliacaoComIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
+            AvaliacaoPeloIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
             return ResponseEntity.ok(avaliacaoAtualizadoDTO);
         } catch (AvaliacaoNotaInvalidaException | AvaliacaoInexistenteException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
