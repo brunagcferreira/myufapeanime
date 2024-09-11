@@ -1,6 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.basica;
 
 import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +26,8 @@ public class Anime {
     @OneToMany(mappedBy = "anime")
     private List<Avaliacao> avaliacoes;
 
-    public Anime() {}
+    public Anime() {
+    }
 
     //Fazer também um metodo que calcula a nota média do anime
     public Anime(String nome, String genero, int numEpisodios) {
@@ -89,7 +91,7 @@ public class Anime {
     public void setNotaMedia(Double notaMedia) {
         this.notaMedia = notaMedia;
     }
-/*
+
     public List<Avaliacao> getAvaliacoes() {
         return avaliacoes;
     }
@@ -97,6 +99,4 @@ public class Anime {
     public void setAvaliacoes(List<Avaliacao> avaliacoes) {
         this.avaliacoes = avaliacoes;
     }
-*/
-
 }

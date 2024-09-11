@@ -1,7 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.controllers;
 
-import br.edu.ufape.myufapeanime.myufapeanime.dto.AvaliacaoComIdDTO;
-import br.edu.ufape.myufapeanime.myufapeanime.dto.AvaliacaoDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
@@ -33,11 +33,11 @@ public class AvaliacaoController {
 
     /*****  METODO POST Avaliacao  *****/
     @PostMapping("/cadastrar")
-    public ResponseEntity<Object> cadastrarAvaliacao(@RequestBody AvaliacaoComIdDTO avaliacaoComIdDTO) {
+    public ResponseEntity<Object> cadastrarAvaliacao(@RequestBody AvaliacaoPeloIdDTO avaliacaoPeloIdDTO) {
         try {
-            Avaliacao avaliacao = convertToEntity(avaliacaoComIdDTO);
+            Avaliacao avaliacao = convertToEntity(avaliacaoPeloIdDTO);
             Avaliacao novaAvaliacao = gerenciador.saveAvaliacao(avaliacao);
-            AvaliacaoComIdDTO novaAvaliacaoDTO = convertToComIdDTO(novaAvaliacao);
+            AvaliacaoPeloIdDTO novaAvaliacaoDTO = convertToComIdDTO(novaAvaliacao);
             return ResponseEntity.status(HttpStatus.CREATED).body(novaAvaliacaoDTO);
         } catch (AvaliacaoNotaInvalidaException | UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -50,14 +50,14 @@ public class AvaliacaoController {
     /*****  METODOS PUT *****/
     //update usuário existente
     @PutMapping("update/{id}")
-    public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoComIdDTO avaliacaoDTO)
+    public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoPeloIdDTO avaliacaoDTO)
             throws AnimeInexistenteException {
         try {
             Optional<Avaliacao> antigaAvaliacao = gerenciador.findByIdAvaliacao(id);
             Avaliacao avaliacao = convertToEntity(avaliacaoDTO);
             avaliacao.setId(id);
             Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao, antigaAvaliacao);
-            AvaliacaoComIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
+            AvaliacaoPeloIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
             return ResponseEntity.ok(avaliacaoAtualizadoDTO);
         } catch (AvaliacaoNotaInvalidaException | AvaliacaoInexistenteException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -106,17 +106,17 @@ public class AvaliacaoController {
 
     //listar todas as Avaliações de um anime específico
     @GetMapping("/list/anime/{id}")
-    public ResponseEntity<List<AvaliacaoComIdDTO>> findAll(@PathVariable Long id) {
+    public ResponseEntity<List<AvaliacaoPeloIdDTO>> findAll(@PathVariable Long id) {
         List<Avaliacao> avaliacao = gerenciador.findAllAvaliacao();
-        List<AvaliacaoComIdDTO> result = avaliacao.stream()
+        List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
                 .map(this::convertToComIdDTO)
-                .filter(AvaliacaoComIdDTO -> AvaliacaoComIdDTO.getAnimeAvaliado().equals(id))
+                .filter(AvaliacaoPeloIdDTO -> AvaliacaoPeloIdDTO.getAnimeAvaliado().equals(id))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
 
 
-    private AvaliacaoComIdDTO convertToComIdDTO(Avaliacao avaliacao) {
+    private AvaliacaoPeloIdDTO convertToComIdDTO(Avaliacao avaliacao) {
         return AvaliacaoMapper.convertToComIdDTO(avaliacao);
     }
 
@@ -124,7 +124,7 @@ public class AvaliacaoController {
         return AvaliacaoMapper.convertToDTO(avaliacao);
     }
 
-    private Avaliacao convertToEntity(AvaliacaoComIdDTO avaliacaoDTO) throws AnimeInexistenteException {
+    private Avaliacao convertToEntity(AvaliacaoPeloIdDTO avaliacaoDTO) throws AnimeInexistenteException {
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setNota(avaliacaoDTO.getNota());
         avaliacao.setComentario(avaliacaoDTO.getComentario());

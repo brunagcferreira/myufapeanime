@@ -1,4 +1,4 @@
-package br.edu.ufape.myufapeanime.myufapeanime.dto;
+package br.edu.ufape.myufapeanime.myufapeanime.dto.anime;
 
 
 public class AnimeDTO {

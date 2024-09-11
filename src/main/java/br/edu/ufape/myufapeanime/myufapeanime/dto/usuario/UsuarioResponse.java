@@ -1,4 +1,4 @@
-package br.edu.ufape.myufapeanime.myufapeanime.dto;
+package br.edu.ufape.myufapeanime.myufapeanime.dto.usuario;
 
 public class UsuarioResponse {
     private String mensagem;

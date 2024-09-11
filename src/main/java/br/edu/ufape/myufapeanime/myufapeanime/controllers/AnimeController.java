@@ -1,7 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.controllers;
 
-import br.edu.ufape.myufapeanime.myufapeanime.dto.AnimeComAvaliacaoDTO;
-import br.edu.ufape.myufapeanime.myufapeanime.dto.AnimeDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeComAvaliacaoDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
