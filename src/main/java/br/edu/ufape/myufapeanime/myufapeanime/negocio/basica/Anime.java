@@ -1,5 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.basica;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -102,7 +104,11 @@ public class Anime {
             notaMedia = 0.0;
             return;
         }
-        notaMedia = pontuacao / avaliacoesTotais;
+
+        BigDecimal resultado = new BigDecimal(pontuacao / avaliacoesTotais);
+        resultado = resultado.setScale(2, RoundingMode.HALF_UP); // Limita para 2 casas decimais
+        
+        notaMedia = resultado.doubleValue();
     }
 
     public List<Avaliacao> getAvaliacoes() {

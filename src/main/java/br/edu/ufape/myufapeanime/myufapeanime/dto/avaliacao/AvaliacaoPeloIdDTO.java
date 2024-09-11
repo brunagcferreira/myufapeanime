@@ -12,11 +12,11 @@ public class AvaliacaoPeloIdDTO {
 
     public AvaliacaoPeloIdDTO() {}
 
-    public AvaliacaoPeloIdDTO(Double nota, String comentario, Long usuarioAvaliador, Long AnimeAvaliado) {
+    public AvaliacaoPeloIdDTO(Double nota, String comentario, Long usuarioAvaliador, Long animeAvaliado) {
         this.nota = nota;
         this.comentario = comentario;
         this.usuarioAvaliador = usuarioAvaliador;
-        this.AnimeAvaliado = AnimeAvaliado;
+        this.AnimeAvaliado = animeAvaliado;
     }
 
     public Long getId() {

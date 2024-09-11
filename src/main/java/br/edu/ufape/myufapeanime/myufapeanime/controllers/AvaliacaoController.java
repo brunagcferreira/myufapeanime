@@ -44,7 +44,6 @@ public class AvaliacaoController {
         } catch (AnimeInexistenteException | AvaliacaoDuplicadaException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
-
     }
 
     /*****  METODOS PUT *****/
