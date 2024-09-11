@@ -1,7 +1,7 @@
 -- Inserir registros na tabela Anime
-INSERT INTO tb_animes(nome, genero, NUM_EPISODIOS, NOTA_MEDIA, PONTUACAO, AVALIACOES_TOTAIS) VALUES ('Naruto', 'Acao', 220, 0, 0,0);
-INSERT INTO tb_animes(nome, genero, NUM_EPISODIOS, NOTA_MEDIA, PONTUACAO, AVALIACOES_TOTAIS) VALUES('One piece', 'Aventura', 1300, 0, 0,0);
-INSERT INTO tb_animes(nome, genero, NUM_EPISODIOS, NOTA_MEDIA, PONTUACAO, AVALIACOES_TOTAIS) VALUES('Attack on titan', 'Acao', 75, 0, 0,0);
+INSERT INTO tb_animes(nome, genero, NUM_EPISODIOS, NOTA_MEDIA, PONTUACAO, AVALIACOES_TOTAIS) VALUES ('Naruto', 'Acao', 220, 4.5, 4.5,1);
+INSERT INTO tb_animes(nome, genero, NUM_EPISODIOS, NOTA_MEDIA, PONTUACAO, AVALIACOES_TOTAIS) VALUES('One piece', 'Aventura', 1300, 5.0, 5.0,1);
+INSERT INTO tb_animes(nome, genero, NUM_EPISODIOS, NOTA_MEDIA, PONTUACAO, AVALIACOES_TOTAIS) VALUES('Attack on titan', 'Acao', 75, 4.0, 4.0,1);
 
 -- Inserir registros na tabela Usuario
 INSERT INTO tb_usuarios (nome, email, DTYPE) VALUES ('Carlos Souza', 'carlos.souza@example.com', 'Usuario');
