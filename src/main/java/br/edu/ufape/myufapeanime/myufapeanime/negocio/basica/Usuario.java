@@ -103,5 +103,8 @@ public class Usuario {
         this.queroAssistir = queroAssistir;
     }
 
-    
+
+    public Usuario map(Object convertToDTO) {
+        return null;
+    }
 }

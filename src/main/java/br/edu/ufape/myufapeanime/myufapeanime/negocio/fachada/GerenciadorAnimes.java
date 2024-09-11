@@ -13,6 +13,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExce
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
+import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
@@ -36,7 +37,7 @@ public class GerenciadorAnimes {
     /**********IMPLEMENTAÇÃO DE CADASTRO USUARIO ********/
     //salvar
     public Usuario saveUsuario(Usuario usuario) throws UsuarioDuplicadoException {
-        return cadastroUsuario.save(usuario);
+        return cadastroUsuario.create(usuario);
     }
     //atualizar
     public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException {
@@ -46,6 +47,7 @@ public class GerenciadorAnimes {
     public void deleteUsuarioById(Long id) throws UsuarioInexistenteException {
         cadastroUsuario.deleteById(id);
     }
+
     //apagar
     public void deleteUsuario(Usuario usuario) throws UsuarioInexistenteException {
         cadastroUsuario.delete(usuario);
@@ -55,7 +57,8 @@ public class GerenciadorAnimes {
         return cadastroUsuario.findAll();
     }
     //buscar por id(pode retornar null)
-    public Optional<Usuario> findByIdUsuario(Long id) {
+    //nao retorna mais null, retorna exception
+    public Usuario findByIdUsuario(Long id) throws UsuarioInexistenteException {
         return cadastroUsuario.findById(id);
     }
 
@@ -80,27 +83,28 @@ public class GerenciadorAnimes {
     /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/
     //salvar
     public Anime cadastrarAnime(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
-        return cadastroAnime.cadastrarAnime(anime);
+        return cadastroAnime.create(anime);
     }
 
     //listar todos
     public List<Anime> listarAnimes() {
-        return cadastroAnime.listarAnimes();
+        return cadastroAnime.findAll();
     }
 
     //buscar por id
     public Anime findByIdAnime(Long id) throws AnimeInexistenteException {
-        return cadastroAnime.findByIdAnime(id);
+        return cadastroAnime.findById(id);
     }
 
     //atualizar
+    //tirar essa id depois
     public Anime atualizarAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
-        return cadastroAnime.atualizarAnime(id, animeAtualizado);
+        return cadastroAnime.update(animeAtualizado);
     }
 
     //deletar
     public void deletarAnime(Long id) throws AnimeInexistenteException {
-        cadastroAnime.deletarAnime(id);
+        cadastroAnime.deleteById(id);
     }
 
     public List<Anime> findByNomeAnime(String nome){
@@ -112,21 +116,22 @@ public class GerenciadorAnimes {
     public Avaliacao saveAvaliacao(Avaliacao avaliacao)
             throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException {
         // colocar DTO
-        return cadastroAvaliacao.save(avaliacao);
+        return cadastroAvaliacao.create(avaliacao);
     }
     // Atualizar Avaliacao
-    public Avaliacao updateAvaliacao(Avaliacao novaAvaliacao, Optional<Avaliacao> antigaAvaliacao)
+    //ve se assim funciona
+    public Avaliacao updateAvaliacao(Avaliacao novaAvaliacao)
             throws AvaliacaoNotaInvalidaException, AvaliacaoInexistenteException {
-        return cadastroAvaliacao.update(novaAvaliacao, antigaAvaliacao);
+        return cadastroAvaliacao.update(novaAvaliacao);
     }
     // Apagar avaliacao por Id
     public void deleteAvaliacao(Long id) throws AvaliacaoInexistenteException {
-        cadastroAvaliacao.deleteAvaliacao(id);
+        cadastroAvaliacao.deleteById(id);
     }
 
     //buscar por id
-    public Optional<Avaliacao> findByIdAvaliacao(Long id)  {
-        return cadastroAvaliacao.findByIdAvaliacao(id);
+    public Avaliacao findByIdAvaliacao(Long id) throws AvaliacaoInexistenteException {
+        return cadastroAvaliacao.findById(id);
     }
 
     // listar todas as Avaliações

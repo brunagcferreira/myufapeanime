@@ -44,10 +44,21 @@ public class UsuarioController {
     //procurar por ID
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {
-        return gerenciador.findByIdUsuario(id)
-                .map(this::convertToDTO)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        try {
+            Usuario usuario = gerenciador.findByIdUsuario(id);
+            UsuarioDTO usuarioDTO = convertToDTO(usuario);
+            return ResponseEntity.ok(usuarioDTO);
+            /*
+            return gerenciador.findByIdUsuario(id)
+                    .map(this::convertToDTO)
+                    .map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+
+             */
+        } catch (UsuarioInexistenteException e) {
+            // colocar a mensagem específica
+            return ResponseEntity.notFound().build();
+        }
     }
 
     //procurar por nome

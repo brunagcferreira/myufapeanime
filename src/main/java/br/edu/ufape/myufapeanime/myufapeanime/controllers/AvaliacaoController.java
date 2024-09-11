@@ -53,11 +53,11 @@ public class AvaliacaoController {
     public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoPeloIdDTO avaliacaoDTO)
             throws AnimeInexistenteException {
         try {
-            Optional<Avaliacao> antigaAvaliacao = gerenciador.findByIdAvaliacao(id);
+            //Avaliacao antigaAvaliacao = gerenciador.findByIdAvaliacao(id);
             Avaliacao avaliacao = convertToEntity(avaliacaoDTO);
             avaliacao.setId(id);
-            Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao, antigaAvaliacao);
-            AvaliacaoPeloIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
+            Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao);
+            AvaliacaoComIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
             return ResponseEntity.ok(avaliacaoAtualizadoDTO);
         } catch (AvaliacaoNotaInvalidaException | AvaliacaoInexistenteException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import static java.lang.Math.max;
+
 @Entity
 @Table(name = "tb_animes")
 public class Anime {
@@ -73,7 +75,9 @@ public class Anime {
     }
 
     public void setPontuacao(Double pontuacao) {
-        this.pontuacao = pontuacao;
+        //para evitar ser menor que 0
+        this.pontuacao = max(0, pontuacao);
+        calcularNotaMedia();
     }
 
     public long getAvaliacoesTotais() {
@@ -82,6 +86,7 @@ public class Anime {
 
     public void setAvaliacoesTotais(Long avaliacoesTotais) {
         this.avaliacoesTotais = avaliacoesTotais;
+        calcularNotaMedia();
     }
 
     public Double getNotaMedia() {
@@ -92,11 +97,11 @@ public class Anime {
         this.notaMedia = notaMedia;
     }
 
-    public List<Avaliacao> getAvaliacoes() {
-        return avaliacoes;
+    private void calcularNotaMedia() {
+        if (avaliacoesTotais == 0){
+            notaMedia = 0.0;
+            return;
+        }
+        notaMedia = pontuacao / avaliacoesTotais;
     }
 
-    public void setAvaliacoes(List<Avaliacao> avaliacoes) {
-        this.avaliacoes = avaliacoes;
-    }
-}
