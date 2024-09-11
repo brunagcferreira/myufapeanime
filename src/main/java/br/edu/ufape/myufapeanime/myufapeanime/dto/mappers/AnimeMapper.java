@@ -1,8 +1,11 @@
 package br.edu.ufape.myufapeanime.myufapeanime.dto.mappers;
 
-import br.edu.ufape.myufapeanime.myufapeanime.dto.AnimeComAvaliacaoDTO;
-import br.edu.ufape.myufapeanime.myufapeanime.dto.AnimeDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeComAvaliacaoDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvalicaoDoAnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
+
+import java.util.List;
 
 public class AnimeMapper {
     public static Anime convertToAnimeEntity(AnimeDTO dto) {
@@ -32,7 +35,13 @@ public class AnimeMapper {
         dto.setGenero(anime.getGenero());
         dto.setNotaMedia(anime.getNotaMedia());
         dto.setNumeroEpisodios(anime.getNumeroEpisodios());
-    //  dto.setAvaliacoes(anime.getAvaliacoes());
+
+        List<AvalicaoDoAnimeDTO> avaliacaoAnimeDTOList = anime.getAvaliacoes().stream()
+                .map(AvaliacaoMapper::convertToAvaliacaoDoAnimeDTO)
+                .toList();
+
+
+        dto.setAvaliacoes(avaliacaoAnimeDTOList);
         return dto;
     }
 
@@ -43,7 +52,12 @@ public class AnimeMapper {
         anime.setGenero(dto.getGenero());
         anime.setNotaMedia(dto.getNotaMedia());
         anime.setNumEpisodios(dto.getNumeroEpisodios());
-    //  anime.setAvaliacoes(dto.getAvaliacoes());
+        List<AvalicaoDoAnimeDTO> avaliacaoDoAnime = anime.getAvaliacoes().stream()
+                .map(AvaliacaoMapper::convertToAvaliacaoDoAnimeDTO)
+                .toList();
+
+
+        dto.setAvaliacoes(avaliacaoDoAnime);
         return anime;
     }
 

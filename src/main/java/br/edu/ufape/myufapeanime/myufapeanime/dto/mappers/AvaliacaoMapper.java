@@ -1,27 +1,25 @@
 package br.edu.ufape.myufapeanime.myufapeanime.dto.mappers;
 
-import br.edu.ufape.myufapeanime.myufapeanime.dto.AvaliacaoComIdDTO;
-import br.edu.ufape.myufapeanime.myufapeanime.dto.AvaliacaoDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvalicaoDoAnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
-import org.springframework.beans.factory.annotation.Autowired;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
-import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 
 public class AvaliacaoMapper {
 
-    @Autowired
     private GerenciadorAnimes gerenciador;
 
 
     //converte Avaliacao para AvaliacaoComIdDTO
-    public static AvaliacaoComIdDTO convertToComIdDTO(Avaliacao avaliacao) {
-        AvaliacaoComIdDTO dto = new AvaliacaoComIdDTO();
+    public static AvaliacaoPeloIdDTO convertToComIdDTO(Avaliacao avaliacao) {
+        AvaliacaoPeloIdDTO dto = new AvaliacaoPeloIdDTO();
         dto.setId(avaliacao.getId());
         dto.setNota(avaliacao.getNota());
         dto.setComentario(avaliacao.getComentario());
         dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
+
         dto.setAnimeAvaliado(avaliacao.getAnime().getId());
 
         return dto;
@@ -34,9 +32,21 @@ public class AvaliacaoMapper {
         dto.setNota(avaliacao.getNota());
         dto.setComentario(avaliacao.getComentario());
         dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
-        dto.setAnimeAvaliado(avaliacao.getAnime());                             // Objeto Anime
+
+        AnimeDTO animeDaAvaliacao = AnimeMapper.convertToAnimeDTO(avaliacao.getAnime());
+        dto.setAnimeAvaliado(animeDaAvaliacao);
 
         return dto;
     }
-    
+
+    // converte avaliacoes em avaliacoesDTO
+    public static AvalicaoDoAnimeDTO convertToAvaliacaoDoAnimeDTO(Avaliacao avaliacao) {
+        AvalicaoDoAnimeDTO dto = new AvalicaoDoAnimeDTO();
+        dto.setId(avaliacao.getId());
+        dto.setNota(avaliacao.getNota());
+        dto.setComentario(avaliacao.getComentario());
+        dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
+
+        return dto;
+    }
 }
