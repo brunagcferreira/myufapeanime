@@ -10,6 +10,9 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroAvaliacao
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
@@ -106,16 +109,18 @@ public class GerenciadorAnimes {
 
     /**********IMPLEMENTAÇÃO DE CADASTRO Avalicao ********/
     // Salvar Avaliacao
-    public Avaliacao saveAvaliacao(Avaliacao avaliacao) /* Criar um Exception */{
+    public Avaliacao saveAvaliacao(Avaliacao avaliacao)
+            throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException {
         // colocar DTO
         return cadastroAvaliacao.save(avaliacao);
     }
     // Atualizar Avaliacao
-    public Avaliacao updateAvaliacao(Avaliacao novaAvaliacao, Optional<Avaliacao> antigaAvaliacao)/* Criar um Exception */ {
+    public Avaliacao updateAvaliacao(Avaliacao novaAvaliacao, Optional<Avaliacao> antigaAvaliacao)
+            throws AvaliacaoNotaInvalidaException, AvaliacaoInexistenteException {
         return cadastroAvaliacao.update(novaAvaliacao, antigaAvaliacao);
     }
     // Apagar avaliacao por Id
-    public void deleteAvaliacao(Long id) /* Criar um Exception */ {
+    public void deleteAvaliacao(Long id) throws AvaliacaoInexistenteException {
         cadastroAvaliacao.deleteAvaliacao(id);
     }
 

@@ -47,4 +47,5 @@ public class AnimeMapper {
         return anime;
     }
 
+
 }
