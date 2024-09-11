@@ -4,6 +4,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExce
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroInterface.CadastroInterface;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,7 +24,7 @@ import java.util.Optional;
 
 
 @Service
-public class CadastroAvaliacao {
+public class CadastroAvaliacao implements CadastroInterface<Avaliacao> {
 
  //   @Qualifier("interfaceRepositorioAvaliacoes")
     @Autowired
@@ -37,14 +38,16 @@ public class CadastroAvaliacao {
     private InterfaceRepositorioUsuarios repositorioUsuario;
 
     // Cadastrar
-    public Avaliacao save(Avaliacao avaliacao)
-        throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException {
+    @Override
+    public Avaliacao create(Avaliacao avaliacao)
+            throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AvaliacaoDuplicadaException, AnimeInexistenteException {
     if(avaliacao.getNota() > 5 || avaliacao.getNota() < 0){
         throw new AvaliacaoNotaInvalidaException(avaliacao.getNota());
     }
     if (!repositorioUsuario.existsById(avaliacao.getUsuarioAvaliador())){
         throw new UsuarioInexistenteException(avaliacao.getUsuarioAvaliador());
     }
+
     if(!animeRepository.existsById(avaliacao.getAnime().getId())){
         throw new AnimeInexistenteException(avaliacao.getAnime().getId());
     }
@@ -53,84 +56,69 @@ public class CadastroAvaliacao {
         throw new AvaliacaoDuplicadaException(avaliacao.getAnime().getId(),avaliacao.getUsuarioAvaliador());
     }
         Avaliacao novaAvaliacao = avaliacaoRepository.save(avaliacao);
-        atualizarPontuacaoESomarMedia(novaAvaliacao.getAnime(), novaAvaliacao.getNota());
+        mudarPontuacaoAnime(novaAvaliacao.getAnime(), novaAvaliacao.getNota(), 1L);
 
         return novaAvaliacao;
     }
 
     // Atualizar
-    public Avaliacao update(Avaliacao newAvaliacao, Optional<Avaliacao> antigaAvaliacao)
+    @Override
+    public Avaliacao update(Avaliacao newAvaliacao)
             throws AvaliacaoNotaInvalidaException, AvaliacaoInexistenteException{
-
-        if(!avaliacaoRepository.existsById(newAvaliacao.getId())){
-            throw new AvaliacaoInexistenteException(newAvaliacao.getId());
-        }
 
         if(newAvaliacao.getNota() > 5 || newAvaliacao.getNota() < 0){
             throw new AvaliacaoNotaInvalidaException(newAvaliacao.getNota());
         }
-        newAvaliacao.setAnime(antigaAvaliacao.get().getAnime());
-        newAvaliacao.setUsuarioAvaliador(antigaAvaliacao.get().getUsuarioAvaliador());
+        //aqui ele já pega a avaliação antiga e joga a exceção
+        Avaliacao antigaAvaliacao = avaliacaoRepository.findById(newAvaliacao.getId())
+                .orElseThrow(() -> new AvaliacaoInexistenteException(newAvaliacao.getId()));
 
-        double notaAntiga = antigaAvaliacao.get().getNota();
-        Avaliacao novaAvaliacao = avaliacaoRepository.save(newAvaliacao);
-        ManterPontuacaoESomarMedia(notaAntiga, novaAvaliacao.getAnime(), novaAvaliacao.getNota());
+        newAvaliacao.setAnime(antigaAvaliacao.getAnime());
+        newAvaliacao.setUsuarioAvaliador(antigaAvaliacao.getUsuarioAvaliador());
 
-        return novaAvaliacao;
+        double notaAntiga = antigaAvaliacao.getNota();
+        double notaAtual = newAvaliacao.getNota();
+        Anime anime = newAvaliacao.getAnime();
+        // eu tiro a pontuação antiga da nova para calcular a diferença
+        mudarPontuacaoAnime(anime, notaAtual - notaAntiga, 0L);
+
+        return avaliacaoRepository.save(newAvaliacao);
     }
 
     // Deletar
-    public void deleteAvaliacao(Long id) throws AvaliacaoInexistenteException {
-        if(!avaliacaoRepository.existsById(id)){
-            throw new AvaliacaoInexistenteException(id);
-        }
 
-        Avaliacao avaliacao = avaliacaoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(""));
 
-        atualizarPontuacaoESubtrairMedia(avaliacao.getAnime(), avaliacao.getNota());
-        avaliacaoRepository.deleteById(id);
+    @Override
+    public void delete(Avaliacao avaliacao) throws AvaliacaoInexistenteException {
+        deleteById(avaliacao.getId());
     }
+
 
     // Listar todas as Avaliações
     public List<Avaliacao> findAll(){
         return avaliacaoRepository.findAll();
     }
 
+    //função comum nos deletes
+    @Override
+    public void deleteById(Long id) throws AvaliacaoInexistenteException {
+
+        Avaliacao avaliacao = avaliacaoRepository.findById(id)
+                .orElseThrow(() -> new AvaliacaoInexistenteException(id));
+        //ele tira a nota e tira um do total
+        mudarPontuacaoAnime(avaliacao.getAnime(), - avaliacao.getNota(), - 1L);
+        avaliacaoRepository.deleteById(id);
+    }
+
     // Procurar uma avaliação
-    public Optional<Avaliacao> findByIdAvaliacao(Long id)  {
-        return avaliacaoRepository.findById(id);
-    }
-    private void atualizarPontuacaoESomarMedia(Anime anime, Double novaNota) {
-        anime.setPontuacao(anime.getPontuacao() + novaNota);
-        anime.setAvaliacoesTotais(anime.getAvaliacoesTotais() + 1);
-        Double novaMedia = anime.getPontuacao() / anime.getAvaliacoesTotais();
-        anime.setNotaMedia(novaMedia);
-
-        animeRepository.save(anime);
+    @Override
+    public Avaliacao findById(Long id) throws AvaliacaoInexistenteException {
+        return avaliacaoRepository.findById(id).orElseThrow(() -> new AvaliacaoInexistenteException(id));
     }
 
-    private void atualizarPontuacaoESubtrairMedia(Anime anime, Double avaliacaoNota) {
-
-        anime.setPontuacao(anime.getPontuacao() - avaliacaoNota);
-        anime.setAvaliacoesTotais(anime.getAvaliacoesTotais() - 1);
-        if(anime.getPontuacao() == 0.0){
-            anime.setNotaMedia(0.0);
-            animeRepository.save(anime);
-            return;
-        }
-        Double novaMedia = anime.getPontuacao() / anime.getAvaliacoesTotais();
-        anime.setNotaMedia(novaMedia);
-
-        animeRepository.save(anime);
-    }
-
-    private void ManterPontuacaoESomarMedia(Double antigaNota, Anime anime, Double novaNota) {
-        anime.setPontuacao(anime.getPontuacao() + novaNota);
-        anime.setPontuacao(anime.getPontuacao() - antigaNota);
-        Double novaMedia = anime.getPontuacao() / anime.getAvaliacoesTotais();
-        anime.setNotaMedia(novaMedia);
-
+    private void mudarPontuacaoAnime(Anime anime, Double ajusteNota, Long ajusteAvaliacoes) {
+        anime.setPontuacao(anime.getPontuacao() + ajusteNota);
+        anime.setAvaliacoesTotais(anime.getAvaliacoesTotais() + ajusteAvaliacoes);
         animeRepository.save(anime);
     }
 

@@ -51,12 +51,12 @@ public class AvaliacaoController {
     //update usuário existente
     @PutMapping("update/{id}")
     public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoComIdDTO avaliacaoDTO)
-            throws AnimeInexistenteException {
+            throws AnimeInexistenteException, AvaliacaoInexistenteException {
         try {
-            Optional<Avaliacao> antigaAvaliacao = gerenciador.findByIdAvaliacao(id);
+            //Avaliacao antigaAvaliacao = gerenciador.findByIdAvaliacao(id);
             Avaliacao avaliacao = convertToEntity(avaliacaoDTO);
             avaliacao.setId(id);
-            Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao, antigaAvaliacao);
+            Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao);
             AvaliacaoComIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
             return ResponseEntity.ok(avaliacaoAtualizadoDTO);
         } catch (AvaliacaoNotaInvalidaException | AvaliacaoInexistenteException e) {

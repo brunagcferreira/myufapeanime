@@ -38,7 +38,7 @@ class CadastroUsuarioTest {
         when(repositorioUsuario.existsById(1L)).thenReturn(false);
         when(repositorioUsuario.save(usuario)).thenReturn(usuario);
 
-        Usuario savedUsuario = cadastroUsuario.save(usuario);
+        Usuario savedUsuario = cadastroUsuario.create(usuario);
         assertNotNull(savedUsuario);
         verify(repositorioUsuario, times(1)).save(usuario);
     }
@@ -50,7 +50,7 @@ class CadastroUsuarioTest {
     
         when(repositorioUsuario.existsByEmail(usuario.getEmail())).thenReturn(true);
     
-        assertThrows(UsuarioDuplicadoException.class, () -> cadastroUsuario.save(usuario));
+        assertThrows(UsuarioDuplicadoException.class, () -> cadastroUsuario.create(usuario));
     
         verify(repositorioUsuario, times(0)).save(usuario);
     }

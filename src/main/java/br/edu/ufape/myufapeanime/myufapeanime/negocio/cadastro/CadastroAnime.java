@@ -4,6 +4,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroInterface.CadastroInterface;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,13 +12,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CadastroAnime {
+public class CadastroAnime implements CadastroInterface<Anime> {
 
     @Autowired
     private InterfaceRepositorioAnimes animeRepository;
 
     // Create
-    public Anime cadastrarAnime(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
+
+    @Override
+    public Anime create(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
         if (anime.getNumeroEpisodios() <= 0) {
             throw new NumeroDeEpisodiosInvalidoException();
         }
@@ -33,13 +36,16 @@ public class CadastroAnime {
         return animeRepository.save(anime);
     }
 
+
     // Read (listar todos)
-    public List<Anime> listarAnimes() {
+    @Override
+    public List<Anime> findAll() {
         return animeRepository.findAll();
     }
 
     // Read (listar por ID)
-    public Anime findByIdAnime(Long id) throws AnimeInexistenteException {
+    @Override
+    public Anime findById(Long id) throws AnimeInexistenteException {
         return animeRepository.findById(id).orElseThrow(() -> new AnimeInexistenteException(id));
     }
 
@@ -49,8 +55,9 @@ public class CadastroAnime {
     }
 
     // Update
-    public Anime atualizarAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
-        Anime animeExistente = findByIdAnime(id); // Verifica se o anime existe
+    @Override
+    public Anime update(Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
+        Anime animeExistente = findById(animeAtualizado.getId()); // Verifica se o anime existe
 
         // Atualizar apenas os campos que não estão nulos ou têm um valor significativo
         if (animeAtualizado.getNome() != null && !animeAtualizado.getNome().isEmpty()) {
@@ -73,9 +80,16 @@ public class CadastroAnime {
     }
 
     // Delete
-    public void deletarAnime(Long id) throws AnimeInexistenteException {
-        Anime anime = findByIdAnime(id); // Verifica se o anime existe
+    @Override
+    public void deleteById(Long id) throws AnimeInexistenteException {
+        Anime anime = findById(id); // Verifica se o anime existe
         animeRepository.delete(anime);
+    }
+
+    @Override
+    public void delete(Anime object) throws Exception {
+        animeRepository.delete(object);
+
     }
 
 }
