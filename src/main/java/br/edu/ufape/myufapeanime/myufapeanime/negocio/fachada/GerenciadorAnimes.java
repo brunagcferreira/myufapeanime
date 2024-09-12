@@ -1,26 +1,23 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada;
 
-import java.util.List;
-
-import java.util.Optional;
-
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroAnime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroAvaliacao;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroUsuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
-import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroUsuario;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class GerenciadorAnimes {
@@ -56,6 +53,7 @@ public class GerenciadorAnimes {
     public List<Usuario> findAllUsuarios(){
         return cadastroUsuario.findAll();
     }
+
     //buscar por id(pode retornar null)
     //nao retorna mais null, retorna exception
     public Usuario findByIdUsuario(Long id) throws UsuarioInexistenteException {
@@ -112,6 +110,7 @@ public class GerenciadorAnimes {
     }
 
     /**********IMPLEMENTAÇÃO DE CADASTRO Avalicao ********/
+
     // Salvar Avaliacao
     public Avaliacao saveAvaliacao(Avaliacao avaliacao)
             throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException {
@@ -140,19 +139,6 @@ public class GerenciadorAnimes {
     }
 
 
-    /*
-
-    //listar todas as Avaliações de um usuário
-    public List<Avaliacao> ListarAvaliacaoByIdUsuario(Long idUsuario){
-        return cadastroAvaliacao.findUsuarioById(idUsuario);
-    }
-
-
-    //listar todas as Avaliações de um anime
-    public List<Usuario> findAllUsuarios(){
-        return cadastroUsuario.findAll();
-    }
-*/
 
 
 }
