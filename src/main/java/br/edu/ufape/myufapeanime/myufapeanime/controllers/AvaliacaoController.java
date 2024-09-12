@@ -48,7 +48,7 @@ public class AvaliacaoController {
 
     /*****  METODOS PUT *****/
     //update usuário existente
-    @PutMapping("update/{id}")
+    @PutMapping("atualizar/{id}")
     public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoUpdateDTO avaliacaoDTO)
             throws AnimeInexistenteException {
         try {
@@ -67,7 +67,7 @@ public class AvaliacaoController {
 
     /*****  METODO DELETE Avaliacao *****/
     //apagar usuario por id
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("deletar/{id}")
     public ResponseEntity<Object> deleteAvaliacao(@PathVariable Long id) throws AvaliacaoInexistenteException {
         try {
             gerenciador.deleteAvaliacao(id);
@@ -91,7 +91,7 @@ public class AvaliacaoController {
     }
 
     //lista uma Avaliação
-    @GetMapping("/list/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<List<AvaliacaoDTO>> findById(@PathVariable Long id) {
         List<Avaliacao> avaliacao = gerenciador.findAllAvaliacao();
         List<AvaliacaoDTO> result = avaliacao.stream()

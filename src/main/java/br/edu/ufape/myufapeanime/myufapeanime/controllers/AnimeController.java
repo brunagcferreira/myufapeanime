@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -106,6 +107,35 @@ public class AnimeController {
         } catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
         }
+    }
+
+    // Listar os animes mais avaliados
+    @GetMapping("/list/mais-avaliados")
+    public ResponseEntity<List<AnimeDTO>> listarAnimesMaisAvaliados() {
+        List<Anime> animes = gerenciadorAnimes.listarAnimes();
+
+        // Converter lista de Anime para lista de AnimeDTO
+        List<AnimeDTO> animeDTOs = animes.stream()
+                .map(AnimeMapper::convertToAnimeDTO)
+                .sorted(Comparator.comparing(AnimeDTO::getNotaMedia).reversed())
+                .filter(Animes -> Animes.getNotaMedia() >= 4.5)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(animeDTOs);
+    }
+
+    // Listar os animes por genero
+    @GetMapping("/list/generos/{Genero}")
+    public ResponseEntity<List<AnimeDTO>> listarAnimesGenero(@PathVariable String Genero) {
+        List<Anime> animes = gerenciadorAnimes.listarAnimes();
+
+        // Converter lista de Anime para lista de AnimeDTO
+        List<AnimeDTO> animeDTOs = animes.stream()
+                .map(AnimeMapper::convertToAnimeDTO)
+                .filter(Animes -> Animes.getGenero().equalsIgnoreCase(Genero))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(animeDTOs);
     }
 }
 
