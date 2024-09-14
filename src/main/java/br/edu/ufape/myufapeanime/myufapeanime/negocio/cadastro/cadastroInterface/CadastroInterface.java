@@ -1,8 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroInterface;
 
-import javax.sound.midi.Track;
 import java.util.List;
-import java.util.Optional;
+
 
 public interface CadastroInterface<Tipo> {
     public Tipo create(Tipo object) throws Throwable;
