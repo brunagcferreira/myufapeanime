@@ -12,6 +12,21 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
+/**
+ * Classe que representa um usuário do sistema. Um usuário pode ter listas de animes
+ * que está assistindo, já completou ou deseja assistir. Além disso, a classe contém
+ * informações básicas do usuário, como nome, e-mail e senha.
+ * 
+ * Esta classe é utilizada para gerenciar o perfil de usuário, associando-o às suas
+ * interações com o sistema, como avaliações e listas de animes.
+ * 
+ * Relacionamentos:
+ * - Um usuário pode ter vários animes na lista "assistindo".
+ * - Um usuário pode ter vários animes na lista "completo".
+ * - Um usuário pode ter vários animes na lista "quero assistir".
+ * 
+ * @author BrunaFerreira
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "tb_usuarios")
@@ -102,7 +117,6 @@ public class Usuario {
     public void setQueroAssistir(List<Anime> queroAssistir) {
         this.queroAssistir = queroAssistir;
     }
-
 
     public Usuario map(Object convertToDTO) {
         return null;
