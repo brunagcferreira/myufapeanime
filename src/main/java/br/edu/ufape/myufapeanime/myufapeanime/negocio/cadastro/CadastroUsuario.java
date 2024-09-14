@@ -61,8 +61,8 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
         }
         repositorioUsuario.delete(usuario);
     }
+    
     //apagar por id
-
     @Override
 	public void deleteById(Long id) throws UsuarioInexistenteException {
 		if(!repositorioUsuario.existsById(id)) {
