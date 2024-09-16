@@ -6,6 +6,7 @@ import java.util.Optional;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroInterface.CadastroInterface;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,15 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
 
     //novo salvar/criar
     @Override
-    public Usuario create(Usuario usuario) throws UsuarioDuplicadoException {
+    public Usuario create(Usuario usuario) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
         if (repositorioUsuario.existsByEmail(usuario.getEmail())) {
             throw new UsuarioDuplicadoException(usuario.getEmail());
         }
+        if(usuario.getSenha() == null || usuario.getSenha().isEmpty()) {
+            throw new UsuarioSenhaInvalidaException();
+        }
 
-        //usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        //usuario.setsenha(passwordEncoder.encode(usuario.getPassword()));
         return repositorioUsuario.save(usuario);
     }
     //salvar
@@ -87,6 +91,10 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
 	public List<Usuario> findByNome(String nome){
 		return repositorioUsuario.findByNomeContainingIgnoreCase(nome);
 	}
+
+    public Optional<Usuario> findByEmail(String email){
+        return repositorioUsuario.findUsuarioByEmailIgnoreCase(email);
+    }
 
     //lista assistindo
     public List<Anime> getAssistindo(Long usuarioId) throws UsuarioInexistenteException {
