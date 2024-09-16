@@ -8,7 +8,6 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -129,7 +128,7 @@ public class UsuarioController {
             UsuarioResponse response = new UsuarioResponse("Usuário cadastrado com sucesso!", novoUsuarioDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
-        } catch (UsuarioDuplicadoException | UsuarioSenhaInvalidaException e) {
+        } catch (UsuarioDuplicadoException e) {
             
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
@@ -150,7 +149,7 @@ public class UsuarioController {
             UsuarioResponse response = new UsuarioResponse("Usuário atualizado com sucesso!", usuarioAtualizadoDTO);
             return ResponseEntity.ok(response);
 
-        } catch (UsuarioInexistenteException | UsuarioSenhaInvalidaException e) {
+        } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

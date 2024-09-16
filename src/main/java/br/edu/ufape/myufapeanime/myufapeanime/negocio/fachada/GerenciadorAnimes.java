@@ -14,7 +14,6 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacao
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +33,11 @@ public class GerenciadorAnimes {
 
     /**********IMPLEMENTAÇÃO DE CADASTRO USUARIO ********/
     //salvar
-    public Usuario saveUsuario(Usuario usuario) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
+    public Usuario saveUsuario(Usuario usuario) throws UsuarioDuplicadoException {
         return cadastroUsuario.create(usuario);
     }
     //atualizar
-    public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException, UsuarioSenhaInvalidaException {
+    public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException {
         return cadastroUsuario.update(usuario);
     }
     //apagar por id
@@ -139,25 +138,6 @@ public class GerenciadorAnimes {
         return cadastroAvaliacao.findAll();
     }
 
-    public Usuario login(String email, String senha) throws UsuarioSenhaInvalidaException, UsuarioInexistenteException {
-        // Logando o email recebido
-        System.out.println("Tentando logar com email: " + email);
-
-        // Verifica se o email existe
-        Usuario usuario = cadastroUsuario.findByEmail(email).orElseThrow(() -> {
-            System.out.println("Email não encontrado: " + email);
-            return new UsuarioInexistenteException();
-        });
-
-        // Verifica se a senha é válida
-        if (!usuario.getSenha().equals(senha)) {
-            System.out.println("Senha inválida para o email: " + email);
-            throw new UsuarioSenhaInvalidaException();
-        }
-
-        System.out.println("Login bem-sucedido para o email: " + email);
-        return usuario;
-    }
 
 
 

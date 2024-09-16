@@ -5,7 +5,6 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioEx
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroUsuario;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,12 +32,12 @@ class CadastroUsuarioTest {
     }
 
     @Test
-    void testSaveUsuarioComSucesso() throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
+    void testSaveUsuarioComSucesso() throws UsuarioDuplicadoException {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
-        usuario.setSenha("asdlkfjaslfkas");
         when(repositorioUsuario.existsById(1L)).thenReturn(false);
         when(repositorioUsuario.save(usuario)).thenReturn(usuario);
+
         Usuario savedUsuario = cadastroUsuario.create(usuario);
         assertNotNull(savedUsuario);
         verify(repositorioUsuario, times(1)).save(usuario);
@@ -48,7 +47,6 @@ class CadastroUsuarioTest {
     void testSaveUsuarioDuplicado() {
         Usuario usuario = new Usuario();
         usuario.setEmail("email_duplicado@gmail.com");
-        usuario.setSenha("dsalkfjlsdfkjasd");
     
         when(repositorioUsuario.existsByEmail(usuario.getEmail())).thenReturn(true);
     
@@ -62,7 +60,6 @@ class CadastroUsuarioTest {
     void testUpdateUsuarioInexistente() {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
-        usuario.setSenha("asdlkfjaslfkas");
         when(repositorioUsuario.existsById(1L)).thenReturn(false);
 
         assertThrows(UsuarioInexistenteException.class, () -> cadastroUsuario.update(usuario));
