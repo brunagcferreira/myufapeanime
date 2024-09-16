@@ -14,6 +14,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacao
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class GerenciadorAnimes {
 
     /**********IMPLEMENTAÇÃO DE CADASTRO USUARIO ********/
     //salvar
-    public Usuario saveUsuario(Usuario usuario) throws UsuarioDuplicadoException {
+    public Usuario saveUsuario(Usuario usuario) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
         return cadastroUsuario.create(usuario);
     }
     //atualizar

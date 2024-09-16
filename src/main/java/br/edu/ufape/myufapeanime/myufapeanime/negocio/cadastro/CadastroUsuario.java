@@ -4,6 +4,7 @@ import java.util.List;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroInterface.CadastroInterface;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
      * @throws UsuarioDuplicadoException Lançada quando o e-mail do usuário já está cadastrado.
      */
     @Override
-    public Usuario create(Usuario usuario) throws UsuarioDuplicadoException {
+    public Usuario create(Usuario usuario) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
         if (repositorioUsuario.existsByEmail(usuario.getEmail())) {
             throw new UsuarioDuplicadoException(usuario.getEmail());
         }
