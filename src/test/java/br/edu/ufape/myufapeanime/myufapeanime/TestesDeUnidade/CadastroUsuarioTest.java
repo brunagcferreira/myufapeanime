@@ -1,4 +1,4 @@
-package br.edu.ufape.myufapeanime.myufapeanime.TestCadastro;
+package br.edu.ufape.myufapeanime.myufapeanime.TestesDeUnidade;
 
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;

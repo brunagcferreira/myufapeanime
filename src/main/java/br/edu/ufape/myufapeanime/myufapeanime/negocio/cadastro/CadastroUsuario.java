@@ -1,8 +1,6 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
 import java.util.List;
-import java.util.Optional;
-
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroInterface.CadastroInterface;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
@@ -14,6 +12,12 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
 
+/**
+ * Classe responsável por gerenciar as operações relacionadas ao cadastro de usuários.
+ * Realiza operações de criação, atualização, deleção e busca de usuários no sistema.
+ * 
+ * @author Bruna Ferreira
+ */
 @Service
 public class CadastroUsuario implements CadastroInterface<Usuario> {
 
@@ -21,7 +25,14 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
     @Autowired
     private InterfaceRepositorioUsuarios repositorioUsuario;
 
-    //novo salvar/criar
+    /**
+     * Cria um novo usuário no sistema. Verifica se o e-mail do usuário já está
+     * cadastrado antes de salvar.
+     * 
+     * @param usuario O objeto do tipo Usuario a ser criado.
+     * @return O objeto Usuario salvo no banco de dados.
+     * @throws UsuarioDuplicadoException Lançada quando o e-mail do usuário já está cadastrado.
+     */
     @Override
     public Usuario create(Usuario usuario) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
         if (repositorioUsuario.existsByEmail(usuario.getEmail())) {
@@ -34,20 +45,16 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
         //usuario.setsenha(passwordEncoder.encode(usuario.getPassword()));
         return repositorioUsuario.save(usuario);
     }
-    //salvar
-    /*
-    public Usuario save(Usuario usuario) throws UsuarioDuplicadoException {
-        if (repositorioUsuario.existsByEmail(usuario.getEmail())) {
-            throw new UsuarioDuplicadoException(usuario.getEmail());
-        }
 
-        //usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        return repositorioUsuario.save(usuario);
-    }
+
+    /**
+     * Atualiza um usuário existente no banco de dados. Verifica se o usuário existe
+     * antes de realizar a atualização.
+     * 
+     * @param novo O objeto do tipo Usuario com as informações atualizadas.
+     * @return O objeto Usuario atualizado.
+     * @throws UsuarioInexistenteException Lançada quando o usuário não é encontrado no banco de dados.
      */
-
-
-	//atualizar
     @Override
     public Usuario update(Usuario novo) throws UsuarioInexistenteException {
         if (!repositorioUsuario.existsById(novo.getId())) {
@@ -65,8 +72,8 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
         }
         repositorioUsuario.delete(usuario);
     }
+    
     //apagar por id
-
     @Override
 	public void deleteById(Long id) throws UsuarioInexistenteException {
 		if(!repositorioUsuario.existsById(id)) {
@@ -74,6 +81,7 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
         }
 		repositorioUsuario.deleteById(id);
 	}
+    
     //listar todos
     @Override
     public List<Usuario> findAll(){

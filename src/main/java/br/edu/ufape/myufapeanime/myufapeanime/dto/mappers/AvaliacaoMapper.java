@@ -5,12 +5,8 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvalicaoDoAnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
 
 public class AvaliacaoMapper {
-
-    private GerenciadorAnimes gerenciador;
-
 
     //converte Avaliacao para AvaliacaoComIdDTO
     public static AvaliacaoPeloIdDTO convertToComIdDTO(Avaliacao avaliacao) {

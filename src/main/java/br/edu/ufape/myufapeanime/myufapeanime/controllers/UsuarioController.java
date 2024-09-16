@@ -1,6 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.controllers;
 
 import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.UsuarioMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioResponse;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
@@ -31,7 +32,7 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioDTO>> findAll() {
         List<Usuario> usuarios = gerenciador.findAllUsuarios();
         List<UsuarioDTO> result = usuarios.stream()
-            .map(this::convertToDTO)
+            .map(UsuarioMapper::convertToDTO)
             .collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
@@ -41,17 +42,10 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {
         try {
             Usuario usuario = gerenciador.findByIdUsuario(id);
-            UsuarioDTO usuarioDTO = convertToDTO(usuario);
+            UsuarioDTO usuarioDTO = UsuarioMapper.convertToDTO(usuario);
             return ResponseEntity.ok(usuarioDTO);
-            /*
-            return gerenciador.findByIdUsuario(id)
-                    .map(this::convertToDTO)
-                    .map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.notFound().build());
 
-             */
         } catch (UsuarioInexistenteException e) {
-            // colocar a mensagem específica
             return ResponseEntity.notFound().build();
         }
     }
@@ -66,7 +60,7 @@ public class UsuarioController {
         }
 
         List<UsuarioDTO> dtos = usuarios.stream()
-                .map(this::convertToDTO)
+                .map(UsuarioMapper::convertToDTO)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(dtos);
@@ -81,7 +75,7 @@ public class UsuarioController {
 
             //converte os Animes para AnimeDTOs
             List<AnimeDTO> dtos = animesAssistidos.stream()
-                .map(this::convertToAnimeDTO)
+                .map(UsuarioMapper::convertToAnimeDTO)
                 .collect(Collectors.toList());
 
             return ResponseEntity.ok(dtos); 
@@ -97,7 +91,7 @@ public class UsuarioController {
             List<Anime> animesAssistidos = gerenciador.getCompletosUsuario(id);
 
             List<AnimeDTO> dtos = animesAssistidos.stream()
-                .map(this::convertToAnimeDTO)
+                .map(UsuarioMapper::convertToAnimeDTO)
                 .collect(Collectors.toList());
 
             return ResponseEntity.ok(dtos); 
@@ -113,7 +107,7 @@ public class UsuarioController {
             List<Anime> animesAssistidos = gerenciador.getQueroAssistirUsuario(id);
 
             List<AnimeDTO> dtos = animesAssistidos.stream()
-                .map(this::convertToAnimeDTO)
+                .map(UsuarioMapper::convertToAnimeDTO)
                 .collect(Collectors.toList());
 
             return ResponseEntity.ok(dtos); 
@@ -129,9 +123,9 @@ public class UsuarioController {
     @PostMapping("/cadastrar")
     public ResponseEntity<Object> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
         try {
-            Usuario usuario = convertToEntity(usuarioDTO);
+            Usuario usuario = UsuarioMapper.convertToEntity(usuarioDTO);
             Usuario novoUsuario = gerenciador.saveUsuario(usuario);
-            UsuarioDTO novoUsuarioDTO = convertToDTO(novoUsuario);
+            UsuarioDTO novoUsuarioDTO = UsuarioMapper.convertToDTO(novoUsuario);
             UsuarioResponse response = new UsuarioResponse("Usuário cadastrado com sucesso!", novoUsuarioDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
@@ -146,12 +140,12 @@ public class UsuarioController {
     @PutMapping("atualizar/{id}")
     public ResponseEntity<Object> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
         try {
-            Usuario usuario = convertToEntity(usuarioDTO);
+            Usuario usuario = UsuarioMapper.convertToEntity(usuarioDTO);
             usuario.setId(id); 
             
             Usuario usuarioAtualizado = gerenciador.updateUsuario(usuario);
             
-            UsuarioDTO usuarioAtualizadoDTO = convertToDTO(usuarioAtualizado);
+            UsuarioDTO usuarioAtualizadoDTO = UsuarioMapper.convertToDTO(usuarioAtualizado);
 
             UsuarioResponse response = new UsuarioResponse("Usuário atualizado com sucesso!", usuarioAtualizadoDTO);
             return ResponseEntity.ok(response);
@@ -172,38 +166,5 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
-
-    /*****  METODOS PRIVADOS *****/
-    //converte Anime em AnimeDTO
-    private AnimeDTO convertToAnimeDTO(Anime anime) {
-        AnimeDTO dto = new AnimeDTO();
-        dto.setId(anime.getId());
-        dto.setNome(anime.getNome());
-        dto.setGenero(anime.getGenero());
-        dto.setNumeroEpisodios(anime.getNumeroEpisodios());
-        return dto;
-    }
-
-    //converte Usuario em UsuarioDTO
-    private UsuarioDTO convertToDTO(Usuario usuario) {
-        UsuarioDTO dto = new UsuarioDTO();
-        dto.setId(usuario.getId());
-        dto.setNome(usuario.getNome());
-        dto.setEmail(usuario.getEmail());
-        dto.setSenha(usuario.getSenha());
-
-        return dto;
-    }
-
-    //converte UsuarioDTO em Usuario
-    private Usuario convertToEntity(UsuarioDTO dto) {
-        Usuario usuario = new Usuario();
-        usuario.setNome(dto.getNome());
-        usuario.setEmail(dto.getEmail());
-        usuario.setSenha(dto.getSenha());
-        return usuario;
-    }
     
-
 }

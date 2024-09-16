@@ -11,7 +11,6 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacao
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
-import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +25,6 @@ public class AvaliacaoController {
 
     @Autowired
     private GerenciadorAnimes gerenciador;
-
-    @Autowired
-    private InterfaceRepositorioAnimes animeRepository;
-
 
     /*****  METODO POST Avaliacao  *****/
     @PostMapping("/cadastrar")
