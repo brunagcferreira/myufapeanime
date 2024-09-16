@@ -8,11 +8,10 @@ public class UsuarioDTO {
 
     public UsuarioDTO() {}
 
-    public UsuarioDTO(Long id, String nome, String email, String senha) {
+    public UsuarioDTO(Long id, String nome, String email) {
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.senha = senha;
     }
 
     public Long getId() {
@@ -38,13 +37,11 @@ public class UsuarioDTO {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getSenha() {
         return senha;
     }
-
     public void setSenha(String senha) {
         this.senha = senha;
     }
-
-
 }

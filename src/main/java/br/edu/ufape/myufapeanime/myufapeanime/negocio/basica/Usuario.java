@@ -121,4 +121,17 @@ public class Usuario {
     public Usuario map(Object convertToDTO) {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                ", senha='" + senha + '\'' +
+                ", assistindo=" + assistindo +
+                ", completo=" + completo +
+                ", queroAssistir=" + queroAssistir +
+                '}';
+    }
 }

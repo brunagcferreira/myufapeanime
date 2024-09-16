@@ -38,7 +38,7 @@ public class GerenciadorAnimes {
         return cadastroUsuario.create(usuario);
     }
     //atualizar
-    public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException, UsuarioSenhaInvalidaException {
+    public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException {
         return cadastroUsuario.update(usuario);
     }
     //apagar por id
@@ -139,26 +139,13 @@ public class GerenciadorAnimes {
         return cadastroAvaliacao.findAll();
     }
 
-    public Usuario login(String email, String senha) throws UsuarioSenhaInvalidaException, UsuarioInexistenteException {
-        // Logando o email recebido
-        System.out.println("Tentando logar com email: " + email);
 
-        // Verifica se o email existe
-        Usuario usuario = cadastroUsuario.findByEmail(email).orElseThrow(() -> {
-            System.out.println("Email não encontrado: " + email);
-            return new UsuarioInexistenteException();
-        });
+    public Usuario login(String email, String senha) throws UsuarioInexistenteException, UsuarioSenhaInvalidaException {
+        Usuario usuario = cadastroUsuario.findByEmail(email);
 
-        // Verifica se a senha é válida
-        if (!usuario.getSenha().equals(senha)) {
-            System.out.println("Senha inválida para o email: " + email);
+        if(!usuario.getSenha().equals(senha)){
             throw new UsuarioSenhaInvalidaException();
         }
-
-        System.out.println("Login bem-sucedido para o email: " + email);
         return usuario;
     }
-
-
-
 }

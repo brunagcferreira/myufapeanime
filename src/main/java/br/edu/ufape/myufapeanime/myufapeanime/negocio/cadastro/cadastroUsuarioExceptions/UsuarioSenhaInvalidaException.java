@@ -2,6 +2,6 @@ package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioE
 
 public class UsuarioSenhaInvalidaException extends Exception {
     public UsuarioSenhaInvalidaException() {
-        super("Senha inválida");
+        super("Senha inválida.");
     }
 }

@@ -68,7 +68,7 @@ public class UsuarioController {
     
     //exibir lista_assistindo
     @GetMapping("/{id}/assistindo")
-    public ResponseEntity<List<AnimeDTO>> getAnimesAssistidos(@PathVariable Long id) {
+    public ResponseEntity<List<AnimeDTO>> getAnimesAssistidosUsuario(@PathVariable Long id) {
         try {
             //busca a lista de animes assistidos
             List<Anime> animesAssistidos = gerenciador.getAssistindoUsuario(id);
@@ -120,6 +120,7 @@ public class UsuarioController {
     /*****  METODOS POST *****/
 
     //Cadastrar novo usuario
+    //acho que isso daqui sai de usuario, já está em autenticaçao
     @PostMapping("/cadastrar")
     public ResponseEntity<Object> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
         try {
@@ -150,7 +151,7 @@ public class UsuarioController {
             UsuarioResponse response = new UsuarioResponse("Usuário atualizado com sucesso!", usuarioAtualizadoDTO);
             return ResponseEntity.ok(response);
 
-        } catch (UsuarioInexistenteException | UsuarioSenhaInvalidaException e) {
+        } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
