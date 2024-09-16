@@ -14,5 +14,5 @@ public interface InterfaceRepositorioUsuarios extends JpaRepository<Usuario, Lon
 
     boolean existsByEmail(String email);
 
-    Optional<Usuario> findUsuarioByEmailIgnoreCase(String email);
+    Optional<Usuario> findUsuarioByEmailIgnoreCase (String email);
 }

@@ -2,6 +2,7 @@ package br.edu.ufape.myufapeanime.myufapeanime.dto.mappers;
 
 import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 
@@ -22,6 +23,7 @@ public class UsuarioMapper {
         dto.setId(usuario.getId());
         dto.setNome(usuario.getNome());
         dto.setEmail(usuario.getEmail());
+        dto.setSenha(usuario.getSenha());
         return dto;
     }
 
@@ -30,6 +32,15 @@ public class UsuarioMapper {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
+        usuario.setSenha(dto.getSenha());
         return usuario;
     }
+    public static Adm convertToAdm(UsuarioDTO dto) {
+        Adm usuario = new Adm();
+        usuario.setNome(dto.getNome());
+        usuario.setEmail(dto.getEmail());
+        usuario.setSenha(dto.getSenha());
+        return usuario;
+    }
+
 }

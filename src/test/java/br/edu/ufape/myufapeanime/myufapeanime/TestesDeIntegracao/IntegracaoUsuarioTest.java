@@ -2,6 +2,7 @@ package br.edu.ufape.myufapeanime.myufapeanime.TestesDeIntegracao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,10 +24,11 @@ public class IntegracaoUsuarioTest {
     private InterfaceRepositorioUsuarios repositorioUsuarios;
 
     @Test
-    public void testCriarEBuscarUsuarioPorId() throws UsuarioDuplicadoException, UsuarioInexistenteException {
+    public void testCriarEBuscarUsuarioPorId() throws UsuarioDuplicadoException, UsuarioInexistenteException, UsuarioSenhaInvalidaException {
         // Cria um novo usuário
         Usuario usuario = new Usuario();
         usuario.setNome("Novo Usuário");
+        usuario.setSenha("naronaro");
         usuario.setEmail("novo.usuario@example.com");
 
         // Salva o usuário pela fachada

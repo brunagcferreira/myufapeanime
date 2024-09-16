@@ -34,11 +34,13 @@ public class CadastroAvaliacao implements CadastroInterface<Avaliacao> {
 
     // Cadastrar
     @Override
+    //TODO: falar com a professora sobre dependencias de outros repositorios no cadastro de avaliação
     public Avaliacao create(Avaliacao avaliacao)
             throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AvaliacaoDuplicadaException, AnimeInexistenteException {
     if(avaliacao.getNota() > 5 || avaliacao.getNota() < 0){
         throw new AvaliacaoNotaInvalidaException(avaliacao.getNota());
     }
+
     if (!repositorioUsuario.existsById(avaliacao.getUsuarioAvaliador())){
         throw new UsuarioInexistenteException(avaliacao.getUsuarioAvaliador());
     }

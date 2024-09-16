@@ -159,6 +159,12 @@ public class GerenciadorAnimes {
         return usuario;
     }
 
+    public Usuario login(String email, String senha) throws UsuarioInexistenteException, UsuarioSenhaInvalidaException {
+        Usuario usuario = cadastroUsuario.findByEmail(email);
 
-
+        if(!usuario.getSenha().equals(senha)){
+            throw new UsuarioSenhaInvalidaException();
+        }
+        return usuario;
+    }
 }

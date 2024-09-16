@@ -32,13 +32,14 @@ public class NewCadastroUsuarioTest {
         // Cria outro usuário com o mesmo e-mail
         Usuario usuario2 = new Usuario();
         usuario2.setNome("Maria Oliveira");
+        usuario2.setSenha("123321");
         usuario2.setEmail("carlos.souza@example.com");
 
         // Verifica se a exceção de duplicidade é lançada
         try {
             cadastroUsuario.create(usuario2);
             fail("Deveria ter lançado UsuarioDuplicadoException");
-        } catch (UsuarioDuplicadoException e) {
+        } catch (UsuarioDuplicadoException | UsuarioSenhaInvalidaException e) {
             // Verifica a mensagem da exceção
             assertThrows(UsuarioDuplicadoException.class, () -> {
                 throw e;
