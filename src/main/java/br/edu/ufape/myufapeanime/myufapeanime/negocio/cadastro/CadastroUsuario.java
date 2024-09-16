@@ -38,6 +38,11 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
             throw new UsuarioDuplicadoException(usuario.getEmail());
         }
 
+        System.out.println(usuario.toString());
+        if(usuario.getSenha() == null || usuario.getSenha().length() < 6){
+            throw new UsuarioSenhaInvalidaException();
+        }
+
         //usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return repositorioUsuario.save(usuario);
     }
@@ -96,6 +101,9 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
 		return repositorioUsuario.findByNomeContainingIgnoreCase(nome);
 	}
 
+    public Usuario findByEmail(String email) throws UsuarioInexistenteException{
+        return repositorioUsuario.findUsuarioByEmailIgnoreCase(email).orElseThrow(UsuarioInexistenteException::new);
+    }
     //lista assistindo
     public List<Anime> getAssistindo(Long usuarioId) throws UsuarioInexistenteException {
         Usuario usuario = repositorioUsuario.findById(usuarioId)

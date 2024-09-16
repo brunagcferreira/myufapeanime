@@ -4,6 +4,7 @@ public class UsuarioDTO {
     private Long id;
     private String nome;
     private String email;
+    private String senha;
 
     public UsuarioDTO() {}
 
@@ -37,5 +38,10 @@ public class UsuarioDTO {
         this.email = email;
     }
 
-    
+    public String getSenha() {
+        return senha;
+    }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 }
