@@ -63,7 +63,7 @@ public class AvaliacaoController {
     /*****  METODO DELETE Avaliacao *****/
     //apagar usuario por id
     @DeleteMapping("deletar/{id}")
-    public ResponseEntity<Object> deleteAvaliacao(@PathVariable Long id) throws AvaliacaoInexistenteException {
+    public ResponseEntity<Object> deleteAvaliacao(@PathVariable Long id) {
         try {
             gerenciador.deleteAvaliacao(id);
             return ResponseEntity.noContent().build();
@@ -105,6 +105,17 @@ public class AvaliacaoController {
         List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
                 .map(this::convertToComIdDTO)
                 .filter(AvaliacaoPeloIdDTO -> AvaliacaoPeloIdDTO.getAnimeAvaliado().equals(id))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
+    }
+
+    //listar todas as Avaliações de um usuário específico
+    @GetMapping("/list/usuario/{id}")
+    public ResponseEntity<List<AvaliacaoPeloIdDTO>> findAllByUser(@PathVariable Long id) {
+        List<Avaliacao> avaliacao = gerenciador.findAllAvaliacao();
+        List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
+                .map(this::convertToComIdDTO)
+                .filter(AvaliacaoPeloIdDTO -> AvaliacaoPeloIdDTO.getUsuarioAvaliador().equals(id))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }

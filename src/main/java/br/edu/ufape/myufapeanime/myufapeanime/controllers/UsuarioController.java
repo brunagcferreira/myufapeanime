@@ -1,11 +1,15 @@
 package br.edu.ufape.myufapeanime.myufapeanime.controllers;
 
 import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.UsuarioMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioResponse;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
@@ -162,10 +166,28 @@ public class UsuarioController {
     public ResponseEntity<Object> deleteUsuario(@PathVariable Long id) {
         try {
             gerenciador.deleteUsuarioById(id);
+            // Faz uma lista filtrando apenas as avaliações desse user e dps apaga elas
+            List<Avaliacao> avaliacao = gerenciador.findAllAvaliacao();
+            List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
+                    .map(this::convertToComIdDTO)
+                    .filter(AvaliacaoComIdDTO -> AvaliacaoComIdDTO.getUsuarioAvaliador().equals(id))
+                    .toList();
+            result.forEach(avaliacaoDTO -> {
+                try {
+                    gerenciador.deleteAvaliacao(avaliacaoDTO.getId());
+                } catch (AvaliacaoInexistenteException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
             return ResponseEntity.noContent().build(); 
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    
+
+    private AvaliacaoPeloIdDTO convertToComIdDTO(Avaliacao avaliacao) {
+        return AvaliacaoMapper.convertToComIdDTO(avaliacao);
+    }
+
 }
