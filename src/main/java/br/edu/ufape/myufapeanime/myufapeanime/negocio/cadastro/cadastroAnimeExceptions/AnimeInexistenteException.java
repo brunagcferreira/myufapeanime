@@ -12,10 +12,6 @@ public class AnimeInexistenteException extends Throwable {
         this.id = id;
     }
 
-    public AnimeInexistenteException(String nome) {
-        super("Anime com nome " + nome + " não existe.");
-    }
-
     public Long getId() {
         return id;
     }

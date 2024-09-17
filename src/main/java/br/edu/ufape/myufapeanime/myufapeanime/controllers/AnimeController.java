@@ -270,28 +270,8 @@ public class AnimeController {
     )
     public ResponseEntity<Object> deletarAnime(@PathVariable Long id) {
         try {
-            // TODO: Implementar a deleção de avaliações do anime e da lista de seus usuarios
             gerenciadorAnimes.deletarAnime(id);
-
-/*
-            List<Avaliacao> avaliacao = gerenciadorAnimes.findAllAvaliacao();
-            List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
-                    .map(this::convertToComIdDTO)
-                    .filter(AvaliacaoComIdDTO -> AvaliacaoComIdDTO.getAnimeAvaliado().equals(id))
-                    .toList();
-
-
-
-            result.forEach(avaliacaoDTO -> {
-                try {
-                    gerenciadorAnimes.deleteAvaliacao(avaliacaoDTO.getId());
-                } catch (AvaliacaoInexistenteException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-*/
-            return ResponseEntity.noContent().build(); // HTTP 204
+            return ResponseEntity.ok("Anime e suas avaliações foram deletados com sucesso.");
         } catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
         }

@@ -124,7 +124,8 @@ public class CadastroAnime implements CadastroInterface<Anime> {
      */
     @Override
     public void deleteById(Long id) throws AnimeInexistenteException {
-        Anime anime = findById(id); // Verifica se o anime existe
+        Anime anime = animeRepository.findById(id).orElseThrow(() -> new AnimeInexistenteException(id)); // Verifica se o anime existe
+        System.out.println(anime);
         animeRepository.delete(anime);
     }
 
