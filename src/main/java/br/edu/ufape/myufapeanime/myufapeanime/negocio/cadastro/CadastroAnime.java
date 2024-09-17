@@ -7,18 +7,34 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExce
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroInterface.CadastroInterface;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Classe responsável por gerenciar as operações relacionadas ao cadastro de animes.
+ * Realiza operações de criação, atualização, deleção e busca de animes no sistema.
+ *
+ * @author VictorAlexandre
+ */
+
 @Service
 public class CadastroAnime implements CadastroInterface<Anime> {
 
+    @Qualifier("interfaceRepositorioAnimes")
     @Autowired
     private InterfaceRepositorioAnimes animeRepository;
 
-    // Create
-
+    /**
+     * Cria um novo anime no sistema. Verifica se o nome do anime já está cadastrado
+     * antes de salvar e se o número de episódios é válido.
+     *
+     * @param anime O objeto do tipo Anime a ser criado.
+     * @return O objeto Anime salvo no banco de dados.
+     * @throws AnimeDuplicadoException Lançada quando o nome do anime já está cadastrado.
+     * @throws NumeroDeEpisodiosInvalidoException Lançada quando o número de episódios é inválido (<= 0).
+     */
     @Override
     public Anime create(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
         if (anime.getNumEpisodios() <= 0) {
@@ -36,25 +52,46 @@ public class CadastroAnime implements CadastroInterface<Anime> {
         return animeRepository.save(anime);
     }
 
-
-    // Read (listar todos)
+    /**
+     * Lista todos os animes cadastrados no sistema.
+     *
+     * @return Lista de objetos Anime.
+     */
     @Override
     public List<Anime> findAll() {
         return animeRepository.findAll();
     }
 
-    // Read (listar por ID)
+    /**
+     * Busca um anime pelo seu ID.
+     *
+     * @param id O ID do anime a ser buscado.
+     * @return O objeto Anime encontrado.
+     * @throws AnimeInexistenteException Lançada quando o anime não é encontrado no banco de dados.
+     */
     @Override
     public Anime findById(Long id) throws AnimeInexistenteException {
         return animeRepository.findById(id).orElseThrow(() -> new AnimeInexistenteException(id));
     }
 
-    // Read (listar por nome)
+    /**
+     * Busca animes pelo nome.
+     *
+     * @param nome O nome ou parte do nome do anime a ser buscado.
+     * @return Lista de objetos Anime que contenham o nome especificado.
+     */
     public List<Anime> findByNomeAnime(String nome){
         return animeRepository.findByNomeContainingIgnoreCase(nome);
     }
 
-    // Update
+    /**
+     * Atualiza as informações de um anime existente.
+     *
+     * @param animeAtualizado O objeto Anime com as informações atualizadas.
+     * @return O objeto Anime atualizado.
+     * @throws AnimeInexistenteException Lançada quando o anime não é encontrado no banco de dados.
+     * @throws AnimeDuplicadoException Lançada quando o nome atualizado do anime já está cadastrado.
+     */
     @Override
     public Anime update(Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
         Anime animeExistente = findById(animeAtualizado.getId()); // Verifica se o anime existe
@@ -79,17 +116,27 @@ public class CadastroAnime implements CadastroInterface<Anime> {
         return animeRepository.save(animeExistente);
     }
 
-    // Delete
+    /**
+     * Exclui um anime pelo seu ID.
+     *
+     * @param id O ID do anime a ser deletado.
+     * @throws AnimeInexistenteException Lançada quando o anime não é encontrado no banco de dados.
+     */
     @Override
     public void deleteById(Long id) throws AnimeInexistenteException {
         Anime anime = findById(id); // Verifica se o anime existe
         animeRepository.delete(anime);
     }
 
+    /**
+     * Exclui um objeto do tipo Anime do banco de dados.
+     *
+     * @param anime O objeto Anime a ser deletado.
+     * @throws Exception Lançada em caso de erro durante a exclusão.
+     */
     @Override
-    public void delete(Anime object) throws Exception {
-        animeRepository.delete(object);
-
+    public void delete(Anime anime) {
+        animeRepository.delete(anime);
     }
 
 }

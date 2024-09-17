@@ -13,6 +13,28 @@ import jakarta.persistence.Table;
 
 import static java.lang.Math.max;
 
+/**
+ * Classe que representa um anime no sistema. Um anime possui atributos como nome,
+ * gênero, número de episódios, pontuação, avaliações totais e uma nota média
+ * calculada com base nas avaliações recebidas, pela fórmula:
+ *
+ * Nota geral = pontuação / avaliaçõesTotais
+ *
+ * Esta classe é utilizada para armazenar as informações de cada anime e
+ * gerenciar as avaliações feitas pelos usuários, permitindo calcular a nota média
+ * do anime com base nas avaliações totais e pontuação.
+ *
+ * Relacionamentos:
+ * - Um anime pode possuir várias avaliações associadas.
+ *
+ * Funcionalidades:
+ * - Cálculo da nota média do anime com base na pontuação e no número de avaliações;
+ * - Armazenamento e gerenciamento de informações como nome, gênero e número de episódios.
+ *
+ * @author VictorAlexandre
+ */
+
+
 @Entity
 @Table(name = "tb_animes")
 public class Anime {
