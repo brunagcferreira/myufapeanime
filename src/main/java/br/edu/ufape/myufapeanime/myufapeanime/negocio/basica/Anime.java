@@ -64,7 +64,7 @@ public class Anime {
         this.genero = genero;
     }
 
-    public int getNumeroEpisodios() {
+    public int getNumEpisodios() {
         return numEpisodios;
     }
 

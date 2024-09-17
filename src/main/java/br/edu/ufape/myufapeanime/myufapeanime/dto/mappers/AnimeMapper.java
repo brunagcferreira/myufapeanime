@@ -24,7 +24,7 @@ public class AnimeMapper {
         dto.setNome(anime.getNome());
         dto.setGenero(anime.getGenero());
         dto.setNotaMedia(anime.getNotaMedia());
-        dto.setNumeroEpisodios(anime.getNumeroEpisodios());
+        dto.setNumeroEpisodios(anime.getNumEpisodios());
         return dto;
     }
 
@@ -34,7 +34,7 @@ public class AnimeMapper {
         dto.setNome(anime.getNome());
         dto.setGenero(anime.getGenero());
         dto.setNotaMedia(anime.getNotaMedia());
-        dto.setNumeroEpisodios(anime.getNumeroEpisodios());
+        dto.setNumeroEpisodios(anime.getNumEpisodios());
 
         List<AvalicaoDoAnimeDTO> avaliacaoAnimeDTOList = anime.getAvaliacoes().stream()
                 .map(AvaliacaoMapper::convertToAvaliacaoDoAnimeDTO)

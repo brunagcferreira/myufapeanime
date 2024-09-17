@@ -13,7 +13,7 @@ public class UsuarioMapper {
         dto.setId(anime.getId());
         dto.setNome(anime.getNome());
         dto.setGenero(anime.getGenero());
-        dto.setNumeroEpisodios(anime.getNumeroEpisodios());
+        dto.setNumeroEpisodios(anime.getNumEpisodios());
         return dto;
     }
 

@@ -21,7 +21,7 @@ public class CadastroAnime implements CadastroInterface<Anime> {
 
     @Override
     public Anime create(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
-        if (anime.getNumeroEpisodios() <= 0) {
+        if (anime.getNumEpisodios() <= 0) {
             throw new NumeroDeEpisodiosInvalidoException();
         }
 
@@ -71,8 +71,8 @@ public class CadastroAnime implements CadastroInterface<Anime> {
             animeExistente.setGenero(animeAtualizado.getGenero());
         }
 
-        if (animeAtualizado.getNumeroEpisodios() > 0) { // Verifica se o número de episódios é maior que zero
-            animeExistente.setNumEpisodios(animeAtualizado.getNumeroEpisodios());
+        if (animeAtualizado.getNumEpisodios() > 0) { // Verifica se o número de episódios é maior que zero
+            animeExistente.setNumEpisodios(animeAtualizado.getNumEpisodios());
         }
 
         // Salva o objeto atualizado no banco
