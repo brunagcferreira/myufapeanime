@@ -4,12 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import static java.lang.Math.max;
 
@@ -49,7 +44,8 @@ public class Anime {
     private Long avaliacoesTotais;
     private Double notaMedia;
 
-    @OneToMany(mappedBy = "anime")
+    // Mapeamento do relacionamento com Avaliação, para quando um anime for deletado existir um efeito cascata
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Avaliacao> avaliacoes;
 
     public Anime() {
