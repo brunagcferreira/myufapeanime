@@ -2,8 +2,11 @@ package br.edu.ufape.myufapeanime.myufapeanime.controllers;
 
 import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeComAvaliacaoDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
@@ -269,10 +272,33 @@ public class AnimeController {
         try {
             // TODO: Implementar a deleção de avaliações do anime e da lista de seus usuarios
             gerenciadorAnimes.deletarAnime(id);
+
+/*
+            List<Avaliacao> avaliacao = gerenciadorAnimes.findAllAvaliacao();
+            List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
+                    .map(this::convertToComIdDTO)
+                    .filter(AvaliacaoComIdDTO -> AvaliacaoComIdDTO.getAnimeAvaliado().equals(id))
+                    .toList();
+
+
+
+            result.forEach(avaliacaoDTO -> {
+                try {
+                    gerenciadorAnimes.deleteAvaliacao(avaliacaoDTO.getId());
+                } catch (AvaliacaoInexistenteException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+*/
             return ResponseEntity.noContent().build(); // HTTP 204
         } catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
         }
+    }
+
+    private AvaliacaoPeloIdDTO convertToComIdDTO(Avaliacao avaliacao) {
+        return AvaliacaoMapper.convertToComIdDTO(avaliacao);
     }
 
     // Listar os animes mais avaliados
