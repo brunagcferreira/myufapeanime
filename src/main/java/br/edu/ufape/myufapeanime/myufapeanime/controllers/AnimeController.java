@@ -73,7 +73,7 @@ public class AnimeController {
         try {
             // Converte o DTO para a entidade Anime
             Anime anime = convertToAnimeEntity(animeDTO);
-            Anime novoAnime = gerenciadorAnimes.cadastrarAnime(anime);
+            Anime novoAnime = gerenciadorAnimes.createAnime(anime);
 
             // Retorna o novo anime convertido de volta para DTO
             AnimeDTO novoAnimeDTO = convertToAnimeDTO(novoAnime);
@@ -101,7 +101,7 @@ public class AnimeController {
             }
     )
     public ResponseEntity<List<AnimeDTO>> listarAnimes() {
-        List<Anime> animes = gerenciadorAnimes.listarAnimes();
+        List<Anime> animes = gerenciadorAnimes.findAllAnime();
 
         // Converter lista de Anime para lista de AnimeDTO
         List<AnimeDTO> animeDTOs = animes.stream().map(AnimeMapper::convertToAnimeDTO).collect(Collectors.toList());
@@ -128,7 +128,7 @@ public class AnimeController {
             }
     )
     public ResponseEntity<List<AnimeDTO>> listarAnimesPorNome(@PathVariable String nome) {
-        List<Anime> animes = gerenciadorAnimes.findByNomeAnime(nome);
+        List<Anime> animes = gerenciadorAnimes.findAnimeByNome(nome);
 
         // Converter lista de Anime para lista de AnimeDTO
         List<AnimeDTO> animeDTOs = animes.stream().map(AnimeMapper::convertToAnimeDTO).collect(Collectors.toList());
@@ -163,7 +163,7 @@ public class AnimeController {
     )
     public ResponseEntity<Object> buscarAnimePorId(@PathVariable Long id) {
         try {
-            Anime anime = gerenciadorAnimes.findByIdAnime(id);
+            Anime anime = gerenciadorAnimes.findAnimeById(id);
             AnimeComAvaliacaoDTO animeAvaliacaoDTO = convertToAnimeComAvaliacaoDTO(anime);
             return ResponseEntity.ok(animeAvaliacaoDTO);
         } catch (AnimeInexistenteException e) {
@@ -241,7 +241,7 @@ public class AnimeController {
         try {
             Anime animeAtualizado = convertToAnimeEntity(animeDTO);
             animeAtualizado.setId(id);
-            Anime anime = gerenciadorAnimes.atualizarAnime(id, animeAtualizado);
+            Anime anime = gerenciadorAnimes.updateAnime(id, animeAtualizado);
             AnimeDTO animeAtualizadoDTO = convertToAnimeDTO(anime);
             return ResponseEntity.ok(animeAtualizadoDTO);
         } catch (AnimeInexistenteException | AnimeDuplicadoException e) {
@@ -270,7 +270,7 @@ public class AnimeController {
     )
     public ResponseEntity<Object> deletarAnime(@PathVariable Long id) {
         try {
-            gerenciadorAnimes.deletarAnime(id);
+            gerenciadorAnimes.deleteAnimeById(id);
             return ResponseEntity.ok("Anime e suas avaliações foram deletados com sucesso.");
         } catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
@@ -297,7 +297,7 @@ public class AnimeController {
             }
     )
     public ResponseEntity<List<AnimeDTO>> listarAnimesMaisAvaliados() {
-        List<Anime> animes = gerenciadorAnimes.listarAnimes();
+        List<Anime> animes = gerenciadorAnimes.findAllAnime();
 
         // Converter lista de Anime para lista de AnimeDTO
         List<AnimeDTO> animeDTOs = animes.stream().map(AnimeMapper::convertToAnimeDTO).sorted(Comparator.comparing(AnimeDTO::getNotaMedia).reversed()).filter(Animes -> Animes.getNotaMedia() >= 4.5).collect(Collectors.toList());
@@ -324,7 +324,7 @@ public class AnimeController {
             }
     )
     public ResponseEntity<List<AnimeDTO>> listarAnimesGenero(@PathVariable String Genero) {
-        List<Anime> animes = gerenciadorAnimes.listarAnimes();
+        List<Anime> animes = gerenciadorAnimes.findAllAnime();
 
         // Converter lista de Anime para lista de AnimeDTO
         List<AnimeDTO> animeDTOs = animes.stream().map(AnimeMapper::convertToAnimeDTO).filter(Animes -> Animes.getGenero().equalsIgnoreCase(Genero)).collect(Collectors.toList());

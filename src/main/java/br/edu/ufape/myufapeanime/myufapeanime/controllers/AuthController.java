@@ -39,7 +39,7 @@ public class AuthController {
     public ResponseEntity<Object> cadastrar(@RequestBody UsuarioDTO usuarioDTO, HttpSession session) {
         try {
             Adm usuario = UsuarioMapper.convertToAdm(usuarioDTO);
-            Adm novoUsuario = (Adm) gerenciador.saveUsuario(usuario);
+            Adm novoUsuario = (Adm) gerenciador.createUsuario(usuario);
             UsuarioDTO novoUsuarioDTO = UsuarioMapper.convertToDTO(novoUsuario);
             UsuarioResponse response = new UsuarioResponse("Usuário cadastrado com sucesso!", novoUsuarioDTO);
             session.setAttribute("user", usuario);
