@@ -34,13 +34,15 @@ public class GerenciadorAnimes {
 
     /**********IMPLEMENTAÇÃO DE CADASTRO USUARIO ********/
     //salvar
-    public Usuario saveUsuario(Usuario usuario) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
+    public Usuario createUsuario(Usuario usuario) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
         return cadastroUsuario.create(usuario);
     }
+
     //atualizar
     public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException {
         return cadastroUsuario.update(usuario);
     }
+
     //apagar por id
     public void deleteUsuarioById(Long id) throws UsuarioInexistenteException {
         cadastroUsuario.deleteById(id);
@@ -50,14 +52,15 @@ public class GerenciadorAnimes {
     public void deleteUsuario(Usuario usuario) throws UsuarioInexistenteException {
         cadastroUsuario.delete(usuario);
     }
+
     //listar todos
-    public List<Usuario> findAllUsuarios(){
+    public List<Usuario> findAllUsuarios() {
         return cadastroUsuario.findAll();
     }
 
     //buscar por id(pode retornar null)
     //nao retorna mais null, retorna exception
-    public Usuario findByIdUsuario(Long id) throws UsuarioInexistenteException {
+    public Usuario findUsuarioById(Long id) throws UsuarioInexistenteException {
         return cadastroUsuario.findById(id);
     }
 
@@ -70,10 +73,12 @@ public class GerenciadorAnimes {
     public List<Anime> getAssistindoUsuario(Long usuarioId) throws UsuarioInexistenteException {
         return cadastroUsuario.getAssistindo(usuarioId);
     }
+
     //lista completos
     public List<Anime> getCompletosUsuario(Long usuarioId) throws UsuarioInexistenteException {
         return cadastroUsuario.getCompleto(usuarioId);
     }
+
     //lista quero assistir
     public List<Anime> getQueroAssistirUsuario(Long usuarioId) throws UsuarioInexistenteException {
         return cadastroUsuario.getQueroAssistir(usuarioId);
@@ -81,61 +86,63 @@ public class GerenciadorAnimes {
 
     /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/
     //salvar
-    public Anime cadastrarAnime(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
+    public Anime createAnime(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
         return cadastroAnime.create(anime);
     }
 
     //listar todos
-    public List<Anime> listarAnimes() {
+    public List<Anime> findAllAnime() {
         return cadastroAnime.findAll();
     }
 
     //buscar por id
-    public Anime findByIdAnime(Long id) throws AnimeInexistenteException {
+    public Anime findAnimeById(Long id) throws AnimeInexistenteException {
         return cadastroAnime.findById(id);
     }
 
     //atualizar
     //tirar essa id depois
-    public Anime atualizarAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
+    public Anime updateAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
         return cadastroAnime.update(animeAtualizado);
     }
 
     //deletar
-    public void deletarAnime(Long id) throws AnimeInexistenteException {
+    public void deleteAnimeById(Long id) throws AnimeInexistenteException {
         cadastroAnime.deleteById(id);
     }
 
-    public List<Anime> findByNomeAnime(String nome){
-        return cadastroAnime.findByNomeAnime(nome);
+    public List<Anime> findAnimeByNome(String nome) {
+        return cadastroAnime.findByNome(nome);
     }
 
     /**********IMPLEMENTAÇÃO DE CADASTRO Avalicao ********/
 
     // Salvar Avaliacao
-    public Avaliacao saveAvaliacao(Avaliacao avaliacao)
+    public Avaliacao createAvaliacao(Avaliacao avaliacao)
             throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException {
         // colocar DTO
         return cadastroAvaliacao.create(avaliacao);
     }
+
     // Atualizar Avaliacao
     //ve se assim funciona
     public Avaliacao updateAvaliacao(Avaliacao novaAvaliacao)
             throws AvaliacaoNotaInvalidaException, AvaliacaoInexistenteException {
         return cadastroAvaliacao.update(novaAvaliacao);
     }
+
     // Apagar avaliacao por Id
-    public void deleteAvaliacao(Long id) throws AvaliacaoInexistenteException {
+    public void deleteAvaliacaoById(Long id) throws AvaliacaoInexistenteException {
         cadastroAvaliacao.deleteById(id);
     }
 
     //buscar por id
-    public Avaliacao findByIdAvaliacao(Long id) throws AvaliacaoInexistenteException {
+    public Avaliacao findAvaliacaoById(Long id) throws AvaliacaoInexistenteException {
         return cadastroAvaliacao.findById(id);
     }
 
     // listar todas as Avaliações
-    public List<Avaliacao> findAllAvaliacao(){
+    public List<Avaliacao> findAllAvaliacao() {
         return cadastroAvaliacao.findAll();
     }
 
@@ -143,7 +150,7 @@ public class GerenciadorAnimes {
     public Usuario login(String email, String senha) throws UsuarioInexistenteException, UsuarioSenhaInvalidaException {
         Usuario usuario = cadastroUsuario.findByEmail(email);
 
-        if(!usuario.getSenha().equals(senha)){
+        if (!usuario.getSenha().equals(senha)) {
             throw new UsuarioSenhaInvalidaException();
         }
         return usuario;

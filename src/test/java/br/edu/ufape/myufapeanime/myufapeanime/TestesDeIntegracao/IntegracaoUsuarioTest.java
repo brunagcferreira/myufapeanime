@@ -32,10 +32,10 @@ public class IntegracaoUsuarioTest {
         usuario.setEmail("novo.usuario@example.com");
 
         // Salva o usuário pela fachada
-        Usuario usuarioSalvo = gerenciadorAnimes.saveUsuario(usuario);
+        Usuario usuarioSalvo = gerenciadorAnimes.createUsuario(usuario);
 
         // Busca o usuário salvo pelo ID e verifica os dados
-        Usuario usuarioEncontrado = gerenciadorAnimes.findByIdUsuario(usuarioSalvo.getId());
+        Usuario usuarioEncontrado = gerenciadorAnimes.findUsuarioById(usuarioSalvo.getId());
         assertEquals(usuario.getNome(), usuarioEncontrado.getNome());
         assertEquals(usuario.getEmail(), usuarioEncontrado.getEmail());
     }
