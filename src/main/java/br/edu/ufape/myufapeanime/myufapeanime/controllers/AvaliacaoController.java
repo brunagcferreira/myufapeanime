@@ -6,6 +6,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoUpdateDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,8 +71,9 @@ public class AvaliacaoController {
 
             }
     )
-    public ResponseEntity<Object> cadastrarAvaliacao(@RequestBody AvaliacaoPeloIdDTO avaliacaoPeloIdDTO) {
+    public ResponseEntity<Object> cadastrarAvaliacao(@RequestBody AvaliacaoPeloIdDTO avaliacaoPeloIdDTO, HttpSession session) {
         try {
+            Usuario usuario = (Usuario) session.getAttribute("user");
             Avaliacao avaliacao = convertToEntity(avaliacaoPeloIdDTO);
             Avaliacao novaAvaliacao = gerenciador.createAvaliacao(avaliacao);
             AvaliacaoPeloIdDTO novaAvaliacaoDTO = convertToComIdDTO(novaAvaliacao);
