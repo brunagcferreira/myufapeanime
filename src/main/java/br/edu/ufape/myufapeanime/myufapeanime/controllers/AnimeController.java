@@ -244,7 +244,7 @@ public class AnimeController {
             Anime anime = gerenciadorAnimes.updateAnime(id, animeAtualizado);
             AnimeDTO animeAtualizadoDTO = convertToAnimeDTO(anime);
             return ResponseEntity.ok(animeAtualizadoDTO);
-        } catch (AnimeInexistenteException | AnimeDuplicadoException e) {
+        } catch (AnimeInexistenteException | AnimeDuplicadoException | NumeroDeEpisodiosInvalidoException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
         }
     }

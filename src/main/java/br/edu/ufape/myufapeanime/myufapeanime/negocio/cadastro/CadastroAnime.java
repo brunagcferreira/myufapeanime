@@ -32,7 +32,7 @@ public class CadastroAnime implements CadastroInterface<Anime> {
      *
      * @param anime O objeto do tipo Anime a ser criado.
      * @return O objeto Anime salvo no banco de dados.
-     * @throws AnimeDuplicadoException Lançada quando o nome do anime já está cadastrado.
+     * @throws AnimeDuplicadoException            Lançada quando o nome do anime já está cadastrado.
      * @throws NumeroDeEpisodiosInvalidoException Lançada quando o número de episódios é inválido (<= 0).
      */
     @Override
@@ -45,7 +45,7 @@ public class CadastroAnime implements CadastroInterface<Anime> {
             throw new AnimeDuplicadoException(anime.getNome());
         }
 
- //     anime.setAvaliacoes(null);
+        //     anime.setAvaliacoes(null);
         anime.setAvaliacoesTotais(0L);
         anime.setNotaMedia(0.0);
         anime.setPontuacao(0.0);
@@ -80,7 +80,7 @@ public class CadastroAnime implements CadastroInterface<Anime> {
      * @param nome O nome ou parte do nome do anime a ser buscado.
      * @return Lista de objetos Anime que contenham o nome especificado.
      */
-    public List<Anime> findByNome(String nome){
+    public List<Anime> findByNome(String nome) {
         return animeRepository.findByNomeContainingIgnoreCase(nome);
     }
 
@@ -90,15 +90,15 @@ public class CadastroAnime implements CadastroInterface<Anime> {
      * @param animeAtualizado O objeto Anime com as informações atualizadas.
      * @return O objeto Anime atualizado.
      * @throws AnimeInexistenteException Lançada quando o anime não é encontrado no banco de dados.
-     * @throws AnimeDuplicadoException Lançada quando o nome atualizado do anime já está cadastrado.
+     * @throws AnimeDuplicadoException   Lançada quando o nome atualizado do anime já está cadastrado.
      */
     @Override
-    public Anime update(Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
+    public Anime update(Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
         Anime animeExistente = findById(animeAtualizado.getId()); // Verifica se o anime existe
 
         // Atualizar apenas os campos que não estão nulos ou têm um valor significativo
         if (animeAtualizado.getNome() != null && !animeAtualizado.getNome().isEmpty()) {
-            if(animeRepository.existsByNomeContainingIgnoreCase(animeAtualizado.getNome())){
+            if (animeRepository.existsByNomeContainingIgnoreCase(animeAtualizado.getNome())) {
                 throw new AnimeDuplicadoException(animeAtualizado.getNome());
             }
             animeExistente.setNome(animeAtualizado.getNome());
@@ -108,8 +108,12 @@ public class CadastroAnime implements CadastroInterface<Anime> {
             animeExistente.setGenero(animeAtualizado.getGenero());
         }
 
-        if (animeAtualizado.getNumEpisodios() > 0) { // Verifica se o número de episódios é maior que zero
+        if (animeAtualizado.getNumEpisodios() != 0) { // Verifica se o valor dos episodios é zero (ou seja default)
             animeExistente.setNumEpisodios(animeAtualizado.getNumEpisodios());
+        }
+
+        if (animeAtualizado.getNumEpisodios() < 0) { // verifica se o valor do numero de episodios é negativo
+            throw new NumeroDeEpisodiosInvalidoException();
         }
 
         // Salva o objeto atualizado no banco
