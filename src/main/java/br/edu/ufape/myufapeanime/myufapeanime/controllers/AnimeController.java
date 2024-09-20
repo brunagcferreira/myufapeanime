@@ -5,11 +5,14 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,6 +22,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,13 +72,15 @@ public class AnimeController {
                     @ApiResponse(responseCode = "201", description = "Anime cadastrado com sucesso"),
                     @ApiResponse(responseCode = "409", description = "Já existe um anime cadastrado com o mesmo nome"),
                     @ApiResponse(responseCode = "400", description = "O número de episódios deve ser maior que zero"),
+                    @ApiResponse(responseCode = "403", description = "Somente administradores podem cadastrar animes")
             }
     )
-    public ResponseEntity<Object> cadastrarAnime(@RequestBody AnimeDTO animeDTO) {
+    public ResponseEntity<Object> cadastrarAnime(@RequestBody AnimeDTO animeDTO, HttpSession session) {
         try {
             // Converte o DTO para a entidade Anime
+            Usuario usuario = (Usuario) session.getAttribute("user");
             Anime anime = convertToAnimeEntity(animeDTO);
-            Anime novoAnime = gerenciadorAnimes.createAnime(anime);
+            Anime novoAnime = gerenciadorAnimes.cadastrarAnime(anime, usuario);
 
             // Retorna o novo anime convertido de volta para DTO
             AnimeDTO novoAnimeDTO = convertToAnimeDTO(novoAnime);
@@ -82,6 +89,8 @@ public class AnimeController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage()); // HTTP 409
         } catch (NumeroDeEpisodiosInvalidoException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // HTTP 400
+        } catch (AutorizacaoNegadaException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage()); // HTTP 403
         }
     }
 
@@ -234,18 +243,29 @@ public class AnimeController {
                                     mediaType = "text/plain",
                                     schema = @Schema(implementation = String.class)
                             )
+                    ),
+                    @ApiResponse(responseCode = "403", description = "Acesso negado, somente administradores podem atualizar animes",
+                            content = @Content(
+                                    mediaType = "text/plain",
+                                    schema = @Schema(implementation = String.class)
+                            )
                     )
             }
     )
-    public ResponseEntity<Object> atualizarAnime(@PathVariable Long id, @RequestBody AnimeDTO animeDTO) {
+    public ResponseEntity<Object> atualizarAnime(@PathVariable Long id, @RequestBody AnimeDTO animeDTO, HttpSession session) {
         try {
             Anime animeAtualizado = convertToAnimeEntity(animeDTO);
             animeAtualizado.setId(id);
-            Anime anime = gerenciadorAnimes.updateAnime(id, animeAtualizado);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+
+            Anime anime = gerenciadorAnimes.atualizarAnime(id, animeAtualizado, usuario);
             AnimeDTO animeAtualizadoDTO = convertToAnimeDTO(anime);
             return ResponseEntity.ok(animeAtualizadoDTO);
+            // anime duplicado tem que adicionar a exception correta
         } catch (AnimeInexistenteException | AnimeDuplicadoException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
+        } catch (AutorizacaoNegadaException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
@@ -268,12 +288,15 @@ public class AnimeController {
                     )
             }
     )
-    public ResponseEntity<Object> deletarAnime(@PathVariable Long id) {
+    public ResponseEntity<Object> deletarAnime(@PathVariable Long id, HttpSession session) {
         try {
-            gerenciadorAnimes.deleteAnimeById(id);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+            gerenciadorAnimes.deletarAnime(id, usuario);
             return ResponseEntity.ok("Anime e suas avaliações foram deletados com sucesso.");
         } catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
+        } catch (AutorizacaoNegadaException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 

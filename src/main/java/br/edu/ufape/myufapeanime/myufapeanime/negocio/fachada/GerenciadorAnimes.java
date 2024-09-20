@@ -1,5 +1,6 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada;
 
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
@@ -9,6 +10,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.CadastroUsuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
@@ -38,6 +40,9 @@ public class GerenciadorAnimes {
         return cadastroUsuario.create(usuario);
     }
 
+    public Adm saveAdm(Adm adm) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException{
+        return (Adm) cadastroUsuario.create(adm);
+    }
     //atualizar
     public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException {
         return cadastroUsuario.update(usuario);
@@ -86,7 +91,8 @@ public class GerenciadorAnimes {
 
     /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/
     //salvar
-    public Anime createAnime(Anime anime) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException {
+    public Anime cadastrarAnime(Anime anime, Usuario usuario) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException, AutorizacaoNegadaException {
+        checarAdm(usuario);
         return cadastroAnime.create(anime);
     }
 
@@ -102,12 +108,14 @@ public class GerenciadorAnimes {
 
     //atualizar
     //tirar essa id depois
-    public Anime updateAnime(Long id, Anime animeAtualizado) throws AnimeInexistenteException, AnimeDuplicadoException {
+    public Anime atualizarAnime(Long id, Anime animeAtualizado, Usuario usuario) throws AnimeInexistenteException, AnimeDuplicadoException, AutorizacaoNegadaException {
+        checarAdm(usuario);
         return cadastroAnime.update(animeAtualizado);
     }
 
     //deletar
-    public void deleteAnimeById(Long id) throws AnimeInexistenteException {
+    public void deletarAnime(Long id, Usuario usuario) throws AnimeInexistenteException, AutorizacaoNegadaException {
+        checarAdm(usuario);
         cadastroAnime.deleteById(id);
     }
 
@@ -154,5 +162,11 @@ public class GerenciadorAnimes {
             throw new UsuarioSenhaInvalidaException();
         }
         return usuario;
+    }
+
+    private void checarAdm(Usuario usuario) throws AutorizacaoNegadaException {
+        if(!(usuario instanceof Adm)){
+            throw new AutorizacaoNegadaException("Somente administradores podem atualizar animes");
+        }
     }
 }

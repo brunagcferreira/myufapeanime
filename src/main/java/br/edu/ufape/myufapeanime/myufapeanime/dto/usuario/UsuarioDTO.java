@@ -5,13 +5,20 @@ public class UsuarioDTO {
     private String nome;
     private String email;
     private String senha;
+    private boolean isAdm;
 
     public UsuarioDTO() {}
 
-    public UsuarioDTO(Long id, String nome, String email) {
+    public UsuarioDTO(Long id, String nome, String email, String senha, boolean isAdm) {
         this.id = id;
         this.nome = nome;
         this.email = email;
+        this.senha = senha;
+        this.isAdm = isAdm;
+    }
+
+    public boolean isAdm(){
+        return isAdm;
     }
 
     public Long getId() {
@@ -43,5 +50,9 @@ public class UsuarioDTO {
     }
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public void setAdm(boolean adm) {
+        isAdm = adm;
     }
 }
