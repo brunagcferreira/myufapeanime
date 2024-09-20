@@ -18,6 +18,6 @@ public class OpenApiConfig {
                         .description("API de cadastro e gerenciamento de animes do MyUFAPEAnime"))
                 .addTagsItem(new Tag().name("Animes").description("Operações relacionadas a animes"))
                 .addTagsItem(new Tag().name("Usuários").description("Operações relacionadas a usuários"))
-                .addTagsItem(new Tag().name("Comentários").description("Operações relacionadas a avaliações"));
+                .addTagsItem(new Tag().name("Avaliações").description("Operações relacionadas a avaliações"));
     }
 }
