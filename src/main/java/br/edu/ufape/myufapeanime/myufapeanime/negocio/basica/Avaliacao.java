@@ -1,13 +1,6 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.basica;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_avaliacoes")
@@ -22,12 +15,14 @@ public class Avaliacao {
     @JoinColumn(name = "anime_id")  // Define a chave estrangeira no banco
     private Anime anime;  // Relacionamento correto com Anime
 
-    @Column(name = "usuario_id")
-    private Long usuarioAvaliador;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id") // ajuste o nome da coluna conforme necessário
+    private Usuario usuarioAvaliador;
+
 
     public Avaliacao() {}
 
-    public Avaliacao(Double nota, String comentario, Long usuarioAvaliador, Anime anime) {
+    public Avaliacao(Double nota, String comentario, Usuario usuarioAvaliador, Anime anime) {
         this.nota = nota;
         this.comentario = comentario;
         this.usuarioAvaliador = usuarioAvaliador;
@@ -58,11 +53,11 @@ public class Avaliacao {
         this.comentario = comentario;
     }
 
-    public Long getUsuarioAvaliador() {
+    public Usuario getUsuarioAvaliador() {
         return usuarioAvaliador;
     }
 
-    public void setUsuarioAvaliador(Long usuarioAvaliador) {
+    public void setUsuarioAvaliador(Usuario usuarioAvaliador) {
         this.usuarioAvaliador = usuarioAvaliador;
     }
 

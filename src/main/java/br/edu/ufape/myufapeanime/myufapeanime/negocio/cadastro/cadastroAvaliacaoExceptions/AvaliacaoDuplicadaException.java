@@ -6,7 +6,7 @@ public class AvaliacaoDuplicadaException extends Exception{
     private long usuarioId;
 
     public AvaliacaoDuplicadaException (long animeId, long usuarioId) {
-        super("Usuario já tem uma avaliação para esse Anime!");
+        super("Usuario " +usuarioId +" já tem uma avaliação para esse Anime! " + animeId);
         this.animeId = animeId;
         this.usuarioId = usuarioId;
     }

@@ -301,11 +301,11 @@ public class AvaliacaoController {
         return AvaliacaoMapper.convertToDTO(avaliacao);
     }
 
-    private Avaliacao convertToEntity(AvaliacaoPeloIdDTO avaliacaoDTO) throws AnimeInexistenteException {
+    private Avaliacao convertToEntity(AvaliacaoPeloIdDTO avaliacaoDTO) throws AnimeInexistenteException, UsuarioInexistenteException {
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setNota(avaliacaoDTO.getNota());
         avaliacao.setComentario(avaliacaoDTO.getComentario());
-        avaliacao.setUsuarioAvaliador(avaliacaoDTO.getUsuarioAvaliador());
+        avaliacao.setUsuarioAvaliador(gerenciador.findByIdUsuario(avaliacaoDTO.getUsuarioAvaliador()));
         avaliacao.setAnime(gerenciador.findByIdAnime(avaliacaoDTO.getAnimeAvaliado()));
 
         return avaliacao;
