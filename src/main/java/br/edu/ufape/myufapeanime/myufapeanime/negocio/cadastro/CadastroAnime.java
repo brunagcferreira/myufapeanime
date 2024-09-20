@@ -80,7 +80,7 @@ public class CadastroAnime implements CadastroInterface<Anime> {
      * @param nome O nome ou parte do nome do anime a ser buscado.
      * @return Lista de objetos Anime que contenham o nome especificado.
      */
-    public List<Anime> findByNomeAnime(String nome){
+    public List<Anime> findByNome(String nome){
         return animeRepository.findByNomeContainingIgnoreCase(nome);
     }
 

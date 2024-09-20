@@ -1,16 +1,11 @@
 package br.edu.ufape.myufapeanime.myufapeanime.TestesDeIntegracao;
 
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
-import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,10 +31,10 @@ public class IntegracaoAnimeTest {
         novoAnime.setGenero("Violencia");
 
         // Salva o anime pela fachada
-        Anime animeSalvo = gerenciadorAnimes.cadastrarAnime(novoAnime);
+        Anime animeSalvo = gerenciadorAnimes.createAnime(novoAnime);
 
         // Busca o anime salvo pelo ID e verifica os dados
-        Anime animeEncontrado = gerenciadorAnimes.findByIdAnime(animeSalvo.getId());
+        Anime animeEncontrado = gerenciadorAnimes.findAnimeById(animeSalvo.getId());
 
         assertEquals(animeSalvo.getNome(), animeEncontrado.getNome());
         assertEquals(animeSalvo.getNumEpisodios(), animeEncontrado.getNumEpisodios());

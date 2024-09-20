@@ -45,7 +45,7 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {
         try {
-            Usuario usuario = gerenciador.findByIdUsuario(id);
+            Usuario usuario = gerenciador.findUsuarioById(id);
             UsuarioDTO usuarioDTO = UsuarioMapper.convertToDTO(usuario);
             return ResponseEntity.ok(usuarioDTO);
 
@@ -129,7 +129,7 @@ public class UsuarioController {
     public ResponseEntity<Object> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
         try {
             Usuario usuario = UsuarioMapper.convertToEntity(usuarioDTO);
-            Usuario novoUsuario = gerenciador.saveUsuario(usuario);
+            Usuario novoUsuario = gerenciador.createUsuario(usuario);
             UsuarioDTO novoUsuarioDTO = UsuarioMapper.convertToDTO(novoUsuario);
             UsuarioResponse response = new UsuarioResponse("Usuário cadastrado com sucesso!", novoUsuarioDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -174,7 +174,7 @@ public class UsuarioController {
                     .toList();
             result.forEach(avaliacaoDTO -> {
                 try {
-                    gerenciador.deleteAvaliacao(avaliacaoDTO.getId());
+                    gerenciador.deleteAvaliacaoById(avaliacaoDTO.getId());
                 } catch (AvaliacaoInexistenteException e) {
                     throw new RuntimeException(e);
                 }

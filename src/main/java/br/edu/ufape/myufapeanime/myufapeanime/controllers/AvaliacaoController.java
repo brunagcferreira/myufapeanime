@@ -72,7 +72,7 @@ public class AvaliacaoController {
     public ResponseEntity<Object> cadastrarAvaliacao(@RequestBody AvaliacaoPeloIdDTO avaliacaoPeloIdDTO) {
         try {
             Avaliacao avaliacao = convertToEntity(avaliacaoPeloIdDTO);
-            Avaliacao novaAvaliacao = gerenciador.saveAvaliacao(avaliacao);
+            Avaliacao novaAvaliacao = gerenciador.createAvaliacao(avaliacao);
             AvaliacaoPeloIdDTO novaAvaliacaoDTO = convertToComIdDTO(novaAvaliacao);
             return ResponseEntity.status(HttpStatus.CREATED).body(novaAvaliacaoDTO);
         } catch (AvaliacaoNotaInvalidaException | UsuarioInexistenteException e) {
@@ -177,7 +177,7 @@ public class AvaliacaoController {
     )
     public ResponseEntity<Object> deleteAvaliacao(@PathVariable Long id) {
         try {
-            gerenciador.deleteAvaliacao(id);
+            gerenciador.deleteAvaliacaoById(id);
             return ResponseEntity.noContent().build();
         } catch (AvaliacaoInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -236,7 +236,7 @@ public class AvaliacaoController {
     )
     public ResponseEntity<Object> findById(@PathVariable Long id) {
         try {
-            Avaliacao avaliacao = gerenciador.findByIdAvaliacao(id);
+            Avaliacao avaliacao = gerenciador.findAvaliacaoById(id);
             AvaliacaoDTO avaliacaoDTO = convertToDTO(avaliacao);
             return ResponseEntity.ok(avaliacaoDTO);
         } catch (AvaliacaoInexistenteException e) {
@@ -306,7 +306,7 @@ public class AvaliacaoController {
         avaliacao.setNota(avaliacaoDTO.getNota());
         avaliacao.setComentario(avaliacaoDTO.getComentario());
         avaliacao.setUsuarioAvaliador(avaliacaoDTO.getUsuarioAvaliador());
-        avaliacao.setAnime(gerenciador.findByIdAnime(avaliacaoDTO.getAnimeAvaliado()));
+        avaliacao.setAnime(gerenciador.findAnimeById(avaliacaoDTO.getAnimeAvaliado()));
 
         return avaliacao;
     }

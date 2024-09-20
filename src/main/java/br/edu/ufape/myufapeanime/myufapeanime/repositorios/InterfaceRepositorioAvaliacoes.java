@@ -13,6 +13,6 @@ public interface InterfaceRepositorioAvaliacoes extends JpaRepository<Avaliacao,
     Long findByAnimeId(Long id);
 
     //  List<Avaliacao> findByNomeUsuario(String nome);
-    //  List<Avaliacao> findByNomeAnime(String nome);
+    //  List<Avaliacao> findByNome(String nome);
 
 }
