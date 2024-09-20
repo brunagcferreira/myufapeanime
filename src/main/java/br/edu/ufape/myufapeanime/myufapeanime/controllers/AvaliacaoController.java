@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/avaliacao")
-@Tag(name = "Comentários", description = "API de gerenciamento de avaliações")
+@Tag(name = "Avaliações", description = "API de gerenciamento de avaliações")
 public class AvaliacaoController {
 
     @Autowired
@@ -41,7 +41,7 @@ public class AvaliacaoController {
     @Operation(
             summary = "Cadastrar uma nova avaliação",
             description = "Cadastra uma nova avaliação no sistema",
-            tags = {"Comentários"},
+            tags = {"Avaliações"},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Objeto JSON da avaliação a ser cadastrada",
                     required = true,
@@ -89,7 +89,7 @@ public class AvaliacaoController {
             summary = "Atualizar uma avaliação",
             description = "Atualiza os detalhes de uma avaliação existente, Pondendo ser atualizado a nota e seu comentário" +
                     "aceitando contendo apenas um desses dados para ser atualizado (favor checar os exemplos)",
-            tags = {"Comentários"},
+            tags = {"Avaliações"},
             parameters = {
                     @Parameter(name = "id", description = "ID da avaliação a ser atualizada", required = true, example = "1")
             },
@@ -161,7 +161,7 @@ public class AvaliacaoController {
     @Operation(
             summary = "Deletar uma avaliação",
             description = "Remove uma avaliação existente do sistema",
-            tags = {"Comentários"},
+            tags = {"Avaliações"},
             parameters = {
                     @Parameter(name = "id", description = "ID da avaliação a ser deletada", required = true, example = "1")
             },
@@ -192,7 +192,7 @@ public class AvaliacaoController {
     @Operation(
             summary = "Listar todas as avaliações",
             description = "Retorna uma lista com todas as avalialçoes cadastradas no sistema",
-            tags = {"Comentários"},
+            tags = {"Avaliações"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Lista de avaliações retornada com sucesso",
                             content = @Content(
@@ -215,7 +215,7 @@ public class AvaliacaoController {
     @Operation(
             summary = "Buscar uma avaliação por ID",
             description = "Retorna os detalhes de uma avaliação específica pelo seu ID",
-            tags = {"Comentários"},
+            tags = {"Avaliações"},
             parameters = {
                     @Parameter(name = "id", description = "ID da avaliação a ser buscada", required = true, example = "1")
             },
@@ -249,7 +249,7 @@ public class AvaliacaoController {
     @Operation(
             summary = "Listar as avaliações de um anime",
             description = "Retorna uma lista de avaliações de um anime específico",
-            tags = {"Comentários"},
+            tags = {"Avaliações"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Lista de avaliações retornada com sucesso",
                             content = @Content(
@@ -273,7 +273,7 @@ public class AvaliacaoController {
     @Operation(
             summary = "Listar as avaliações de um usuário",
             description = "Retorna uma lista de avaliações de um usuário específico",
-            tags = {"Comentários"},
+            tags = {"Avaliações"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Lista de avaliações retornada com sucesso",
                             content = @Content(
