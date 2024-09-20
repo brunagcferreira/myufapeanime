@@ -261,11 +261,8 @@ public class AnimeController {
             Anime anime = gerenciadorAnimes.atualizarAnime(id, animeAtualizado, usuario);
             AnimeDTO animeAtualizadoDTO = convertToAnimeDTO(anime);
             return ResponseEntity.ok(animeAtualizadoDTO);
-            // anime duplicado tem que adicionar a exception correta
-        } catch (AnimeInexistenteException | AnimeDuplicadoException e) {
+        } catch (AnimeInexistenteException | AnimeDuplicadoException | NumeroDeEpisodiosInvalidoException | AutorizacaoNegadaException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
-        } catch (AutorizacaoNegadaException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 

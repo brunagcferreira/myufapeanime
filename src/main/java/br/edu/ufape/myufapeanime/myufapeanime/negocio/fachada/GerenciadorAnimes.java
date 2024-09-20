@@ -108,7 +108,7 @@ public class GerenciadorAnimes {
 
     //atualizar
     //tirar essa id depois
-    public Anime atualizarAnime(Long id, Anime animeAtualizado, Usuario usuario) throws AnimeInexistenteException, AnimeDuplicadoException, AutorizacaoNegadaException {
+    public Anime atualizarAnime(Long id, Anime animeAtualizado, Usuario usuario) throws AnimeInexistenteException, AnimeDuplicadoException,  {
         checarAdm(usuario);
         return cadastroAnime.update(animeAtualizado);
     }
