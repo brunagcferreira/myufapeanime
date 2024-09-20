@@ -4,6 +4,8 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvalicaoDoAnimeDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioComAvaliacaoDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 
 import java.util.List;
@@ -16,8 +18,7 @@ public class AvaliacaoMapper {
         dto.setId(avaliacao.getId());
         dto.setNota(avaliacao.getNota());
         dto.setComentario(avaliacao.getComentario());
-        dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
-
+        dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador().getId());
         dto.setAnimeAvaliado(avaliacao.getAnime().getId());
 
         return dto;
@@ -29,7 +30,9 @@ public class AvaliacaoMapper {
         dto.setId(avaliacao.getId());
         dto.setNota(avaliacao.getNota());
         dto.setComentario(avaliacao.getComentario());
-        dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
+
+        UsuarioComAvaliacaoDTO usuarioDTO = UsuarioMapper.convertToAvaliacaoDTO(avaliacao.getUsuarioAvaliador());
+        dto.setUsuarioAvaliador(usuarioDTO);
 
         AnimeDTO animeDaAvaliacao = AnimeMapper.convertToAnimeDTO(avaliacao.getAnime());
         dto.setAnimeAvaliado(animeDaAvaliacao);
@@ -43,7 +46,7 @@ public class AvaliacaoMapper {
         dto.setId(avaliacao.getId());
         dto.setNota(avaliacao.getNota());
         dto.setComentario(avaliacao.getComentario());
-        dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador());
+        dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador().getId());
 
         return dto;
     }

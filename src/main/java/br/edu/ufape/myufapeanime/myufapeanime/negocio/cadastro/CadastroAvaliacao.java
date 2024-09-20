@@ -41,8 +41,8 @@ public class CadastroAvaliacao implements CadastroInterface<Avaliacao> {
         throw new AvaliacaoNotaInvalidaException(avaliacao.getNota());
     }
 
-    if (!repositorioUsuario.existsById(avaliacao.getUsuarioAvaliador())){
-        throw new UsuarioInexistenteException(avaliacao.getUsuarioAvaliador());
+    if (!repositorioUsuario.existsById(avaliacao.getUsuarioAvaliador().getId())){
+        throw new UsuarioInexistenteException(avaliacao.getUsuarioAvaliador().getId());
     }
 
     if(!animeRepository.existsById(avaliacao.getAnime().getId())){
@@ -50,7 +50,7 @@ public class CadastroAvaliacao implements CadastroInterface<Avaliacao> {
     }
 
     if(avaliacaoRepository.existsAvaliacaoByAnimeAndUsuarioAvaliador(avaliacao.getAnime(),avaliacao.getUsuarioAvaliador())){
-        throw new AvaliacaoDuplicadaException(avaliacao.getAnime().getId(),avaliacao.getUsuarioAvaliador());
+        throw new AvaliacaoDuplicadaException(avaliacao.getAnime().getId(),avaliacao.getUsuarioAvaliador().getId());
     }
         Avaliacao novaAvaliacao = avaliacaoRepository.save(avaliacao);
         mudarPontuacaoAnime(novaAvaliacao.getAnime(), novaAvaliacao.getNota(), 1L);
