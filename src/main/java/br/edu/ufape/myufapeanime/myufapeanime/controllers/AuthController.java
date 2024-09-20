@@ -34,12 +34,24 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout(HttpSession session) {
+        session.removeAttribute("user");
+        session.invalidate();
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
     @PostMapping("/cadastrar")
     //TODO: cadastrar adm e usuario aqui de forma diferente
     public ResponseEntity<Object> cadastrar(@RequestBody UsuarioDTO usuarioDTO, HttpSession session) {
         try {
+
             Adm usuario = UsuarioMapper.convertToAdm(usuarioDTO);
-            Adm novoUsuario = (Adm) gerenciador.createUsuario(usuario);
+            Adm novoUsuario = gerenciador.saveAdm(usuario);
+
+
+
             UsuarioDTO novoUsuarioDTO = UsuarioMapper.convertToDTO(novoUsuario);
             UsuarioResponse response = new UsuarioResponse("Usuário cadastrado com sucesso!", novoUsuarioDTO);
             session.setAttribute("user", usuario);
