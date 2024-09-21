@@ -1,6 +1,7 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
 import java.util.List;
+import java.util.Optional;
 
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
@@ -55,17 +56,28 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
 
     /**
      * Atualiza um usuário existente no banco de dados. Verifica se o usuário existe
-     * antes de realizar a atualização.
+     * antes de realizar a atualização. Também verifica se o e-mail atualizado já está em uso
+     * por outro usuário.
      * 
      * @param novo O objeto do tipo Usuario com as informações atualizadas.
      * @return O objeto Usuario atualizado.
      * @throws UsuarioInexistenteException Lançada quando o usuário não é encontrado no banco de dados.
+     * @throws UsuarioDuplicadoException Lançada quando o e-mail já está em uso por outro usuário.
      */
     @Override
-    public Usuario update(Usuario novo) throws UsuarioInexistenteException {
+    public Usuario update(Usuario novo) throws UsuarioInexistenteException, UsuarioDuplicadoException {
+        // Verifica se o usuário existe
         if (!repositorioUsuario.existsById(novo.getId())) {
             throw new UsuarioInexistenteException(novo.getId());
         }
+
+        // Verifica se o e-mail já está em uso por outro usuário
+        Optional<Usuario> usuarioExistente = repositorioUsuario.findUsuarioByEmailIgnoreCase(novo.getEmail());
+        if (usuarioExistente.isPresent() && !usuarioExistente.get().getId().equals(novo.getId())) {
+            throw new UsuarioDuplicadoException(novo.getEmail());
+        }
+
+        // Se passar nas validações, salva o usuário atualizado
         return repositorioUsuario.save(novo);
     }
 
@@ -144,28 +156,24 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
         Usuario usuario = findById(usuarioId);
         Anime anime = cadastroAnime.findById(animeId);
 
-        // Verifica se o anime já está em outra lista
         if (animeJaEstaEmOutraLista(usuario, anime)) {
             throw new IllegalArgumentException("O anime já está em outra lista.");
         }
 
-        // Adiciona à lista "assistindo" e salva o usuário atualizado
         usuario.getAssistindo().add(anime);
         repositorioUsuario.save(usuario);
     }
 
     //Add anime na lista "completo" do usuario
-    //Não documento com javadoc pois seu funcionamento é análogo a função acima
+    //Não documentado com javadoc pois seu funcionamento é análogo a função acima
     public void adicionarAnimeCompleto(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
         Usuario usuario = findById(usuarioId);
         Anime anime = cadastroAnime.findById(animeId);
 
-        // Verifica se o anime já está em outra lista
         if (animeJaEstaEmOutraLista(usuario, anime)) {
             throw new IllegalArgumentException("O anime já está em outra lista.");
         }
 
-        // Adiciona à lista "completo" e salva o usuário atualizado
         usuario.getCompleto().add(anime);
         repositorioUsuario.save(usuario);
     }
@@ -175,12 +183,10 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
         Usuario usuario = findById(usuarioId);
         Anime anime = cadastroAnime.findById(animeId);
 
-        // Verifica se o anime já está em outra lista
         if (animeJaEstaEmOutraLista(usuario, anime)) {
             throw new IllegalArgumentException("O anime já está em outra lista.");
         }
 
-        // Adiciona à lista "quero assistir" e salva o usuário atualizado
         usuario.getQueroAssistir().add(anime);
         repositorioUsuario.save(usuario);
     }

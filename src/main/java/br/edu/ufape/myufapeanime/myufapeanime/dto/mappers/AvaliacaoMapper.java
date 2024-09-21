@@ -5,10 +5,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvalicaoDoAnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioComAvaliacaoDTO;
-import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
-
-import java.util.List;
 
 public class AvaliacaoMapper {
 
