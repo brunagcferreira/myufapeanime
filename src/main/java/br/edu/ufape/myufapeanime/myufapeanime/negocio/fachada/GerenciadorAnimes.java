@@ -91,7 +91,7 @@ public class GerenciadorAnimes {
 
     /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/
     //salvar
-    public Anime cadastrarAnime(Anime anime, Usuario usuario) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException, AutorizacaoNegadaException {
+    public Anime createAnime(Anime anime, Usuario usuario) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException, AutorizacaoNegadaException {
         checarAdm(usuario);
         return cadastroAnime.create(anime);
     }

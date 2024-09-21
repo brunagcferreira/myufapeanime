@@ -5,7 +5,6 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
@@ -22,7 +21,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -80,7 +78,7 @@ public class AnimeController {
             // Converte o DTO para a entidade Anime
             Usuario usuario = (Usuario) session.getAttribute("user");
             Anime anime = convertToAnimeEntity(animeDTO);
-            Anime novoAnime = gerenciadorAnimes.cadastrarAnime(anime, usuario);
+            Anime novoAnime = gerenciadorAnimes.createAnime(anime, usuario);
 
             // Retorna o novo anime convertido de volta para DTO
             AnimeDTO novoAnimeDTO = convertToAnimeDTO(novoAnime);
