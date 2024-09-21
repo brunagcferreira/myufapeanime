@@ -197,6 +197,9 @@ public class UsuarioController {
 
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch (UsuarioDuplicadoException e) {
+            // Se o e-mail já estiver em uso, retorna 409 (Conflito)
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 

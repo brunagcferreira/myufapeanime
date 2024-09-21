@@ -44,7 +44,7 @@ public class GerenciadorAnimes {
         return (Adm) cadastroUsuario.create(adm);
     }
     //atualizar
-    public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException {
+    public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException, UsuarioDuplicadoException {
         return cadastroUsuario.update(usuario);
     }
 

@@ -69,7 +69,7 @@ class CadastroUsuarioTest {
     }
 
     @Test
-    void testUpdateUsuarioComSucesso() throws UsuarioInexistenteException {
+    void testUpdateUsuarioComSucesso() throws UsuarioInexistenteException, UsuarioDuplicadoException {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         when(repositorioUsuario.existsById(1L)).thenReturn(true);
