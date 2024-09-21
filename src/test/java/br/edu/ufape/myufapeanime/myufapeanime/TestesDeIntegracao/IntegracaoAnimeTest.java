@@ -4,6 +4,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ public class IntegracaoAnimeTest {
     private InterfaceRepositorioAnimes repositorioAnimes;
 
     @Test
-    public void testCriarEBuscarAnimePorId() throws NumeroDeEpisodiosInvalidoException, AnimeDuplicadoException, AnimeInexistenteException {
+    public void testCriarEBuscarAnimePorId() throws NumeroDeEpisodiosInvalidoException, AnimeDuplicadoException, AnimeInexistenteException, AutorizacaoNegadaException {
         // Cria um novo anime
         Anime novoAnime = new Anime();
         novoAnime.setNome("Pokemon");
@@ -31,7 +32,7 @@ public class IntegracaoAnimeTest {
         novoAnime.setGenero("Violencia");
 
         // Salva o anime pela fachada
-        Anime animeSalvo = gerenciadorAnimes.createAnime(novoAnime);
+        Anime animeSalvo = gerenciadorAnimes.createAnime(novoAnime, null);
 
         // Busca o anime salvo pelo ID e verifica os dados
         Anime animeEncontrado = gerenciadorAnimes.findAnimeById(animeSalvo.getId());
