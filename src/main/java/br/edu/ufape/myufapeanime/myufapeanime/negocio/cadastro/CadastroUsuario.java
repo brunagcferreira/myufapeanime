@@ -2,6 +2,7 @@ package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
 import java.util.List;
 
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
@@ -24,6 +25,9 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
     @Qualifier("interfaceRepositorioUsuarios")
     @Autowired
     private InterfaceRepositorioUsuarios repositorioUsuario;
+
+    @Autowired
+    private CadastroAnime cadastroAnime;
 
     /**
      * Cria um novo usuário no sistema. Verifica se o e-mail do usuário já está
@@ -125,4 +129,67 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
             .orElseThrow(() -> new UsuarioInexistenteException(usuarioId));
         return usuario.getQueroAssistir();
     }
+
+    /**
+     * Adiciona um anime à lista de "assistindo" do usuário, se ele não estiver
+     * em nenhuma das outras listas (completo ou quero assistir).
+     * 
+     * @param usuarioId O ID do usuário.
+     * @param animeId O ID do anime a ser adicionado.
+     * @throws UsuarioInexistenteException Se o usuário não for encontrado.
+     * @throws AnimeInexistenteException Se o anime não for encontrado.
+     * @throws IllegalArgumentException Se o anime já estiver em outra lista.
+     */
+    public void adicionarAnimeAssistindo(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
+        Usuario usuario = findById(usuarioId);
+        Anime anime = cadastroAnime.findById(animeId);
+
+        // Verifica se o anime já está em outra lista
+        if (animeJaEstaEmOutraLista(usuario, anime)) {
+            throw new IllegalArgumentException("O anime já está em outra lista.");
+        }
+
+        // Adiciona à lista "assistindo" e salva o usuário atualizado
+        usuario.getAssistindo().add(anime);
+        repositorioUsuario.save(usuario);
+    }
+
+    //Add anime na lista "completo" do usuario
+    //Não documento com javadoc pois seu funcionamento é análogo a função acima
+    public void adicionarAnimeCompleto(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
+        Usuario usuario = findById(usuarioId);
+        Anime anime = cadastroAnime.findById(animeId);
+
+        // Verifica se o anime já está em outra lista
+        if (animeJaEstaEmOutraLista(usuario, anime)) {
+            throw new IllegalArgumentException("O anime já está em outra lista.");
+        }
+
+        // Adiciona à lista "completo" e salva o usuário atualizado
+        usuario.getCompleto().add(anime);
+        repositorioUsuario.save(usuario);
+    }
+
+    //Add anime na lista "queroassitir" do usuario
+    public void adicionarAnimeQueroAssistir(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
+        Usuario usuario = findById(usuarioId);
+        Anime anime = cadastroAnime.findById(animeId);
+
+        // Verifica se o anime já está em outra lista
+        if (animeJaEstaEmOutraLista(usuario, anime)) {
+            throw new IllegalArgumentException("O anime já está em outra lista.");
+        }
+
+        // Adiciona à lista "quero assistir" e salva o usuário atualizado
+        usuario.getQueroAssistir().add(anime);
+        repositorioUsuario.save(usuario);
+    }
+
+    // Método privado para verificar se um anime já está em outra lista
+    private boolean animeJaEstaEmOutraLista(Usuario usuario, Anime anime) {
+        return  usuario.getAssistindo().contains(anime) ||
+                usuario.getCompleto().contains(anime) ||
+                usuario.getQueroAssistir().contains(anime);
+    }
+        
 }

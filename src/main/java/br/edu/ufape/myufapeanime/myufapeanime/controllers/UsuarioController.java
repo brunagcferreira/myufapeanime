@@ -9,6 +9,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioResponse;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
@@ -136,6 +137,45 @@ public class UsuarioController {
 
         } catch (UsuarioDuplicadoException | UsuarioSenhaInvalidaException e) {
             
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    // Adicionar anime à lista "assistindo"
+    @PostMapping("/{usuarioId}/assistindo/{animeId}")
+    public ResponseEntity<Object> adicionarAnimeAssistindo(@PathVariable Long usuarioId, @PathVariable Long animeId) {
+        try {
+            gerenciador.adicionarAnimeAssistindo(usuarioId, animeId);
+            return ResponseEntity.ok("Anime adicionado à lista 'assistindo' com sucesso!");
+        } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    // Adicionar anime à lista "completo"
+    @PostMapping("/{usuarioId}/completo/{animeId}")
+    public ResponseEntity<Object> adicionarAnimeCompleto(@PathVariable Long usuarioId, @PathVariable Long animeId) {
+        try {
+            gerenciador.adicionarAnimeCompleto(usuarioId, animeId);
+            return ResponseEntity.ok("Anime adicionado à lista 'completo' com sucesso!");
+        } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    // Adicionar anime à lista "quero assistir"
+    @PostMapping("/{usuarioId}/quero-assistir/{animeId}")
+    public ResponseEntity<Object> adicionarAnimeQueroAssistir(@PathVariable Long usuarioId, @PathVariable Long animeId) {
+        try {
+            gerenciador.adicionarAnimeQueroAssistir(usuarioId, animeId);
+            return ResponseEntity.ok("Anime adicionado à lista 'quero assistir' com sucesso!");
+        } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }

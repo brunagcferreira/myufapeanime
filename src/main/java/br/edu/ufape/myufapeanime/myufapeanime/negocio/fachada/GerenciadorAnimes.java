@@ -89,6 +89,21 @@ public class GerenciadorAnimes {
         return cadastroUsuario.getQueroAssistir(usuarioId);
     }
 
+    //add anime na lista "assistindo" do usuario
+    public void adicionarAnimeAssistindo(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
+        cadastroUsuario.adicionarAnimeAssistindo(usuarioId, animeId);
+    }
+
+    //add anime na lista "completo" do usuario
+    public void adicionarAnimeCompleto(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
+        cadastroUsuario.adicionarAnimeCompleto(usuarioId, animeId);
+    }
+
+    //add anime na lista "queroassitir" do usuario
+    public void adicionarAnimeQueroAssistir(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
+        cadastroUsuario.adicionarAnimeQueroAssistir(usuarioId, animeId);
+    }
+
     /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/
     //salvar
     public Anime createAnime(Anime anime, Usuario usuario) throws AnimeDuplicadoException, NumeroDeEpisodiosInvalidoException, AutorizacaoNegadaException {
