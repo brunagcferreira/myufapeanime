@@ -1,5 +1,6 @@
 package br.edu.ufape.myufapeanime.myufapeanime.TestesDeIntegracao;
 
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
@@ -7,6 +8,8 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExce
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioAnimes;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +26,18 @@ public class IntegracaoAnimeTest {
     @Qualifier("interfaceRepositorioAnimes")
     private InterfaceRepositorioAnimes repositorioAnimes;
 
+    private Adm adm;
+
+    @BeforeEach
+    public void setup(){
+        adm = new Adm();
+        adm.setSenha("123123123123");
+        adm.setEmail("@salobraro.com");
+        adm.setNome("Biruliro junior");
+        adm.setId(899922L);
+
+    }
+
     @Test
     public void testCriarEBuscarAnimePorId() throws NumeroDeEpisodiosInvalidoException, AnimeDuplicadoException, AnimeInexistenteException, AutorizacaoNegadaException {
         // Cria um novo anime
@@ -32,7 +47,7 @@ public class IntegracaoAnimeTest {
         novoAnime.setGenero("Violencia");
 
         // Salva o anime pela fachada
-        Anime animeSalvo = gerenciadorAnimes.createAnime(novoAnime, null);
+        Anime animeSalvo = gerenciadorAnimes.createAnime(novoAnime, adm);
 
         // Busca o anime salvo pelo ID e verifica os dados
         Anime animeEncontrado = gerenciadorAnimes.findAnimeById(animeSalvo.getId());

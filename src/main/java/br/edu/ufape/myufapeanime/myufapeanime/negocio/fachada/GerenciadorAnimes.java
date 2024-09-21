@@ -123,10 +123,11 @@ public class GerenciadorAnimes {
     /**********IMPLEMENTAÇÃO DE CADASTRO Avalicao ********/
 
     // Salvar Avaliacao
-    public Avaliacao createAvaliacao(Avaliacao avaliacao)
-            throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException {
+    public Avaliacao createAvaliacao(Avaliacao avaliacao, Usuario usuario)
+            throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException, AutorizacaoNegadaException {
         // colocar DTO
-        //checarUsuarioLogado(usuario);
+        checarUsuarioLogado(usuario);
+        avaliacao.setUsuarioAvaliador(usuario);
         return cadastroAvaliacao.create(avaliacao);
     }
 

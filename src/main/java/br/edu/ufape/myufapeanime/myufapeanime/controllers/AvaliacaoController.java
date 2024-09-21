@@ -8,6 +8,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
@@ -57,7 +58,6 @@ public class AvaliacaoController {
                                             value = "{\n" +
                                                     "  \"nota\": 5,\n" +
                                                     "  \"comentario\": \"Sensacional!\",\n" +
-                                                    "  \"usuarioAvaliador\": 2,\n" +
                                                     "  \"animeAvaliado\": 1" +
                                                     "}"
                                     )
@@ -75,13 +75,17 @@ public class AvaliacaoController {
         try {
             Usuario usuario = (Usuario) session.getAttribute("user");
             Avaliacao avaliacao = convertToEntity(avaliacaoPeloIdDTO);
-            Avaliacao novaAvaliacao = gerenciador.createAvaliacao(avaliacao);
+
+            Avaliacao novaAvaliacao = gerenciador.createAvaliacao(avaliacao, usuario);
+
             AvaliacaoPeloIdDTO novaAvaliacaoDTO = convertToComIdDTO(novaAvaliacao);
             return ResponseEntity.status(HttpStatus.CREATED).body(novaAvaliacaoDTO);
         } catch (AvaliacaoNotaInvalidaException | UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (AnimeInexistenteException | AvaliacaoDuplicadaException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (AutorizacaoNegadaException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
@@ -309,7 +313,7 @@ public class AvaliacaoController {
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setNota(avaliacaoDTO.getNota());
         avaliacao.setComentario(avaliacaoDTO.getComentario());
-        avaliacao.setUsuarioAvaliador(gerenciador.findUsuarioById(avaliacaoDTO.getUsuarioAvaliador()));
+        //avaliacao.setUsuarioAvaliador(gerenciador.findUsuarioById(avaliacaoDTO.getUsuarioAvaliador()));
         avaliacao.setAnime(gerenciador.findAnimeById(avaliacaoDTO.getAnimeAvaliado()));
 
         return avaliacao;
