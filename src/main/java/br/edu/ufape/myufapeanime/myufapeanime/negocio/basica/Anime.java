@@ -1,10 +1,10 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.basica;
 
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-
-import jakarta.persistence.*;
 
 import static java.lang.Math.max;
 
@@ -49,6 +49,9 @@ public class Anime {
     private List<Avaliacao> avaliacoes;
 
     public Anime() {
+        this.pontuacao = 0.0;
+        this.notaMedia = 0.0;
+        this.avaliacoesTotais = 0L;
     }
 
     //Fazer também um metodo que calcula a nota média do anime
