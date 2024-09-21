@@ -1,6 +1,4 @@
-package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroInterface;
-
-import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
+package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
 import java.util.List;
 
