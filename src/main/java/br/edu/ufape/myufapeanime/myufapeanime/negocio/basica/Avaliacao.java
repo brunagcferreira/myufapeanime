@@ -2,6 +2,23 @@ package br.edu.ufape.myufapeanime.myufapeanime.negocio.basica;
 
 import jakarta.persistence.*;
 
+/**
+ * Classe que representa uma avaliação de um usuário no sistema, associada a um anime específico.
+ * Cada avaliação contém uma nota e um comentário, e é vinculada a um usuário avaliador e a um anime.
+ *
+ * A avaliação reflete a opinião de um usuário sobre um determinado anime, permitindo que diferentes
+ * usuários registrem suas próprias avaliações.
+ *
+ * Relacionamentos:
+ * - Cada avaliação está associada a um único anime.
+ * - Cada avaliação é realizada por um único usuário.
+ *
+ * Esta classe é utilizada para armazenar as informações de cada avaliação e
+ * facilitar o registro de feedbacks individuais dos usuários.
+ *
+ * @author JorgeRibeiro
+ */
+
 @Entity
 @Table(name = "tb_avaliacoes")
 public class Avaliacao {
