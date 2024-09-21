@@ -7,6 +7,8 @@ public class UsuarioDTO {
     private String senha;
     private boolean isAdm;
 
+
+
     public UsuarioDTO() {}
 
     public UsuarioDTO(Long id, String nome, String email, String senha, boolean isAdm) {
@@ -17,7 +19,7 @@ public class UsuarioDTO {
         this.isAdm = isAdm;
     }
 
-    public boolean isAdm(){
+    public boolean getIsAdm(){
         return isAdm;
     }
 
@@ -52,7 +54,18 @@ public class UsuarioDTO {
         this.senha = senha;
     }
 
-    public void setAdm(boolean adm) {
+    public void setIsAdm(boolean adm) {
         isAdm = adm;
+    }
+
+    @Override
+    public String toString() {
+        return "UsuarioDTO{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                ", senha='" + senha + '\'' +
+                ", isAdm=" + isAdm +
+                '}';
     }
 }

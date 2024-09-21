@@ -4,6 +4,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
@@ -63,7 +64,7 @@ public class IntegracaoAvaliacaoTest {
 
     @Test
     public void testCriarEBuscarAvaliacaoPorId()
-            throws AvaliacaoNotaInvalidaException, AnimeInexistenteException, AvaliacaoDuplicadaException, UsuarioInexistenteException, AvaliacaoInexistenteException {
+            throws AvaliacaoNotaInvalidaException, AnimeInexistenteException, AvaliacaoDuplicadaException, UsuarioInexistenteException, AvaliacaoInexistenteException, AutorizacaoNegadaException {
 
         // Cria uma nova avaliação e associa ao anime e usuário
         Avaliacao novaAvaliacao = new Avaliacao();
@@ -73,7 +74,7 @@ public class IntegracaoAvaliacaoTest {
         novaAvaliacao.setUsuarioAvaliador(NovoUsuario); // Usa a variável de instância inicializada no setUp()
 
         // Salva a avaliação pela fachada
-        Avaliacao avaliacaoSalva = gerenciadorAnimes.createAvaliacao(novaAvaliacao);
+        Avaliacao avaliacaoSalva = gerenciadorAnimes.createAvaliacao(novaAvaliacao, NovoUsuario);
 
         // Busca a avaliação salva pelo ID e verifica os dados
         Avaliacao avaliacaoEncontrada = gerenciadorAnimes.findAvaliacaoById(avaliacaoSalva.getId());

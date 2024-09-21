@@ -40,9 +40,6 @@ public class GerenciadorAnimes {
         return cadastroUsuario.create(usuario);
     }
 
-    public Adm saveAdm(Adm adm) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException{
-        return (Adm) cadastroUsuario.create(adm);
-    }
     //atualizar
     public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException, UsuarioDuplicadoException {
         return cadastroUsuario.update(usuario);
@@ -141,9 +138,11 @@ public class GerenciadorAnimes {
     /**********IMPLEMENTAÇÃO DE CADASTRO Avalicao ********/
 
     // Salvar Avaliacao
-    public Avaliacao createAvaliacao(Avaliacao avaliacao)
-            throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException {
+    public Avaliacao createAvaliacao(Avaliacao avaliacao, Usuario usuario)
+            throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException, AutorizacaoNegadaException {
         // colocar DTO
+        checarUsuarioLogado(usuario);
+        avaliacao.setUsuarioAvaliador(usuario);
         return cadastroAvaliacao.create(avaliacao);
     }
 
@@ -179,9 +178,17 @@ public class GerenciadorAnimes {
         return usuario;
     }
 
+
+    //checar se é adm
     private void checarAdm(Usuario usuario) throws AutorizacaoNegadaException {
         if(!(usuario instanceof Adm)){
             throw new AutorizacaoNegadaException("Somente administradores podem atualizar animes");
+        }
+    }
+
+    private void checarUsuarioLogado(Usuario usuario) throws AutorizacaoNegadaException {
+        if(usuario == null){
+            throw new AutorizacaoNegadaException("Faça login para executar essa ação");
         }
     }
 }
