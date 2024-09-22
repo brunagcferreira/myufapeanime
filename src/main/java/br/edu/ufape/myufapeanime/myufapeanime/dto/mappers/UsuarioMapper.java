@@ -2,6 +2,7 @@ package br.edu.ufape.myufapeanime.myufapeanime.dto.mappers;
 
 import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioComAvaliacaoDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioComSenhaDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioLoginDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
@@ -12,14 +13,12 @@ import java.util.List;
 
 public class UsuarioMapper {
     //converte Usuario em UsuarioDTO
+
     public static UsuarioDTO convertToDTO(Usuario usuario) {
         UsuarioDTO dto = new UsuarioDTO();
         dto.setId(usuario.getId());
         dto.setNome(usuario.getNome());
         dto.setEmail(usuario.getEmail());
-        dto.setSenha(usuario.getSenha());
-        dto.setIsAdm(usuario instanceof Adm);
-
         return dto;
     }
 
@@ -28,12 +27,18 @@ public class UsuarioMapper {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
+        return usuario;
+    }
+
+    //converte UsuarioDTO em Usuario com senha
+    public static Usuario convertToEntityPassword(UsuarioComSenhaDTO dto) {
+        Usuario usuario = convertToEntity(dto);
         usuario.setSenha(dto.getSenha());
         return usuario;
     }
 
     //converte UsuarioDTO em Adm
-    public static Adm convertToAdm(UsuarioDTO dto) {
+    public static Adm convertToAdm(UsuarioComSenhaDTO dto) {
         Adm usuario = new Adm();
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
@@ -55,7 +60,6 @@ public class UsuarioMapper {
         dto.setId(usuario.getId());
         dto.setNome(usuario.getNome());
         dto.setEmail(usuario.getEmail());
-        dto.setSenha(usuario.getSenha());
 
         //converter as listas do anime para o Anime DTO para evitar loop
         List<AnimeDTO> assistindo = usuario.getAssistindo().stream()
