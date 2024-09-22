@@ -24,8 +24,6 @@ public class UsuarioMapper {
         dto.setId(usuario.getId());
         dto.setNome(usuario.getNome());
         dto.setEmail(usuario.getEmail());
-        dto.setSenha(usuario.getSenha());
-        dto.setIsAdm(usuario instanceof Adm);
         return dto;
     }
 
@@ -37,6 +35,8 @@ public class UsuarioMapper {
         usuario.setSenha(dto.getSenha());
         return usuario;
     }
+
+    //converte UsuarioDTO em Adm
     public static Adm convertToAdm(UsuarioDTO dto) {
         Adm usuario = new Adm();
         usuario.setNome(dto.getNome());
