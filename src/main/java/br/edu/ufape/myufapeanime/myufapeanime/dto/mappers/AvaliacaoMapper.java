@@ -43,8 +43,7 @@ public class AvaliacaoMapper {
         dto.setId(avaliacao.getId());
         dto.setNota(avaliacao.getNota());
         dto.setComentario(avaliacao.getComentario());
-        dto.setUsuarioAvaliador(avaliacao.getUsuarioAvaliador().getId());
-
+        dto.setNomeUsuario(avaliacao.getUsuarioAvaliador().getNome());
         return dto;
     }
 }
