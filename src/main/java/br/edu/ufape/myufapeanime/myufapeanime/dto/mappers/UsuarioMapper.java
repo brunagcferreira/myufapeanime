@@ -3,21 +3,14 @@ package br.edu.ufape.myufapeanime.myufapeanime.dto.mappers;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioComAvaliacaoDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioLoginDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 
-public class UsuarioMapper {
-    //converte Anime em AnimeDTO
-    public static AnimeDTO convertToAnimeDTO(Anime anime) {
-        AnimeDTO dto = new AnimeDTO();
-        dto.setId(anime.getId());
-        dto.setNome(anime.getNome());
-        dto.setGenero(anime.getGenero());
-        dto.setNumeroEpisodios(anime.getNumEpisodios());
-        return dto;
-    }
+import java.util.List;
 
+public class UsuarioMapper {
     //converte Usuario em UsuarioDTO
     public static UsuarioDTO convertToDTO(Usuario usuario) {
         UsuarioDTO dto = new UsuarioDTO();
@@ -56,4 +49,30 @@ public class UsuarioMapper {
         return dto;
     }
 
+    // converte Usuario em UsuarioLoginDTO
+    public static UsuarioLoginDTO convertToUsuarioComAvaliacaoDTO(Usuario usuario) {
+        UsuarioLoginDTO dto = new UsuarioLoginDTO();
+        dto.setId(usuario.getId());
+        dto.setNome(usuario.getNome());
+        dto.setEmail(usuario.getEmail());
+        dto.setSenha(usuario.getSenha());
+
+        //converter as listas do anime para o Anime DTO para evitar loop
+        List<AnimeDTO> assistindo = usuario.getAssistindo().stream()
+                .map(AnimeMapper::convertToAnimeDTO)
+                .toList();
+
+        List<AnimeDTO> completo = usuario.getCompleto().stream()
+                .map(AnimeMapper::convertToAnimeDTO)
+                .toList();
+
+        List<AnimeDTO> queroAssistir = usuario.getQueroAssistir().stream()
+                .map(AnimeMapper::convertToAnimeDTO)
+                .toList();
+
+        dto.setAssistindo(assistindo);
+        dto.setCompleto(completo);
+        dto.setQueroAssistir(queroAssistir);
+        return dto;
+    }
 }
