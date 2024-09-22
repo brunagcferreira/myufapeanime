@@ -44,8 +44,7 @@ public class Anime {
     private Long avaliacoesTotais;
     private Double notaMedia;
 
-    // Mapeamento do relacionamento com Avaliação, para quando um anime for deletado existir um efeito cascata
-    @OneToMany()
+    @OneToMany(mappedBy = "anime")
     private List<Avaliacao> avaliacoes;
 
     public Anime() {
