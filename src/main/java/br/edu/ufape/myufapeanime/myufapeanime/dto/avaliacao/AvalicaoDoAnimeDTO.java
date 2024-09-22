@@ -3,18 +3,18 @@ package br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao;
 public class AvalicaoDoAnimeDTO {
 
     private Long id;
-    private Long usuarioAvaliador;
+    private String nomeUsuario;
     private Double nota;
     private String comentario;
 
     public AvalicaoDoAnimeDTO() {
     }
 
-    public AvalicaoDoAnimeDTO(Long id, Double nota, String comentario, Long usuarioAvaliador) {
+    public AvalicaoDoAnimeDTO(Long id, Double nota, String comentario, String usuarioAvaliador) {
         this.id = id;
         this.nota = nota;
         this.comentario = comentario;
-        this.usuarioAvaliador = usuarioAvaliador;
+        this.nomeUsuario = usuarioAvaliador;
     }
 
     public Long getId() {
@@ -41,11 +41,11 @@ public class AvalicaoDoAnimeDTO {
         this.comentario = comentario;
     }
 
-    public Long getUsuarioAvaliador() {
-        return usuarioAvaliador;
+    public String getNomeUsuario() {
+        return nomeUsuario;
     }
 
-    public void setUsuarioAvaliador(Long usuarioAvaliador) {
-        this.usuarioAvaliador = usuarioAvaliador;
+    public void setNomeUsuario(String nomeUsuario) {
+        this.nomeUsuario = nomeUsuario;
     }
 }
