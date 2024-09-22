@@ -40,9 +40,6 @@ public class GerenciadorAnimes {
         return cadastroUsuario.create(usuario);
     }
 
-    public Adm saveAdm(Adm adm) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException{
-        return (Adm) cadastroUsuario.create(adm);
-    }
     //atualizar
     public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException, UsuarioDuplicadoException {
         return cadastroUsuario.update(usuario);
@@ -75,33 +72,39 @@ public class GerenciadorAnimes {
     }
 
     //lista assistindo
-    public List<Anime> getAssistindoUsuario(Long usuarioId) throws UsuarioInexistenteException {
-        return cadastroUsuario.getAssistindo(usuarioId);
+    public List<Anime> getAssistindoUsuario(Usuario usuario) throws UsuarioInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        return cadastroUsuario.getAssistindo(usuario.getId());
     }
 
     //lista completos
-    public List<Anime> getCompletosUsuario(Long usuarioId) throws UsuarioInexistenteException {
-        return cadastroUsuario.getCompleto(usuarioId);
+    public List<Anime> getCompletosUsuario(Usuario usuario) throws UsuarioInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        return cadastroUsuario.getCompleto(usuario.getId());
     }
 
     //lista quero assistir
-    public List<Anime> getQueroAssistirUsuario(Long usuarioId) throws UsuarioInexistenteException {
-        return cadastroUsuario.getQueroAssistir(usuarioId);
+    public List<Anime> getQueroAssistirUsuario(Usuario usuario) throws UsuarioInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        return cadastroUsuario.getQueroAssistir(usuario.getId());
     }
 
     //add anime na lista "assistindo" do usuario
-    public void adicionarAnimeAssistindo(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
-        cadastroUsuario.adicionarAnimeAssistindo(usuarioId, animeId);
+    public void adicionarAnimeAssistindo(Usuario usuario, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        cadastroUsuario.adicionarAnimeAssistindo(usuario.getId(), animeId);
     }
 
     //add anime na lista "completo" do usuario
-    public void adicionarAnimeCompleto(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
-        cadastroUsuario.adicionarAnimeCompleto(usuarioId, animeId);
+    public void adicionarAnimeCompleto(Usuario usuario, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        cadastroUsuario.adicionarAnimeCompleto(usuario.getId(), animeId);
     }
 
     //add anime na lista "queroassitir" do usuario
-    public void adicionarAnimeQueroAssistir(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
-        cadastroUsuario.adicionarAnimeQueroAssistir(usuarioId, animeId);
+    public void adicionarAnimeQueroAssistir(Usuario usuario, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        cadastroUsuario.adicionarAnimeQueroAssistir(usuario.getId(), animeId);
     }
 
     /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/
@@ -141,9 +144,11 @@ public class GerenciadorAnimes {
     /**********IMPLEMENTAÇÃO DE CADASTRO Avalicao ********/
 
     // Salvar Avaliacao
-    public Avaliacao createAvaliacao(Avaliacao avaliacao)
-            throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException {
+    public Avaliacao createAvaliacao(Avaliacao avaliacao, Usuario usuario)
+            throws AvaliacaoNotaInvalidaException, UsuarioInexistenteException, AnimeInexistenteException, AvaliacaoDuplicadaException, AutorizacaoNegadaException {
         // colocar DTO
+        checarUsuarioLogado(usuario);
+        avaliacao.setUsuarioAvaliador(usuario);
         return cadastroAvaliacao.create(avaliacao);
     }
 
@@ -179,9 +184,17 @@ public class GerenciadorAnimes {
         return usuario;
     }
 
+
+    //checar se é adm
     private void checarAdm(Usuario usuario) throws AutorizacaoNegadaException {
         if(!(usuario instanceof Adm)){
             throw new AutorizacaoNegadaException("Somente administradores podem atualizar animes");
+        }
+    }
+
+    private void checarUsuarioLogado(Usuario usuario) throws AutorizacaoNegadaException {
+        if(usuario == null){
+            throw new AutorizacaoNegadaException("Faça login para executar essa ação");
         }
     }
 }

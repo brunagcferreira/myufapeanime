@@ -10,11 +10,13 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioSenhaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,11 +74,13 @@ public class UsuarioController {
     }
     
     //exibir lista_assistindo
-    @GetMapping("/{id}/assistindo")
-    public ResponseEntity<List<AnimeDTO>> getAnimesAssistidosUsuario(@PathVariable Long id) {
+    @GetMapping("/assistindo")
+    public ResponseEntity<List<AnimeDTO>> getAnimesAssistidosUsuario(HttpSession session) {
         try {
             //busca a lista de animes assistidos
-            List<Anime> animesAssistidos = gerenciador.getAssistindoUsuario(id);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+
+            List<Anime> animesAssistidos = gerenciador.getAssistindoUsuario(usuario);
 
             //converte os Animes para AnimeDTOs
             List<AnimeDTO> dtos = animesAssistidos.stream()
@@ -84,99 +88,101 @@ public class UsuarioController {
                 .collect(Collectors.toList());
 
             return ResponseEntity.ok(dtos); 
-        } catch (UsuarioInexistenteException e) {
+        } catch (UsuarioInexistenteException | AutorizacaoNegadaException e) {
             return ResponseEntity.notFound().build(); 
         }
     }
 
     //exibir lista_completo
-    @GetMapping("/{id}/completos")
-    public ResponseEntity<List<AnimeDTO>> getAnimesCompletos(@PathVariable Long id) {
+    @GetMapping("/completos")
+    public ResponseEntity<List<AnimeDTO>> getAnimesCompletos(HttpSession session) {
         try {
-            List<Anime> animesAssistidos = gerenciador.getCompletosUsuario(id);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+            List<Anime> animesAssistidos = gerenciador.getCompletosUsuario(usuario);
 
             List<AnimeDTO> dtos = animesAssistidos.stream()
                 .map(UsuarioMapper::convertToAnimeDTO)
                 .collect(Collectors.toList());
 
-            return ResponseEntity.ok(dtos); 
-        } catch (UsuarioInexistenteException e) {
-            return ResponseEntity.notFound().build(); 
+            return ResponseEntity.ok(dtos);
+        } catch (UsuarioInexistenteException | AutorizacaoNegadaException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     //exibir lista_quero_assistir
-    @GetMapping("/{id}/quero-assistir")
-    public ResponseEntity<List<AnimeDTO>> getAnimesQueroAssistir(@PathVariable Long id) {
+    @GetMapping("/quero-assistir")
+    public ResponseEntity<List<AnimeDTO>> getAnimesQueroAssistir(HttpSession session) {
         try {
-            List<Anime> animesAssistidos = gerenciador.getQueroAssistirUsuario(id);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+
+            List<Anime> animesAssistidos = gerenciador.getQueroAssistirUsuario(usuario);
 
             List<AnimeDTO> dtos = animesAssistidos.stream()
                 .map(UsuarioMapper::convertToAnimeDTO)
                 .collect(Collectors.toList());
 
-            return ResponseEntity.ok(dtos); 
+            return ResponseEntity.ok(dtos);
         } catch (UsuarioInexistenteException e) {
-            return ResponseEntity.notFound().build(); 
+            return ResponseEntity.notFound().build();
+        } catch (AutorizacaoNegadaException e) {
+            throw new RuntimeException(e);
         }
     }
 
 
     /*****  METODOS POST *****/
 
-    //Cadastrar novo usuario
-    //TODO acho que isso daqui sai de usuario, já está em autenticaçao
-    @PostMapping("/cadastrar")
-    public ResponseEntity<Object> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
-        try {
-            Usuario usuario = UsuarioMapper.convertToEntity(usuarioDTO);
-            Usuario novoUsuario = gerenciador.createUsuario(usuario);
-            UsuarioDTO novoUsuarioDTO = UsuarioMapper.convertToDTO(novoUsuario);
-            UsuarioResponse response = new UsuarioResponse("Usuário cadastrado com sucesso!", novoUsuarioDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-
-        } catch (UsuarioDuplicadoException | UsuarioSenhaInvalidaException e) {
-            
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
-    }
-
     // Adicionar anime à lista "assistindo"
-    @PostMapping("/{usuarioId}/assistindo/{animeId}")
-    public ResponseEntity<Object> adicionarAnimeAssistindo(@PathVariable Long usuarioId, @PathVariable Long animeId) {
+    @PostMapping("/assistindo/{animeId}")
+    public ResponseEntity<Object> adicionarAnimeAssistindo(@PathVariable Long animeId, HttpSession session) {
         try {
-            gerenciador.adicionarAnimeAssistindo(usuarioId, animeId);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+
+            gerenciador.adicionarAnimeAssistindo(usuario, animeId);
             return ResponseEntity.ok("Anime adicionado à lista 'assistindo' com sucesso!");
         } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (AutorizacaoNegadaException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
     // Adicionar anime à lista "completo"
-    @PostMapping("/{usuarioId}/completo/{animeId}")
-    public ResponseEntity<Object> adicionarAnimeCompleto(@PathVariable Long usuarioId, @PathVariable Long animeId) {
+    @PostMapping("/completo/{animeId}")
+    public ResponseEntity<Object> adicionarAnimeCompleto(@PathVariable Long animeId, HttpSession session) {
         try {
-            gerenciador.adicionarAnimeCompleto(usuarioId, animeId);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+
+            gerenciador.adicionarAnimeCompleto(usuario, animeId);
+
             return ResponseEntity.ok("Anime adicionado à lista 'completo' com sucesso!");
         } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (AutorizacaoNegadaException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
     // Adicionar anime à lista "quero assistir"
-    @PostMapping("/{usuarioId}/quero-assistir/{animeId}")
-    public ResponseEntity<Object> adicionarAnimeQueroAssistir(@PathVariable Long usuarioId, @PathVariable Long animeId) {
+    @PostMapping("/quero-assistir/{animeId}")
+    public ResponseEntity<Object> adicionarAnimeQueroAssistir(@PathVariable Long animeId, HttpSession session) {
         try {
-            gerenciador.adicionarAnimeQueroAssistir(usuarioId, animeId);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+
+            gerenciador.adicionarAnimeQueroAssistir(usuario, animeId);
+
             return ResponseEntity.ok("Anime adicionado à lista 'quero assistir' com sucesso!");
         } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }catch (AutorizacaoNegadaException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 

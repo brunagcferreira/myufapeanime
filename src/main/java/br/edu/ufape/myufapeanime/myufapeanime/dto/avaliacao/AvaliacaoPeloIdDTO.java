@@ -12,10 +12,9 @@ public class AvaliacaoPeloIdDTO {
 
     public AvaliacaoPeloIdDTO() {}
 
-    public AvaliacaoPeloIdDTO(Double nota, String comentario, Long usuarioAvaliador, Long animeAvaliado) {
+    public AvaliacaoPeloIdDTO(Double nota, String comentario, Long animeAvaliado) {
         this.nota = nota;
         this.comentario = comentario;
-        this.usuarioAvaliador = usuarioAvaliador;
         this.AnimeAvaliado = animeAvaliado;
     }
 
