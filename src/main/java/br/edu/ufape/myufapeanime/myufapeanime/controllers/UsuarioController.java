@@ -346,7 +346,7 @@ public class UsuarioController {
     )
     public ResponseEntity<Object> deleteUsuario(@PathVariable Long id) {
         try {
-            gerenciador.deleteUsuarioById(id);
+
             // Faz uma lista filtrando apenas as avaliações desse user e dps apaga elas
             List<Avaliacao> avaliacao = gerenciador.findAllAvaliacao();
             List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
@@ -359,8 +359,10 @@ public class UsuarioController {
                 } catch (AvaliacaoInexistenteException e) {
                     throw new RuntimeException(e);
                 }
+
             });
 
+            gerenciador.deleteUsuarioById(id);
             return ResponseEntity.noContent().build(); 
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
