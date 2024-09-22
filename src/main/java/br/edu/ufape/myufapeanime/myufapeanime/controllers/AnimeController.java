@@ -287,7 +287,7 @@ public class AnimeController {
     public ResponseEntity<Object> deletarAnime(@PathVariable Long id, HttpSession session) {
         try {
             Usuario usuario = (Usuario) session.getAttribute("user");
-            gerenciadorAnimes.deletarAnime(id, usuario);
+
             // Faz uma lista filtrando apenas as avaliações desse user e dps apaga elas
             List<Avaliacao> avaliacao = gerenciadorAnimes.findAllAvaliacao();
             List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
@@ -301,6 +301,8 @@ public class AnimeController {
                     throw new RuntimeException(e);
                 }
             });
+
+            gerenciadorAnimes.deletarAnime(id, usuario);
             return ResponseEntity.ok("Anime e suas avaliações foram deletados com sucesso.");
         } catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
