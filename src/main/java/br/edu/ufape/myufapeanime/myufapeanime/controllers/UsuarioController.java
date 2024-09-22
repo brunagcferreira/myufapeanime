@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/usuario")
-@Tag(name = "Usuario", description = "API para operações relacionadas a usuários")
+@Tag(name = "Usuários", description = "API de gerenciamento de usuarios")
 public class UsuarioController {
 
     @Autowired
@@ -44,7 +44,7 @@ public class UsuarioController {
     @Operation(
         summary = "Listar todos os usuários",
         description = "Retorna uma lista com todos os usuários cadastrados no sistema.",
-        tags = {"Usuario"},
+        tags = {"Usuários"},
         responses = {
             @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado")
@@ -62,7 +62,7 @@ public class UsuarioController {
     @Operation(
         summary = "Buscar usuário por ID",
         description = "Retorna os detalhes de um usuário específico com base no ID fornecido.",
-        tags = {"Usuario"},
+        tags = {"Usuários"},
         parameters = {
             @Parameter(name = "id", description = "ID do usuário a ser buscado", required = true, example = "1")
         },
@@ -86,7 +86,7 @@ public class UsuarioController {
     @Operation(
         summary = "Buscar usuários por nome",
         description = "Retorna uma lista de usuários cujo nome corresponde ao fornecido.",
-        tags = {"Usuario"},
+        tags = {"Usuários"},
         parameters = {
             @Parameter(name = "nome", description = "Nome do usuário a ser buscado", required = true, example = "João")
         },
@@ -113,7 +113,7 @@ public class UsuarioController {
     @Operation(
         summary = "Listar animes na lista 'assistindo' do usuário",
         description = "Retorna a lista de animes que o usuário está atualmente assistindo.",
-        tags = {"Usuario", "Animes"},
+        tags = {"Usuários", "Animes"},
         responses = {
             @ApiResponse(responseCode = "200", description = "Lista de animes retornada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Usuário ou lista de animes não encontrada")
@@ -139,9 +139,9 @@ public class UsuarioController {
     //exibir lista_completo
     @GetMapping("/completos")
     @Operation(
-        summary = "Listar animes completos do usuário",
+        summary = "Listar animes na lista 'completos' do usuário",
         description = "Retorna a lista de animes que o usuário completou.",
-        tags = {"Usuario", "Animes"},
+        tags = {"Usuários", "Animes"},
         responses = {
             @ApiResponse(responseCode = "200", description = "Lista de animes retornada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Usuário ou lista de animes não encontrada")
@@ -166,7 +166,7 @@ public class UsuarioController {
     @Operation(
         summary = "Listar animes na lista 'quero assistir' do usuário",
         description = "Retorna a lista de animes que o usuário marcou como 'quero assistir'.",
-        tags = {"Usuario", "Animes"},
+        tags = {"Usuários", "Animes"},
         responses = {
             @ApiResponse(responseCode = "200", description = "Lista de animes retornada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Usuário ou lista de animes não encontrada")
@@ -197,7 +197,7 @@ public class UsuarioController {
         @Operation(
         summary = "Adicionar anime à lista 'assistindo'",
         description = "Adiciona um anime à lista de animes que o usuário está assistindo.",
-        tags = {"Usuario", "Animes"},
+        tags = {"Usuários", "Animes"},
         parameters = {
             @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
         },
@@ -226,7 +226,7 @@ public class UsuarioController {
     @Operation(
         summary = "Adicionar anime à lista 'completo'",
         description = "Adiciona um anime à lista de animes que o usuário completou.",
-        tags = {"Usuario", "Animes"},
+        tags = {"Usuários", "Animes"},
         parameters = {
             @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
         },
@@ -256,7 +256,7 @@ public class UsuarioController {
     @Operation(
         summary = "Adicionar anime à lista 'quero assistir'",
         description = "Adiciona um anime à lista de animes que o usuário deseja assistir.",
-        tags = {"Usuario", "Animes"},
+        tags = {"Usuários", "Animes"},
         parameters = {
             @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
         },
@@ -288,7 +288,7 @@ public class UsuarioController {
     @Operation(
         summary = "Atualizar usuário",
         description = "Atualiza as informações de um usuário existente com base no ID fornecido.",
-        tags = {"Usuario"},
+        tags = {"Usuários"},
         parameters = {
             @Parameter(name = "id", description = "ID do usuário a ser atualizado", required = true, example = "1")
         },
@@ -334,7 +334,7 @@ public class UsuarioController {
     @Operation(
         summary = "Deletar usuário",
         description = "Remove um usuário do sistema com base no ID fornecido.",
-        tags = {"Usuario"},
+        tags = {"Usuários"},
         parameters = {
             @Parameter(name = "id", description = "ID do usuário a ser deletado", required = true, example = "1")
         },
