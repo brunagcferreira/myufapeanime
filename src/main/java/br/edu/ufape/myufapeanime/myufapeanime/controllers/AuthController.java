@@ -41,7 +41,7 @@ public class AuthController {
                             schema = @Schema(implementation = LoginDTO.class),
                             examples = @ExampleObject(
                                     name = "Exemplo de Login",
-                                    value = "{ \"email\": \"usuario@example.com\", \"senha\": \"12345\" }"
+                                    value = "{ \"email\": \"usuario@example.com\", \"senha\": \"123456\" }"
                             )
                     )
             ),
@@ -89,7 +89,7 @@ public class AuthController {
                             schema = @Schema(implementation = UsuarioDTO.class),
                             examples = @ExampleObject(
                                     name = "Exemplo de Cadastro",
-                                    value = "{ \"nome\": \"João Silva\", \"email\": \"joao@example.com\", \"senha\": \"12345\", \"isAdm\": false }"
+                                    value = "{ \"nome\": \"João Silva\", \"email\": \"joao@example.com\", \"senha\": \"123456\", \"isAdm\": false }"
                             )
                     )
             ),
