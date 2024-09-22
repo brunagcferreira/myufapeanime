@@ -13,6 +13,8 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExce
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -299,6 +301,42 @@ public class AnimeController {
                     gerenciadorAnimes.deleteAvaliacaoById(avaliacaoDTO.getId());
                 } catch (AvaliacaoInexistenteException e) {
                     throw new RuntimeException(e);
+                }
+            });
+
+            List<Usuario> todosUsuariosQueroAssistir = gerenciadorAnimes.findAllUsuarios();
+            todosUsuariosQueroAssistir.forEach(user -> {
+                List<Anime> queroAssistirList = user.getQueroAssistir();
+                if (queroAssistirList.removeIf(anime -> anime.getId().equals(id))) {
+                    try {
+                        gerenciadorAnimes.updateUsuario(user); // Atualiza o usuário com a lista atualizada
+                    } catch (UsuarioInexistenteException | UsuarioDuplicadoException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
+            List<Usuario> todosUsuariosCompleto = gerenciadorAnimes.findAllUsuarios();
+            todosUsuariosCompleto.forEach(user -> {
+                List<Anime> CompletoList = user.getCompleto();
+                if (CompletoList.removeIf(anime -> anime.getId().equals(id))) {
+                    try {
+                        gerenciadorAnimes.updateUsuario(user); // Atualiza o usuário com a lista atualizada
+                    } catch (UsuarioInexistenteException | UsuarioDuplicadoException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
+            List<Usuario> todosUsuariosAssistindo = gerenciadorAnimes.findAllUsuarios();
+            todosUsuariosAssistindo.forEach(user -> {
+                List<Anime> queroAssistirList = user.getAssistindo();
+                if (queroAssistirList.removeIf(anime -> anime.getId().equals(id))) {
+                    try {
+                        gerenciadorAnimes.updateUsuario(user); // Atualiza o usuário com a lista atualizada
+                    } catch (UsuarioInexistenteException | UsuarioDuplicadoException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
 
