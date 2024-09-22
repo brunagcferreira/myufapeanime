@@ -72,33 +72,39 @@ public class GerenciadorAnimes {
     }
 
     //lista assistindo
-    public List<Anime> getAssistindoUsuario(Long usuarioId) throws UsuarioInexistenteException {
-        return cadastroUsuario.getAssistindo(usuarioId);
+    public List<Anime> getAssistindoUsuario(Usuario usuario) throws UsuarioInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        return cadastroUsuario.getAssistindo(usuario.getId());
     }
 
     //lista completos
-    public List<Anime> getCompletosUsuario(Long usuarioId) throws UsuarioInexistenteException {
-        return cadastroUsuario.getCompleto(usuarioId);
+    public List<Anime> getCompletosUsuario(Usuario usuario) throws UsuarioInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        return cadastroUsuario.getCompleto(usuario.getId());
     }
 
     //lista quero assistir
-    public List<Anime> getQueroAssistirUsuario(Long usuarioId) throws UsuarioInexistenteException {
-        return cadastroUsuario.getQueroAssistir(usuarioId);
+    public List<Anime> getQueroAssistirUsuario(Usuario usuario) throws UsuarioInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        return cadastroUsuario.getQueroAssistir(usuario.getId());
     }
 
     //add anime na lista "assistindo" do usuario
-    public void adicionarAnimeAssistindo(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
-        cadastroUsuario.adicionarAnimeAssistindo(usuarioId, animeId);
+    public void adicionarAnimeAssistindo(Usuario usuario, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        cadastroUsuario.adicionarAnimeAssistindo(usuario.getId(), animeId);
     }
 
     //add anime na lista "completo" do usuario
-    public void adicionarAnimeCompleto(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
-        cadastroUsuario.adicionarAnimeCompleto(usuarioId, animeId);
+    public void adicionarAnimeCompleto(Usuario usuario, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        cadastroUsuario.adicionarAnimeCompleto(usuario.getId(), animeId);
     }
 
     //add anime na lista "queroassitir" do usuario
-    public void adicionarAnimeQueroAssistir(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
-        cadastroUsuario.adicionarAnimeQueroAssistir(usuarioId, animeId);
+    public void adicionarAnimeQueroAssistir(Usuario usuario, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        cadastroUsuario.adicionarAnimeQueroAssistir(usuario.getId(), animeId);
     }
 
     /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/
