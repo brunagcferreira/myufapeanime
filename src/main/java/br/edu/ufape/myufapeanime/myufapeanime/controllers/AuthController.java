@@ -2,6 +2,7 @@ package br.edu.ufape.myufapeanime.myufapeanime.controllers;
 
 import br.edu.ufape.myufapeanime.myufapeanime.dto.login.LoginDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.UsuarioMapper;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioComSenhaDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioResponse;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
@@ -54,10 +55,11 @@ public class AuthController {
     public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO, HttpSession session) {
         try {
             Usuario usuario = gerenciador.login(loginDTO.getEmail(), loginDTO.getSenha());
-            UsuarioDTO usuarioDTOParaexibir = UsuarioMapper.convertToUsuarioComAvaliacaoDTO(usuario);
+
+            UsuarioDTO usuarioDTOParaExibir = UsuarioMapper.convertToUsuarioComAvaliacaoDTO(usuario);
             session.setAttribute("user", usuario);
 
-            return ResponseEntity.ok(usuarioDTOParaexibir);
+            return ResponseEntity.ok(usuarioDTOParaExibir);
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch(UsuarioSenhaInvalidaException e){
@@ -101,19 +103,20 @@ public class AuthController {
                     @ApiResponse(responseCode = "422", description = "Senha inválida")
             }
     )
-    public ResponseEntity<Object> cadastrar(@RequestBody UsuarioDTO usuarioDTO, HttpSession session) {
+    public ResponseEntity<Object> cadastrar(@RequestBody UsuarioComSenhaDTO usuarioComSenhaDTO, HttpSession session) {
         try {
             Usuario usuarioR = null;
 
-            if (usuarioDTO.getIsAdm()) {
-                Adm usuario = UsuarioMapper.convertToAdm(usuarioDTO);
+            if (usuarioComSenhaDTO.getIsAdm()) {
+                Adm usuario = UsuarioMapper.convertToAdm(usuarioComSenhaDTO);
                 usuarioR = gerenciador.createUsuario(usuario);
             } else {
-                Usuario usuario = UsuarioMapper.convertToEntity(usuarioDTO);
+                Usuario usuario = UsuarioMapper.convertToEntityPassword(usuarioComSenhaDTO);
                 usuarioR = gerenciador.createUsuario(usuario);
             }
 
             UsuarioDTO novoUsuarioDTO = UsuarioMapper.convertToDTO(usuarioR);
+
             UsuarioResponse response = new UsuarioResponse("Usuário cadastrado com sucesso!", novoUsuarioDTO);
             session.setAttribute("user", usuarioR);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
