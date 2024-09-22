@@ -54,8 +54,10 @@ public class AuthController {
     public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO, HttpSession session) {
         try {
             Usuario usuario = gerenciador.login(loginDTO.getEmail(), loginDTO.getSenha());
+            UsuarioDTO usuarioDTOParaexibir = UsuarioMapper.convertToUsuarioComAvaliacaoDTO(usuario);
             session.setAttribute("user", usuario);
-            return ResponseEntity.ok(usuario);
+
+            return ResponseEntity.ok(usuarioDTOParaexibir);
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch(UsuarioSenhaInvalidaException e){

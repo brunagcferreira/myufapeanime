@@ -3,6 +3,7 @@ package br.edu.ufape.myufapeanime.myufapeanime.controllers;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.anime.AnimeDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.UsuarioMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioResponse;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,34 +44,34 @@ public class UsuarioController {
     //listar todos os usuarios
     @GetMapping("/list")
     @Operation(
-        summary = "Listar todos os usuários",
-        description = "Retorna uma lista com todos os usuários cadastrados no sistema.",
-        tags = {"Usuários"},
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado")
-        })
+            summary = "Listar todos os usuários",
+            description = "Retorna uma lista com todos os usuários cadastrados no sistema.",
+            tags = {"Usuários"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado")
+            })
     public ResponseEntity<List<UsuarioDTO>> findAll() {
         List<Usuario> usuarios = gerenciador.findAllUsuarios();
         List<UsuarioDTO> result = usuarios.stream()
-            .map(UsuarioMapper::convertToDTO)
-            .collect(Collectors.toList());
+                .map(UsuarioMapper::convertToDTO)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
 
     //procurar por ID
     @GetMapping("/{id}")
     @Operation(
-        summary = "Buscar usuário por ID",
-        description = "Retorna os detalhes de um usuário específico com base no ID fornecido.",
-        tags = {"Usuários"},
-        parameters = {
-            @Parameter(name = "id", description = "ID do usuário a ser buscado", required = true, example = "1")
-        },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
-        })
+            summary = "Buscar usuário por ID",
+            description = "Retorna os detalhes de um usuário específico com base no ID fornecido.",
+            tags = {"Usuários"},
+            parameters = {
+                    @Parameter(name = "id", description = "ID do usuário a ser buscado", required = true, example = "1")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+            })
     public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {
         try {
             Usuario usuario = gerenciador.findUsuarioById(id);
@@ -84,19 +86,19 @@ public class UsuarioController {
     //procurar por nome
     @GetMapping("/nome/{nome}")
     @Operation(
-        summary = "Buscar usuários por nome",
-        description = "Retorna uma lista de usuários cujo nome corresponde ao fornecido.",
-        tags = {"Usuários"},
-        parameters = {
-            @Parameter(name = "nome", description = "Nome do usuário a ser buscado", required = true, example = "João")
-        },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Usuários encontrados com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado com o nome fornecido")
-        })
+            summary = "Buscar usuários por nome",
+            description = "Retorna uma lista de usuários cujo nome corresponde ao fornecido.",
+            tags = {"Usuários"},
+            parameters = {
+                    @Parameter(name = "nome", description = "Nome do usuário a ser buscado", required = true, example = "João")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuários encontrados com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado com o nome fornecido")
+            })
     public ResponseEntity<List<UsuarioDTO>> findByNome(@PathVariable String nome) {
         List<Usuario> usuarios = gerenciador.findByNomeUsuario(nome);
-        
+
         if (usuarios.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -107,17 +109,17 @@ public class UsuarioController {
 
         return ResponseEntity.ok(dtos);
     }
-    
+
     //exibir lista_assistindo
     @GetMapping("/assistindo")
     @Operation(
-        summary = "Listar animes na lista 'assistindo' do usuário",
-        description = "Retorna a lista de animes que o usuário está atualmente assistindo.",
-        tags = {"Usuários", "Animes"},
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de animes retornada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou lista de animes não encontrada")
-        })
+            summary = "Listar animes na lista 'assistindo' do usuário",
+            description = "Retorna a lista de animes que o usuário está atualmente assistindo.",
+            tags = {"Usuários", "Animes"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de animes retornada com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário ou lista de animes não encontrada")
+            })
     public ResponseEntity<List<AnimeDTO>> getAnimesAssistidosUsuario(HttpSession session) {
         try {
             //busca a lista de animes assistidos
@@ -127,33 +129,33 @@ public class UsuarioController {
 
             //converte os Animes para AnimeDTOs
             List<AnimeDTO> dtos = animesAssistidos.stream()
-                .map(UsuarioMapper::convertToAnimeDTO)
-                .collect(Collectors.toList());
+                    .map(AnimeMapper::convertToAnimeDTO)
+                    .collect(Collectors.toList());
 
-            return ResponseEntity.ok(dtos); 
+            return ResponseEntity.ok(dtos);
         } catch (UsuarioInexistenteException | AutorizacaoNegadaException e) {
-            return ResponseEntity.notFound().build(); 
+            return ResponseEntity.notFound().build();
         }
     }
 
     //exibir lista_completo
     @GetMapping("/completos")
     @Operation(
-        summary = "Listar animes na lista 'completos' do usuário",
-        description = "Retorna a lista de animes que o usuário completou.",
-        tags = {"Usuários", "Animes"},
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de animes retornada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou lista de animes não encontrada")
-        })
+            summary = "Listar animes na lista 'completos' do usuário",
+            description = "Retorna a lista de animes que o usuário completou.",
+            tags = {"Usuários", "Animes"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de animes retornada com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário ou lista de animes não encontrada")
+            })
     public ResponseEntity<List<AnimeDTO>> getAnimesCompletos(HttpSession session) {
         try {
             Usuario usuario = (Usuario) session.getAttribute("user");
             List<Anime> animesAssistidos = gerenciador.getCompletosUsuario(usuario);
 
             List<AnimeDTO> dtos = animesAssistidos.stream()
-                .map(UsuarioMapper::convertToAnimeDTO)
-                .collect(Collectors.toList());
+                    .map(AnimeMapper::convertToAnimeDTO)
+                    .collect(Collectors.toList());
 
             return ResponseEntity.ok(dtos);
         } catch (UsuarioInexistenteException | AutorizacaoNegadaException e) {
@@ -164,13 +166,13 @@ public class UsuarioController {
     //exibir lista_quero_assistir
     @GetMapping("/quero-assistir")
     @Operation(
-        summary = "Listar animes na lista 'quero assistir' do usuário",
-        description = "Retorna a lista de animes que o usuário marcou como 'quero assistir'.",
-        tags = {"Usuários", "Animes"},
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de animes retornada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou lista de animes não encontrada")
-        })
+            summary = "Listar animes na lista 'quero assistir' do usuário",
+            description = "Retorna a lista de animes que o usuário marcou como 'quero assistir'.",
+            tags = {"Usuários", "Animes"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de animes retornada com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário ou lista de animes não encontrada")
+            })
     public ResponseEntity<List<AnimeDTO>> getAnimesQueroAssistir(HttpSession session) {
         try {
             Usuario usuario = (Usuario) session.getAttribute("user");
@@ -178,8 +180,8 @@ public class UsuarioController {
             List<Anime> animesAssistidos = gerenciador.getQueroAssistirUsuario(usuario);
 
             List<AnimeDTO> dtos = animesAssistidos.stream()
-                .map(UsuarioMapper::convertToAnimeDTO)
-                .collect(Collectors.toList());
+                    .map(AnimeMapper::convertToAnimeDTO)
+                    .collect(Collectors.toList());
 
             return ResponseEntity.ok(dtos);
         } catch (UsuarioInexistenteException e) {
@@ -194,18 +196,18 @@ public class UsuarioController {
 
     // Adicionar anime à lista "assistindo"
     @PostMapping("/assistindo/{animeId}")
-        @Operation(
-        summary = "Adicionar anime à lista 'assistindo'",
-        description = "Adiciona um anime à lista de animes que o usuário está assistindo.",
-        tags = {"Usuários", "Animes"},
-        parameters = {
-            @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
-        },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
-            @ApiResponse(responseCode = "403", description = "Acesso negado")
-        })
+    @Operation(
+            summary = "Adicionar anime à lista 'assistindo'",
+            description = "Adiciona um anime à lista de animes que o usuário está assistindo.",
+            tags = {"Usuários", "Animes"},
+            parameters = {
+                    @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
+                    @ApiResponse(responseCode = "403", description = "Acesso negado")
+            })
     public ResponseEntity<Object> adicionarAnimeAssistindo(@PathVariable Long animeId, HttpSession session) {
         try {
             Usuario usuario = (Usuario) session.getAttribute("user");
@@ -216,7 +218,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (AutorizacaoNegadaException e){
+        } catch (AutorizacaoNegadaException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
@@ -224,17 +226,17 @@ public class UsuarioController {
     // Adicionar anime à lista "completo"
     @PostMapping("/completo/{animeId}")
     @Operation(
-        summary = "Adicionar anime à lista 'completo'",
-        description = "Adiciona um anime à lista de animes que o usuário completou.",
-        tags = {"Usuários", "Animes"},
-        parameters = {
-            @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
-        },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
-            @ApiResponse(responseCode = "403", description = "Acesso negado")
-        })
+            summary = "Adicionar anime à lista 'completo'",
+            description = "Adiciona um anime à lista de animes que o usuário completou.",
+            tags = {"Usuários", "Animes"},
+            parameters = {
+                    @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
+                    @ApiResponse(responseCode = "403", description = "Acesso negado")
+            })
     public ResponseEntity<Object> adicionarAnimeCompleto(@PathVariable Long animeId, HttpSession session) {
         try {
             Usuario usuario = (Usuario) session.getAttribute("user");
@@ -246,7 +248,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (AutorizacaoNegadaException e){
+        } catch (AutorizacaoNegadaException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
@@ -254,17 +256,17 @@ public class UsuarioController {
     // Adicionar anime à lista "quero assistir"
     @PostMapping("/quero-assistir/{animeId}")
     @Operation(
-        summary = "Adicionar anime à lista 'quero assistir'",
-        description = "Adiciona um anime à lista de animes que o usuário deseja assistir.",
-        tags = {"Usuários", "Animes"},
-        parameters = {
-            @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
-        },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
-            @ApiResponse(responseCode = "403", description = "Acesso negado")
-        })
+            summary = "Adicionar anime à lista 'quero assistir'",
+            description = "Adiciona um anime à lista de animes que o usuário deseja assistir.",
+            tags = {"Usuários", "Animes"},
+            parameters = {
+                    @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
+                    @ApiResponse(responseCode = "403", description = "Acesso negado")
+            })
     public ResponseEntity<Object> adicionarAnimeQueroAssistir(@PathVariable Long animeId, HttpSession session) {
         try {
             Usuario usuario = (Usuario) session.getAttribute("user");
@@ -276,7 +278,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }catch (AutorizacaoNegadaException e){
+        } catch (AutorizacaoNegadaException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
@@ -286,33 +288,33 @@ public class UsuarioController {
     //update usuário existente
     @PutMapping("atualizar/{id}")
     @Operation(
-        summary = "Atualizar usuário",
-        description = "Atualiza as informações de um usuário existente com base no ID fornecido.",
-        tags = {"Usuários"},
-        parameters = {
-            @Parameter(name = "id", description = "ID do usuário a ser atualizado", required = true, example = "1")
-        },
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Objeto JSON contendo os novos dados do usuário",
-            required = true,
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = UsuarioDTO.class)
-            )
-        ),
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "409", description = "Conflito de dados, e-mail já cadastrado")
-        }
+            summary = "Atualizar usuário",
+            description = "Atualiza as informações de um usuário existente com base no ID fornecido.",
+            tags = {"Usuários"},
+            parameters = {
+                    @Parameter(name = "id", description = "ID do usuário a ser atualizado", required = true, example = "1")
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Objeto JSON contendo os novos dados do usuário",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UsuarioDTO.class)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+                    @ApiResponse(responseCode = "409", description = "Conflito de dados, e-mail já cadastrado")
+            }
     )
     public ResponseEntity<Object> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
         try {
             Usuario usuario = UsuarioMapper.convertToEntity(usuarioDTO);
-            usuario.setId(id); 
-            
+            usuario.setId(id);
+
             Usuario usuarioAtualizado = gerenciador.updateUsuario(usuario);
-            
+
             UsuarioDTO usuarioAtualizadoDTO = UsuarioMapper.convertToDTO(usuarioAtualizado);
 
             UsuarioResponse response = new UsuarioResponse("Usuário atualizado com sucesso!", usuarioAtualizadoDTO);
@@ -320,7 +322,7 @@ public class UsuarioController {
 
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (UsuarioDuplicadoException e) {
+        } catch (UsuarioDuplicadoException e) {
             // Se o e-mail já estiver em uso, retorna 409 (Conflito)
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
@@ -332,17 +334,17 @@ public class UsuarioController {
     //apagar usuario por id
     @DeleteMapping("deletar/{id}")
     @Operation(
-        summary = "Deletar usuário",
-        description = "Remove um usuário do sistema com base no ID fornecido.",
-        tags = {"Usuários"},
-        parameters = {
-            @Parameter(name = "id", description = "ID do usuário a ser deletado", required = true, example = "1")
-        },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-        }
+            summary = "Deletar usuário",
+            description = "Remove um usuário do sistema com base no ID fornecido.",
+            tags = {"Usuários"},
+            parameters = {
+                    @Parameter(name = "id", description = "ID do usuário a ser deletado", required = true, example = "1")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            }
     )
     public ResponseEntity<Object> deleteUsuario(@PathVariable Long id) {
         try {
@@ -363,7 +365,7 @@ public class UsuarioController {
             });
 
             gerenciador.deleteUsuarioById(id);
-            return ResponseEntity.noContent().build(); 
+            return ResponseEntity.noContent().build();
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -374,5 +376,4 @@ public class UsuarioController {
     private AvaliacaoPeloIdDTO convertToComIdDTO(Avaliacao avaliacao) {
         return AvaliacaoMapper.convertToComIdDTO(avaliacao);
     }
-
 }
