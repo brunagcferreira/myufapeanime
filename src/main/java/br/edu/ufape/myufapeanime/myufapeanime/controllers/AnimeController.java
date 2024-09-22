@@ -12,6 +12,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExce
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.NumeroDeEpisodiosInvalidoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada.GerenciadorAnimes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -287,6 +288,19 @@ public class AnimeController {
         try {
             Usuario usuario = (Usuario) session.getAttribute("user");
             gerenciadorAnimes.deletarAnime(id, usuario);
+            // Faz uma lista filtrando apenas as avaliações desse user e dps apaga elas
+            List<Avaliacao> avaliacao = gerenciadorAnimes.findAllAvaliacao();
+            List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
+                    .map(this::convertToComIdDTO)
+                    .filter(AvaliacaoComIdDTO -> AvaliacaoComIdDTO.getAnimeAvaliado().equals(id))
+                    .toList();
+            result.forEach(avaliacaoDTO -> {
+                try {
+                    gerenciadorAnimes.deleteAvaliacaoById(avaliacaoDTO.getId());
+                } catch (AvaliacaoInexistenteException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             return ResponseEntity.ok("Anime e suas avaliações foram deletados com sucesso.");
         } catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // HTTP 404
