@@ -1,5 +1,6 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada;
 
+import br.edu.ufape.myufapeanime.myufapeanime.dto.model.TipoLista;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
@@ -60,8 +61,7 @@ public class GerenciadorAnimes {
         return cadastroUsuario.findAll();
     }
 
-    //buscar por id(pode retornar null)
-    //nao retorna mais null, retorna exception
+    //buscar por id
     public Usuario findUsuarioById(Long id) throws UsuarioInexistenteException {
         return cadastroUsuario.findById(id);
     }
@@ -89,22 +89,18 @@ public class GerenciadorAnimes {
         return cadastroUsuario.getQueroAssistir(usuario.getId());
     }
 
-    //add anime na lista "assistindo" do usuario
-    public void adicionarAnimeAssistindo(Usuario usuario, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+    //add anime da lista do usuario
+    public void adicionarAnimeLista(Usuario usuario, Long animeId, TipoLista tipoLista) 
+    throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
         checarUsuarioLogado(usuario);
-        cadastroUsuario.adicionarAnimeAssistindo(usuario.getId(), animeId);
+        cadastroUsuario.adicionarAnimeLista(usuario.getId(), animeId, tipoLista);
     }
-
-    //add anime na lista "completo" do usuario
-    public void adicionarAnimeCompleto(Usuario usuario, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+    
+    //remover anime da lista do usuario
+    public void removerAnimeLista(Usuario usuario, Long animeId, TipoLista tipoLista) 
+    throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
         checarUsuarioLogado(usuario);
-        cadastroUsuario.adicionarAnimeCompleto(usuario.getId(), animeId);
-    }
-
-    //add anime na lista "queroassitir" do usuario
-    public void adicionarAnimeQueroAssistir(Usuario usuario, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
-        checarUsuarioLogado(usuario);
-        cadastroUsuario.adicionarAnimeQueroAssistir(usuario.getId(), animeId);
+        cadastroUsuario.removerAnimeLista(usuario.getId(), animeId, tipoLista);
     }
 
     /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/

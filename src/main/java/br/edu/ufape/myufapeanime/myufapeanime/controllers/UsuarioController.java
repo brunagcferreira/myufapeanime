@@ -5,6 +5,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.UsuarioMapper;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.model.TipoLista;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioResponse;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
@@ -184,102 +185,42 @@ public class UsuarioController {
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(dtos);
-        } catch (UsuarioInexistenteException e) {
+        } catch (UsuarioInexistenteException | AutorizacaoNegadaException e) {
             return ResponseEntity.notFound().build();
-        } catch (AutorizacaoNegadaException e) {
-            throw new RuntimeException(e);
         }
     }
 
 
     /*****  METODOS POST *****/
-
-    // Adicionar anime à lista "assistindo"
-    @PostMapping("/assistindo/{animeId}")
+    
+    //add anime na lista do usuario
+    @PostMapping("/listas/{tipoLista}/{animeId}")
     @Operation(
-            summary = "Adicionar anime à lista 'assistindo'",
-            description = "Adiciona um anime à lista de animes que o usuário está assistindo.",
-            tags = {"Usuários", "Animes"},
-            parameters = {
-                    @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
-            },
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
-                    @ApiResponse(responseCode = "403", description = "Acesso negado")
-            })
-    public ResponseEntity<Object> adicionarAnimeAssistindo(@PathVariable Long animeId, HttpSession session) {
-        try {
-            Usuario usuario = (Usuario) session.getAttribute("user");
-
-            gerenciador.adicionarAnimeAssistindo(usuario, animeId);
-            return ResponseEntity.ok("Anime adicionado à lista 'assistindo' com sucesso!");
-        } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (AutorizacaoNegadaException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        summary = "Adicionar anime à lista de animes",
+        description = "Adiciona um anime à lista especificada do usuário logado.",
+        tags = {"Usuários", "Animes"},
+        parameters = {
+            @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1"),
+            @Parameter(name = "tipoLista", description = "Tipo de lista (ASSISTINDO, QUERO_ASSISTIR, COMPLETO)", required = true, example = "ASSISTINDO")
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado")
         }
-    }
-
-    // Adicionar anime à lista "completo"
-    @PostMapping("/completo/{animeId}")
-    @Operation(
-            summary = "Adicionar anime à lista 'completo'",
-            description = "Adiciona um anime à lista de animes que o usuário completou.",
-            tags = {"Usuários", "Animes"},
-            parameters = {
-                    @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
-            },
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
-                    @ApiResponse(responseCode = "403", description = "Acesso negado")
-            })
-    public ResponseEntity<Object> adicionarAnimeCompleto(@PathVariable Long animeId, HttpSession session) {
+    )
+    public ResponseEntity<Object> adicionarAnimeLista(@PathVariable Long animeId, @PathVariable TipoLista tipoLista, HttpSession session) {
         try {
             Usuario usuario = (Usuario) session.getAttribute("user");
 
-            gerenciador.adicionarAnimeCompleto(usuario, animeId);
-
-            return ResponseEntity.ok("Anime adicionado à lista 'completo' com sucesso!");
-        } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
+            gerenciador.adicionarAnimeLista(usuario, animeId, tipoLista);
+            return ResponseEntity.ok("Anime adicionado à lista '" + tipoLista + "' com sucesso!");
+        } catch (AutorizacaoNegadaException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }catch (UsuarioInexistenteException | AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (AutorizacaoNegadaException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
-    }
-
-    // Adicionar anime à lista "quero assistir"
-    @PostMapping("/quero-assistir/{animeId}")
-    @Operation(
-            summary = "Adicionar anime à lista 'quero assistir'",
-            description = "Adiciona um anime à lista de animes que o usuário deseja assistir.",
-            tags = {"Usuários", "Animes"},
-            parameters = {
-                    @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1")
-            },
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
-                    @ApiResponse(responseCode = "403", description = "Acesso negado")
-            })
-    public ResponseEntity<Object> adicionarAnimeQueroAssistir(@PathVariable Long animeId, HttpSession session) {
-        try {
-            Usuario usuario = (Usuario) session.getAttribute("user");
-
-            gerenciador.adicionarAnimeQueroAssistir(usuario, animeId);
-
-            return ResponseEntity.ok("Anime adicionado à lista 'quero assistir' com sucesso!");
-        } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (AutorizacaoNegadaException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
@@ -368,6 +309,36 @@ public class UsuarioController {
             return ResponseEntity.noContent().build();
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    //deletar anime da lista
+    @DeleteMapping("/listas/{tipoLista}/{animeId}")
+    @Operation(
+        summary = "Remover anime da lista de animes",
+        description = "Remove um anime da lista especificada do usuário logado.",
+        tags = {"Usuários", "Animes"},
+        parameters = {
+            @Parameter(name = "animeId", description = "ID do anime a ser removido", required = true, example = "1"),
+            @Parameter(name = "tipoLista", description = "Tipo de lista (ASSISTINDO, QUERO_ASSISTIR, COMPLETO)", required = true, example = "ASSISTINDO")
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Anime removido com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado")
+        })
+    public ResponseEntity<Object> removerAnimeLista(@PathVariable Long animeId, @PathVariable TipoLista tipoLista, HttpSession session) {
+    try {
+        Usuario usuario = (Usuario) session.getAttribute("user");
+
+        gerenciador.removerAnimeLista(usuario, animeId, tipoLista);
+        return ResponseEntity.ok("Anime removido da lista '" + tipoLista + "' com sucesso!");
+    } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    } catch (AutorizacaoNegadaException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 

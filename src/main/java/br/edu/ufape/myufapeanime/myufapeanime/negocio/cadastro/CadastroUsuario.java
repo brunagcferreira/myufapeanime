@@ -10,6 +10,8 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioEx
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import br.edu.ufape.myufapeanime.myufapeanime.dto.model.TipoLista;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.repositorios.InterfaceRepositorioUsuarios;
@@ -121,6 +123,7 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
     public Usuario findByEmail(String email) throws UsuarioInexistenteException{
         return repositorioUsuario.findUsuarioByEmailIgnoreCase(email).orElseThrow(UsuarioInexistenteException::new);
     }
+    
     //lista assistindo
     public List<Anime> getAssistindo(Long usuarioId) throws UsuarioInexistenteException {
         Usuario usuario = repositorioUsuario.findById(usuarioId)
@@ -142,52 +145,55 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
         return usuario.getQueroAssistir();
     }
 
-    /**
-     * Adiciona um anime à lista de "assistindo" do usuário, se ele não estiver
-     * em nenhuma das outras listas (completo ou quero assistir).
-     * 
-     * @param usuarioId O ID do usuário.
-     * @param animeId O ID do anime a ser adicionado.
-     * @throws UsuarioInexistenteException Se o usuário não for encontrado.
-     * @throws AnimeInexistenteException Se o anime não for encontrado.
-     * @throws IllegalArgumentException Se o anime já estiver em outra lista.
-     */
-    public void adicionarAnimeAssistindo(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
-        Usuario usuario = findById(usuarioId);
+    // Método genérico para adicionar anime a uma lista
+    public void adicionarAnimeLista(Long usuarioId, Long animeId, TipoLista tipoLista) 
+        throws UsuarioInexistenteException, AnimeInexistenteException {
+        Usuario usuario = repositorioUsuario.findById(usuarioId)
+            .orElseThrow(() -> new UsuarioInexistenteException(usuarioId));
         Anime anime = cadastroAnime.findById(animeId);
 
         if (animeJaEstaEmOutraLista(usuario, anime)) {
             throw new IllegalArgumentException("O anime já está em outra lista.");
         }
 
-        usuario.getAssistindo().add(anime);
+        switch (tipoLista) {
+            case ASSISTINDO:
+                usuario.getAssistindo().add(anime);
+                break;
+            case QUERO_ASSISTIR:
+                usuario.getQueroAssistir().add(anime);
+                break;
+            case COMPLETO:
+                usuario.getCompleto().add(anime);
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de lista inválido");
+        }
+
         repositorioUsuario.save(usuario);
     }
 
-    //Add anime na lista "completo" do usuario
-    //Não documentado com javadoc pois seu funcionamento é análogo a função acima
-    public void adicionarAnimeCompleto(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
-        Usuario usuario = findById(usuarioId);
+    // Método genérico para remover anime de uma lista
+    public void removerAnimeLista(Long usuarioId, Long animeId, TipoLista tipoLista) 
+        throws UsuarioInexistenteException, AnimeInexistenteException {
+        Usuario usuario = repositorioUsuario.findById(usuarioId)
+            .orElseThrow(() -> new UsuarioInexistenteException(usuarioId));
         Anime anime = cadastroAnime.findById(animeId);
 
-        if (animeJaEstaEmOutraLista(usuario, anime)) {
-            throw new IllegalArgumentException("O anime já está em outra lista.");
+        switch (tipoLista) {
+            case ASSISTINDO:
+                usuario.getAssistindo().remove(anime);
+                break;
+            case QUERO_ASSISTIR:
+                usuario.getQueroAssistir().remove(anime);
+                break;
+            case COMPLETO:
+                usuario.getCompleto().remove(anime);
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de lista inválido");
         }
 
-        usuario.getCompleto().add(anime);
-        repositorioUsuario.save(usuario);
-    }
-
-    //Add anime na lista "queroassitir" do usuario
-    public void adicionarAnimeQueroAssistir(Long usuarioId, Long animeId) throws UsuarioInexistenteException, AnimeInexistenteException {
-        Usuario usuario = findById(usuarioId);
-        Anime anime = cadastroAnime.findById(animeId);
-
-        if (animeJaEstaEmOutraLista(usuario, anime)) {
-            throw new IllegalArgumentException("O anime já está em outra lista.");
-        }
-
-        usuario.getQueroAssistir().add(anime);
         repositorioUsuario.save(usuario);
     }
 
