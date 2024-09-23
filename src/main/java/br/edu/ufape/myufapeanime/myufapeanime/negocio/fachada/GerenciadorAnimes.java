@@ -1,6 +1,10 @@
 package br.edu.ufape.myufapeanime.myufapeanime.negocio.fachada;
 
+import br.edu.ufape.myufapeanime.myufapeanime.dto.avaliacao.AvaliacaoPeloIdDTO;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.UsuarioMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.model.TipoLista;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioComSenhaDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
@@ -35,29 +39,67 @@ public class GerenciadorAnimes {
     @Autowired
     private CadastroAvaliacao cadastroAvaliacao;
 
+
     /**********IMPLEMENTAÇÃO DE CADASTRO USUARIO ********/
     //salvar
-    public Usuario createUsuario(Usuario usuario) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
+    public Usuario createUsuario(UsuarioComSenhaDTO usuarioComSenhaDTO) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
+
+        if (usuarioComSenhaDTO.getIsAdm()) {
+            Adm usuario = UsuarioMapper.convertToAdm(usuarioComSenhaDTO);
+            return cadastroUsuario.create(usuario);
+        }
+        Usuario usuario = UsuarioMapper.convertToEntityPassword(usuarioComSenhaDTO);
+
         return cadastroUsuario.create(usuario);
     }
 
     //atualizar
-    public Usuario updateUsuario(Usuario usuario, Usuario usuarioLogado) throws UsuarioInexistenteException,
-            UsuarioDuplicadoException, AutorizacaoNegadaException {
+    public void updateUsuario(Usuario usuario) throws UsuarioInexistenteException,
+            UsuarioDuplicadoException {
+        cadastroUsuario.update(usuario);
+    }
+
+    public Usuario updateUsuarioLogado(UsuarioComSenhaDTO usuarioComSenhaDTO, Usuario usuarioLogado) throws AutorizacaoNegadaException,
+            UsuarioDuplicadoException, UsuarioInexistenteException {
+        Usuario usuario;
+
+        if (usuarioLogado instanceof Adm) {
+            usuario = UsuarioMapper.convertToAdm(usuarioComSenhaDTO);
+        } else {
+            usuario = UsuarioMapper.convertToEntityPassword(usuarioComSenhaDTO);
+        }
         checarUsuarioLogado(usuarioLogado);
+        usuario.setId(usuarioLogado.getId());
+
         return cadastroUsuario.update(usuario);
     }
 
-    //apagar por id
-    public void deleteUsuarioById(Long id) throws UsuarioInexistenteException {
-        cadastroUsuario.deleteById(id);
-    }
+    //apagar usuário logado
+    public void deletarUsuarioLogado(Usuario usuario) throws UsuarioInexistenteException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuario);
+        // Faz uma lista filtrando apenas as avaliações desse user e dps apaga elas
 
-    //apagar
-    public void deleteUsuario(Usuario usuario) throws UsuarioInexistenteException {
+
+        List<Avaliacao> avaliacao = findAllAvaliacao();
+        List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
+                .map(this::convertToComIdDTO)
+                .filter(AvaliacaoComIdDTO -> AvaliacaoComIdDTO.getUsuarioAvaliador().equals(usuario.getId()))
+                .toList();
+        result.forEach(avaliacaoDTO -> {
+            try {
+                deleteAvaliacaoById(avaliacaoDTO.getId());
+            } catch (AvaliacaoInexistenteException e) {
+                System.err.println("Avaliacao com ID " + avaliacaoDTO.getId() + " não existe. Ignorando...");
+            }
+
+        });
+
         cadastroUsuario.delete(usuario);
     }
 
+    private AvaliacaoPeloIdDTO convertToComIdDTO(Avaliacao avaliacao) {
+        return AvaliacaoMapper.convertToComIdDTO(avaliacao);
+    }
     //listar todos
     public List<Usuario> findAllUsuarios() {
         return cadastroUsuario.findAll();
@@ -189,7 +231,7 @@ public class GerenciadorAnimes {
             throw new AutorizacaoNegadaException("Somente administradores podem atualizar animes");
         }
     }
-
+    //vefifica usuario logado no sistema
     private void checarUsuarioLogado(Usuario usuario) throws AutorizacaoNegadaException {
         if(usuario == null){
             throw new AutorizacaoNegadaException("Faça login para executar essa ação");

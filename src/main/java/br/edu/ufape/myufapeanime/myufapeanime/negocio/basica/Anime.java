@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
 
 import static java.lang.Math.max;
 
@@ -133,6 +134,19 @@ public class Anime {
 
     public List<Avaliacao> getAvaliacoes() {
         return avaliacoes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Anime anime = (Anime) o;
+        return numEpisodios == anime.numEpisodios && Objects.equals(nome, anime.nome) && Objects.equals(genero, anime.genero) && Objects.equals(pontuacao, anime.pontuacao) && Objects.equals(avaliacoesTotais, anime.avaliacoesTotais) && Objects.equals(notaMedia, anime.notaMedia) && Objects.equals(avaliacoes, anime.avaliacoes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nome, genero, numEpisodios, pontuacao, avaliacoesTotais, notaMedia, avaliacoes);
     }
 }
 

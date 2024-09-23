@@ -62,7 +62,7 @@ public class AuthController {
             return ResponseEntity.ok(usuarioDTOParaExibir);
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch(UsuarioSenhaInvalidaException e){
+        } catch (UsuarioSenhaInvalidaException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
@@ -76,8 +76,10 @@ public class AuthController {
             }
     )
     public ResponseEntity<Object> logout(HttpSession session) {
+        //checar se tá logado
         session.removeAttribute("user");
         session.invalidate();
+
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
@@ -105,25 +107,17 @@ public class AuthController {
     )
     public ResponseEntity<Object> cadastrar(@RequestBody UsuarioComSenhaDTO usuarioComSenhaDTO, HttpSession session) {
         try {
-            Usuario usuarioR = null;
 
-            if (usuarioComSenhaDTO.getIsAdm()) {
-                Adm usuario = UsuarioMapper.convertToAdm(usuarioComSenhaDTO);
-                usuarioR = gerenciador.createUsuario(usuario);
-            } else {
-                Usuario usuario = UsuarioMapper.convertToEntityPassword(usuarioComSenhaDTO);
-                usuarioR = gerenciador.createUsuario(usuario);
-            }
-
-            UsuarioDTO novoUsuarioDTO = UsuarioMapper.convertToDTO(usuarioR);
+            Usuario userCadastro = gerenciador.createUsuario(usuarioComSenhaDTO);
+            UsuarioDTO novoUsuarioDTO = UsuarioMapper.convertToDTO(userCadastro);
 
             UsuarioResponse response = new UsuarioResponse("Usuário cadastrado com sucesso!", novoUsuarioDTO);
-            session.setAttribute("user", usuarioR);
+            session.setAttribute("user", userCadastro);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (UsuarioDuplicadoException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (UsuarioSenhaInvalidaException e){
+        } catch (UsuarioSenhaInvalidaException e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }
     }
