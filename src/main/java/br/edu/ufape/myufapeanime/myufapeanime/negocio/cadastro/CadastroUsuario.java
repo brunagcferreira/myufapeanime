@@ -2,7 +2,6 @@ package br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro;
 
 import java.util.List;
 import java.util.Optional;
-
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioDuplicadoException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
@@ -10,7 +9,6 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioEx
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
 import br.edu.ufape.myufapeanime.myufapeanime.dto.model.TipoLista;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
@@ -52,7 +50,6 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
             throw new UsuarioSenhaInvalidaException();
         }
 
-        //usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return repositorioUsuario.save(usuario);
     }
 
