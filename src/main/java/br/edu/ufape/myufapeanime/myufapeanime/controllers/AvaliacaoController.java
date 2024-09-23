@@ -10,6 +10,7 @@ import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAnimeExceptions.AnimeInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAutenticacaoExceptions.AutorizacaoNegadaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoDuplicadaException;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteDeleteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoInexistenteException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroAvaliacaoExceptions.AvaliacaoNotaInvalidaException;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.cadastro.cadastroUsuarioExceptions.UsuarioInexistenteException;
@@ -29,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,7 +45,7 @@ public class AvaliacaoController {
     @PostMapping("/cadastrar")
     @Operation(
             summary = "Cadastrar uma nova avaliação",
-            description = "Cadastra uma nova avaliação no sistema",
+            description = "Cadastra uma nova avaliação no sistema, mas tem que está logado",
             tags = {"Avaliações"},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Objeto JSON da avaliação a ser cadastrada",
@@ -91,14 +93,14 @@ public class AvaliacaoController {
 
     /*****  METODOS PUT *****/
     //update usuário existente
-    @PutMapping("atualizar/{id}")
+    @PutMapping("atualizar/{idAnime}")
     @Operation(
             summary = "Atualizar uma avaliação",
             description = "Atualiza os detalhes de uma avaliação existente, Pondendo ser atualizado a nota e seu comentário" +
                     "aceitando contendo apenas um desses dados para ser atualizado (favor checar os exemplos)",
             tags = {"Avaliações"},
             parameters = {
-                    @Parameter(name = "id", description = "ID da avaliação a ser atualizada", required = true, example = "1")
+                    @Parameter(name = "id", description = "ID do anime da avaliação a ser atualizada", required = true, example = "1")
             },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Objeto JSON do anime com os novos dados",
@@ -139,7 +141,7 @@ public class AvaliacaoController {
                                     schema = @Schema(implementation = AvaliacaoUpdateDTO.class)
                             )
                     ),
-                    @ApiResponse(responseCode = "400", description = "Avaliacao com o id {id} inexistente! ou Nota de Cadastro/Update Invalida!",
+                    @ApiResponse(responseCode = "400", description = "Avaliacao com o id inexistente! ou Nota de Cadastro/Update Invalida!",
                             content = @Content(
                                     mediaType = "text/plain",
                                     schema = @Schema(implementation = String.class)
@@ -147,14 +149,31 @@ public class AvaliacaoController {
                     )
             }
     )
-    public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoUpdateDTO avaliacaoDTO)
+    public ResponseEntity<Object> updateAvaliacao(@PathVariable Long idAnime, @RequestBody AvaliacaoUpdateDTO avaliacaoDTO, HttpSession session)
             throws AnimeInexistenteException {
         try {
-            Avaliacao avaliacao = convertToEntityUpdate(avaliacaoDTO);
-            avaliacao.setId(id);
-            Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao);
-            AvaliacaoPeloIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
-            return ResponseEntity.ok(avaliacaoAtualizadoDTO);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+            Avaliacao avaliacaoAtualizada = convertToEntityUpdate(avaliacaoDTO);
+
+            List<Avaliacao> avaliacaos = gerenciador.findAllAvaliacao();
+            Optional<AvaliacaoDTO> resultado = avaliacaos
+                    .stream()
+                    .map(this::convertToDTO)
+                    .filter(avaliacao1 -> avaliacao1.getAnimeAvaliado().getId().equals(idAnime) && avaliacao1.getUsuarioAvaliador().getId().equals(usuario.getId()))
+                    .findFirst();
+
+
+            if (resultado.isPresent()) {
+                AvaliacaoDTO avaliacaoExistente = resultado.get();
+                avaliacaoAtualizada.setId(avaliacaoExistente.getId());
+                Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacaoAtualizada);
+
+                AvaliacaoPeloIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
+                return ResponseEntity.ok(avaliacaoAtualizadoDTO);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Avaliação não encontrada para o anime e usuário especificados.");
+            }
+
         } catch (AvaliacaoNotaInvalidaException | AvaliacaoInexistenteException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -164,17 +183,17 @@ public class AvaliacaoController {
 
     /*****  METODO DELETE Avaliacao *****/
     //apagar usuario por id
-    @DeleteMapping("deletar/{id}")
+    @DeleteMapping("deletar/{idAnime}")
     @Operation(
             summary = "Deletar uma avaliação",
             description = "Remove uma avaliação existente do sistema",
             tags = {"Avaliações"},
             parameters = {
-                    @Parameter(name = "id", description = "ID da avaliação a ser deletada", required = true, example = "1")
+                    @Parameter(name = "id", description = "ID do anime da avaliação a ser deletada", required = true, example = "1")
             },
             responses = {
                     @ApiResponse(responseCode = "204", description = "avaliação deletada com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Avaliacao com o id {id} inexistente!",
+                    @ApiResponse(responseCode = "404", description = "Avaliacao inexistente!",
                             content = @Content(
                                     mediaType = "text/plain",
                                     schema = @Schema(implementation = String.class)
@@ -182,18 +201,32 @@ public class AvaliacaoController {
                     )
             }
     )
-    public ResponseEntity<Object> deleteAvaliacao(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteAvaliacao(@PathVariable Long idAnime, HttpSession session) throws AnimeInexistenteException {
         try {
-            gerenciador.deleteAvaliacaoById(id);
-            return ResponseEntity.noContent().build();
-        } catch (AvaliacaoInexistenteException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+            Usuario usuario = (Usuario) session.getAttribute("user");
+            List<Avaliacao> avaliacaos = gerenciador.findAllAvaliacao();
 
+            // Filtra a avaliação correspondente ao anime e ao usuário, ou lança uma exceção se não encontrada
+            Avaliacao avaliacao = avaliacaos
+                    .stream()
+                    .filter(avaliacao1 -> avaliacao1.getAnime().getId().equals(idAnime) && avaliacao1.getUsuarioAvaliador().getId().equals(usuario.getId()))
+                    .findFirst()
+                    .orElseThrow(() -> new AvaliacaoInexistenteDeleteException("Avaliação não encontrada para o anime e usuário especificados."));
+
+
+            gerenciador.deleteAvaliacaoById(avaliacao.getId());
+            return ResponseEntity.noContent().build();
+
+        } catch (AvaliacaoInexistenteException e) {
+            // Retorna um 404 se a avaliação não for encontrada
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            // Para outros erros (incluindo AvaliacaoNotaInvalidaException)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     /*****  METODO GET Avaliacao *****/
-
     //listar todas as Avaliações
     @GetMapping("/list")
     @Operation(
