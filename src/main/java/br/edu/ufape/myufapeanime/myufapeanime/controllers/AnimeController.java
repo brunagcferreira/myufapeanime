@@ -309,8 +309,8 @@ public class AnimeController {
                 List<Anime> queroAssistirList = user.getQueroAssistir();
                 if (queroAssistirList.removeIf(anime -> anime.getId().equals(id))) {
                     try {
-                        gerenciadorAnimes.updateUsuario(user); // Atualiza o usuário com a lista atualizada
-                    } catch (UsuarioInexistenteException | UsuarioDuplicadoException e) {
+                        gerenciadorAnimes.updateUsuario(user, usuario); // Atualiza o usuário com a lista atualizada
+                    } catch (UsuarioInexistenteException | UsuarioDuplicadoException | AutorizacaoNegadaException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -321,8 +321,8 @@ public class AnimeController {
                 List<Anime> CompletoList = user.getCompleto();
                 if (CompletoList.removeIf(anime -> anime.getId().equals(id))) {
                     try {
-                        gerenciadorAnimes.updateUsuario(user); // Atualiza o usuário com a lista atualizada
-                    } catch (UsuarioInexistenteException | UsuarioDuplicadoException e) {
+                        gerenciadorAnimes.updateUsuario(user, usuario); // Atualiza o usuário com a lista atualizada
+                    } catch (UsuarioInexistenteException | UsuarioDuplicadoException | AutorizacaoNegadaException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -333,8 +333,8 @@ public class AnimeController {
                 List<Anime> queroAssistirList = user.getAssistindo();
                 if (queroAssistirList.removeIf(anime -> anime.getId().equals(id))) {
                     try {
-                        gerenciadorAnimes.updateUsuario(user); // Atualiza o usuário com a lista atualizada
-                    } catch (UsuarioInexistenteException | UsuarioDuplicadoException e) {
+                        gerenciadorAnimes.updateUsuario(user, usuario); // Atualiza o usuário com a lista atualizada
+                    } catch (UsuarioInexistenteException | UsuarioDuplicadoException | AutorizacaoNegadaException e) {
                         throw new RuntimeException(e);
                     }
                 }

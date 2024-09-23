@@ -16,4 +16,9 @@ import jakarta.persistence.Entity;
 
 @Entity
 public class Adm extends Usuario {
+    public Adm(Usuario usuario) {
+    }
+
+    public Adm() {
+    }
 }

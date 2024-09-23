@@ -146,10 +146,9 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
     }
 
     // Método genérico para adicionar anime a uma lista
-    public void adicionarAnimeLista(Long usuarioId, Long animeId, TipoLista tipoLista) 
-        throws UsuarioInexistenteException, AnimeInexistenteException {
-        Usuario usuario = repositorioUsuario.findById(usuarioId)
-            .orElseThrow(() -> new UsuarioInexistenteException(usuarioId));
+    public void adicionarAnimeLista(Usuario usuario, Long animeId, TipoLista tipoLista)
+        throws AnimeInexistenteException {
+
         Anime anime = cadastroAnime.findById(animeId);
 
         if (animeJaEstaEmOutraLista(usuario, anime)) {
@@ -174,10 +173,9 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
     }
 
     // Método genérico para remover anime de uma lista
-    public void removerAnimeLista(Long usuarioId, Long animeId, TipoLista tipoLista) 
-        throws UsuarioInexistenteException, AnimeInexistenteException {
-        Usuario usuario = repositorioUsuario.findById(usuarioId)
-            .orElseThrow(() -> new UsuarioInexistenteException(usuarioId));
+    public void removerAnimeLista(Usuario usuario, Long animeId, TipoLista tipoLista)
+        throws AnimeInexistenteException {
+
         Anime anime = cadastroAnime.findById(animeId);
 
         switch (tipoLista) {

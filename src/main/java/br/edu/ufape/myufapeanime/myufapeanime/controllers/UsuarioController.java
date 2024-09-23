@@ -6,8 +6,10 @@ import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AvaliacaoMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.AnimeMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.mappers.UsuarioMapper;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.model.TipoLista;
+import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioComSenhaDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioDTO;
 import br.edu.ufape.myufapeanime.myufapeanime.dto.usuario.UsuarioResponse;
+import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Adm;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Anime;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Avaliacao;
 import br.edu.ufape.myufapeanime.myufapeanime.negocio.basica.Usuario;
@@ -217,7 +219,7 @@ public class UsuarioController {
             return ResponseEntity.ok("Anime adicionado à lista '" + tipoLista + "' com sucesso!");
         } catch (AutorizacaoNegadaException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }catch (UsuarioInexistenteException | AnimeInexistenteException e) {
+        }catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -227,7 +229,7 @@ public class UsuarioController {
     /*****  METODOS PUT *****/
 
     //update usuário existente
-    @PutMapping("atualizar/{id}")
+    @PutMapping("/atualizar")
     @Operation(
             summary = "Atualizar usuário",
             description = "Atualiza as informações de um usuário existente com base no ID fornecido.",
@@ -240,7 +242,7 @@ public class UsuarioController {
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = UsuarioDTO.class)
+                            schema = @Schema(implementation = UsuarioComSenhaDTO.class)
                     )
             ),
             responses = {
@@ -249,12 +251,20 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "409", description = "Conflito de dados, e-mail já cadastrado")
             }
     )
-    public ResponseEntity<Object> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<Object> updateUsuario(@RequestBody UsuarioComSenhaDTO usuarioComSenhaDTO, HttpSession session) {
         try {
-            Usuario usuario = UsuarioMapper.convertToEntity(usuarioDTO);
-            usuario.setId(id);
+            Usuario usuarioLogado = (Usuario) session.getAttribute("user");
+            Usuario usuarioDado;
 
-            Usuario usuarioAtualizado = gerenciador.updateUsuario(usuario);
+            if (usuarioLogado instanceof Adm) {
+                usuarioDado = UsuarioMapper.convertToAdm(usuarioComSenhaDTO);
+            } else {
+                usuarioDado = UsuarioMapper.convertToEntityPassword(usuarioComSenhaDTO);
+            }
+
+            usuarioDado.setId(usuarioLogado.getId());
+
+            Usuario usuarioAtualizado = gerenciador.updateUsuario(usuarioDado, usuarioLogado);
 
             UsuarioDTO usuarioAtualizadoDTO = UsuarioMapper.convertToDTO(usuarioAtualizado);
 
@@ -266,6 +276,8 @@ public class UsuarioController {
         } catch (UsuarioDuplicadoException e) {
             // Se o e-mail já estiver em uso, retorna 409 (Conflito)
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (AutorizacaoNegadaException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
@@ -291,6 +303,7 @@ public class UsuarioController {
         try {
 
             // Faz uma lista filtrando apenas as avaliações desse user e dps apaga elas
+
             List<Avaliacao> avaliacao = gerenciador.findAllAvaliacao();
             List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
                     .map(this::convertToComIdDTO)
@@ -333,7 +346,7 @@ public class UsuarioController {
 
         gerenciador.removerAnimeLista(usuario, animeId, tipoLista);
         return ResponseEntity.ok("Anime removido da lista '" + tipoLista + "' com sucesso!");
-    } catch (UsuarioInexistenteException | AnimeInexistenteException e) {
+    } catch (AnimeInexistenteException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     } catch (IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());

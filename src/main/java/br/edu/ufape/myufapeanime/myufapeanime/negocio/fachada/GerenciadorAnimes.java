@@ -42,7 +42,9 @@ public class GerenciadorAnimes {
     }
 
     //atualizar
-    public Usuario updateUsuario(Usuario usuario) throws UsuarioInexistenteException, UsuarioDuplicadoException {
+    public Usuario updateUsuario(Usuario usuario, Usuario usuarioLogado) throws UsuarioInexistenteException,
+            UsuarioDuplicadoException, AutorizacaoNegadaException {
+        checarUsuarioLogado(usuarioLogado);
         return cadastroUsuario.update(usuario);
     }
 
@@ -91,16 +93,16 @@ public class GerenciadorAnimes {
 
     //add anime da lista do usuario
     public void adicionarAnimeLista(Usuario usuario, Long animeId, TipoLista tipoLista) 
-    throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+    throws AnimeInexistenteException, AutorizacaoNegadaException {
         checarUsuarioLogado(usuario);
-        cadastroUsuario.adicionarAnimeLista(usuario.getId(), animeId, tipoLista);
+        cadastroUsuario.adicionarAnimeLista(usuario, animeId, tipoLista);
     }
     
     //remover anime da lista do usuario
     public void removerAnimeLista(Usuario usuario, Long animeId, TipoLista tipoLista) 
-    throws UsuarioInexistenteException, AnimeInexistenteException, AutorizacaoNegadaException {
+    throws AnimeInexistenteException, AutorizacaoNegadaException {
         checarUsuarioLogado(usuario);
-        cadastroUsuario.removerAnimeLista(usuario.getId(), animeId, tipoLista);
+        cadastroUsuario.removerAnimeLista(usuario, animeId, tipoLista);
     }
 
     /**********IMPLEMENTAÇÃO DE CADASTRO ANIME ********/
