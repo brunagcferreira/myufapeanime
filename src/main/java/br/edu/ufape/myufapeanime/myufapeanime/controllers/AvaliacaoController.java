@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -91,14 +92,14 @@ public class AvaliacaoController {
 
     /*****  METODOS PUT *****/
     //update usuário existente
-    @PutMapping("atualizar/{id}")
+    @PutMapping("atualizar/{idAnime}")
     @Operation(
             summary = "Atualizar uma avaliação",
             description = "Atualiza os detalhes de uma avaliação existente, Pondendo ser atualizado a nota e seu comentário" +
                     "aceitando contendo apenas um desses dados para ser atualizado (favor checar os exemplos)",
             tags = {"Avaliações"},
             parameters = {
-                    @Parameter(name = "id", description = "ID da avaliação a ser atualizada", required = true, example = "1")
+                    @Parameter(name = "id", description = "ID do anime da avaliação a ser atualizada", required = true, example = "1")
             },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Objeto JSON do anime com os novos dados",
@@ -139,7 +140,7 @@ public class AvaliacaoController {
                                     schema = @Schema(implementation = AvaliacaoUpdateDTO.class)
                             )
                     ),
-                    @ApiResponse(responseCode = "400", description = "Avaliacao com o id {id} inexistente! ou Nota de Cadastro/Update Invalida!",
+                    @ApiResponse(responseCode = "400", description = "Avaliacao com o id inexistente! ou Nota de Cadastro/Update Invalida!",
                             content = @Content(
                                     mediaType = "text/plain",
                                     schema = @Schema(implementation = String.class)
@@ -147,14 +148,35 @@ public class AvaliacaoController {
                     )
             }
     )
-    public ResponseEntity<Object> updateAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoUpdateDTO avaliacaoDTO)
+    public ResponseEntity<Object> updateAvaliacao(@PathVariable Long idAnime, @RequestBody AvaliacaoUpdateDTO avaliacaoDTO, HttpSession session)
             throws AnimeInexistenteException {
         try {
-            Avaliacao avaliacao = convertToEntityUpdate(avaliacaoDTO);
-            avaliacao.setId(id);
-            Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacao);
-            AvaliacaoPeloIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
-            return ResponseEntity.ok(avaliacaoAtualizadoDTO);
+            Usuario usuario = (Usuario) session.getAttribute("user");
+            Avaliacao avaliacaoAtualizada = convertToEntityUpdate(avaliacaoDTO);
+
+            List<Avaliacao> avaliacaos = gerenciador.findAllAvaliacao();
+            Optional<AvaliacaoDTO> resultado = avaliacaos
+                    .stream()
+                    .map(this::convertToDTO)
+                    .filter(avaliacao1 -> avaliacao1.getAnimeAvaliado().getId().equals(idAnime) && avaliacao1.getUsuarioAvaliador().getId().equals(usuario.getId()))
+                    .findFirst();
+
+
+            if (resultado.isPresent()) {
+                // Se encontrou, atualiza o ID da avaliação atualizada para ser o mesmo da existente
+                AvaliacaoDTO avaliacaoExistente = resultado.get();
+                avaliacaoAtualizada.setId(avaliacaoExistente.getId());
+
+                // Chama o gerenciador para atualizar a avaliação
+                Avaliacao avaliacaoAtualizado = gerenciador.updateAvaliacao(avaliacaoAtualizada);
+
+                // Converte para DTO para retornar
+                AvaliacaoPeloIdDTO avaliacaoAtualizadoDTO = convertToComIdDTO(avaliacaoAtualizado);
+                return ResponseEntity.ok(avaliacaoAtualizadoDTO);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Avaliação não encontrada para o anime e usuário especificados.");
+            }
+
         } catch (AvaliacaoNotaInvalidaException | AvaliacaoInexistenteException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
