@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -193,22 +194,22 @@ public class UsuarioController {
 
 
     /*****  METODOS POST *****/
-    
+
     //add anime na lista do usuario
     @PostMapping("/listas/{tipoLista}/{animeId}")
     @Operation(
-        summary = "Adicionar anime à lista de animes",
-        description = "Adiciona um anime à lista especificada do usuário logado.",
-        tags = {"Usuários", "Animes"},
-        parameters = {
-            @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1"),
-            @Parameter(name = "tipoLista", description = "Tipo de lista (ASSISTINDO, QUERO_ASSISTIR, COMPLETO)", required = true, example = "ASSISTINDO")
-        },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
-            @ApiResponse(responseCode = "403", description = "Acesso negado")
-        }
+            summary = "Adicionar anime à lista de animes",
+            description = "Adiciona um anime à lista especificada do usuário logado.",
+            tags = {"Usuários", "Animes"},
+            parameters = {
+                    @Parameter(name = "animeId", description = "ID do anime a ser adicionado", required = true, example = "1"),
+                    @Parameter(name = "tipoLista", description = "Tipo de lista (ASSISTINDO, QUERO_ASSISTIR, COMPLETO)", required = true, example = "ASSISTINDO")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Anime adicionado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
+                    @ApiResponse(responseCode = "403", description = "Acesso negado")
+            }
     )
     public ResponseEntity<Object> adicionarAnimeLista(@PathVariable Long animeId, @PathVariable TipoLista tipoLista, HttpSession session) {
         try {
@@ -218,7 +219,7 @@ public class UsuarioController {
             return ResponseEntity.ok("Anime adicionado à lista '" + tipoLista + "' com sucesso!");
         } catch (AutorizacaoNegadaException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }catch (AnimeInexistenteException e) {
+        } catch (AnimeInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -253,17 +254,8 @@ public class UsuarioController {
     public ResponseEntity<Object> updateUsuario(@RequestBody UsuarioComSenhaDTO usuarioComSenhaDTO, HttpSession session) {
         try {
             Usuario usuarioLogado = (Usuario) session.getAttribute("user");
-            Usuario usuarioDado;
 
-            if (usuarioLogado instanceof Adm) {
-                usuarioDado = UsuarioMapper.convertToAdm(usuarioComSenhaDTO);
-            } else {
-                usuarioDado = UsuarioMapper.convertToEntityPassword(usuarioComSenhaDTO);
-            }
-
-            usuarioDado.setId(usuarioLogado.getId());
-
-            Usuario usuarioAtualizado = gerenciador.updateUsuario(usuarioDado, usuarioLogado);
+            Usuario usuarioAtualizado = gerenciador.updateUsuarioLogado(usuarioComSenhaDTO, usuarioLogado);
 
             UsuarioDTO usuarioAtualizadoDTO = UsuarioMapper.convertToDTO(usuarioAtualizado);
 
@@ -283,11 +275,11 @@ public class UsuarioController {
     /*****  METODOS DELETE *****/
 
 
-    //apagar usuario por id
-    @DeleteMapping("deletar/{id}")
+    //apagar usuario logado
+    @DeleteMapping("/deletar")
     @Operation(
             summary = "Deletar usuário",
-            description = "Remove um usuário do sistema com base no ID fornecido.",
+            description = "Remove o usuário logado no sistema.",
             tags = {"Usuários"},
             parameters = {
                     @Parameter(name = "id", description = "ID do usuário a ser deletado", required = true, example = "1")
@@ -298,65 +290,55 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    public ResponseEntity<Object> deleteUsuario(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteUsuario(HttpSession session) {
         try {
 
-            // Faz uma lista filtrando apenas as avaliações desse user e dps apaga elas
+            Usuario usuarioLogado = (Usuario) session.getAttribute("user");
 
-            List<Avaliacao> avaliacao = gerenciador.findAllAvaliacao();
-            List<AvaliacaoPeloIdDTO> result = avaliacao.stream()
-                    .map(this::convertToComIdDTO)
-                    .filter(AvaliacaoComIdDTO -> AvaliacaoComIdDTO.getUsuarioAvaliador().equals(id))
-                    .toList();
-            result.forEach(avaliacaoDTO -> {
-                try {
-                    gerenciador.deleteAvaliacaoById(avaliacaoDTO.getId());
-                } catch (AvaliacaoInexistenteException e) {
-                    throw new RuntimeException(e);
-                }
+            gerenciador.deletarUsuarioLogado(usuarioLogado);
 
-            });
+            session.removeAttribute("user");
+            session.invalidate();
 
-            gerenciador.deleteUsuarioById(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("Usuário apagado com sucesso.");
         } catch (UsuarioInexistenteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (AutorizacaoNegadaException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
     //deletar anime da lista
     @DeleteMapping("/listas/{tipoLista}/{animeId}")
     @Operation(
-        summary = "Remover anime da lista de animes",
-        description = "Remove um anime da lista especificada do usuário logado.",
-        tags = {"Usuários", "Animes"},
-        parameters = {
-            @Parameter(name = "animeId", description = "ID do anime a ser removido", required = true, example = "1"),
-            @Parameter(name = "tipoLista", description = "Tipo de lista (ASSISTINDO, QUERO_ASSISTIR, COMPLETO)", required = true, example = "ASSISTINDO")
-        },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Anime removido com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
-            @ApiResponse(responseCode = "403", description = "Acesso negado")
-        })
+            summary = "Remover anime da lista de animes",
+            description = "Remove um anime da lista especificada do usuário logado.",
+            tags = {"Usuários", "Animes"},
+            parameters = {
+                    @Parameter(name = "animeId", description = "ID do anime a ser removido", required = true, example = "1"),
+                    @Parameter(name = "tipoLista", description = "Tipo de lista (ASSISTINDO, QUERO_ASSISTIR, COMPLETO)", required = true, example = "ASSISTINDO")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Anime removido com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário ou anime não encontrado"),
+                    @ApiResponse(responseCode = "403", description = "Acesso negado")
+            })
     public ResponseEntity<Object> removerAnimeLista(@PathVariable Long animeId, @PathVariable TipoLista tipoLista, HttpSession session) {
-    try {
-        Usuario usuario = (Usuario) session.getAttribute("user");
+        try {
+            Usuario usuario = (Usuario) session.getAttribute("user");
 
-        gerenciador.removerAnimeLista(usuario, animeId, tipoLista);
-        return ResponseEntity.ok("Anime removido da lista '" + tipoLista + "' com sucesso!");
-    } catch (AnimeInexistenteException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    } catch (IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    } catch (AutorizacaoNegadaException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+            gerenciador.removerAnimeLista(usuario, animeId, tipoLista);
+            return ResponseEntity.ok("Anime removido da lista '" + tipoLista + "' com sucesso!");
+        } catch (AnimeInexistenteException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (AutorizacaoNegadaException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
 
     /*****  METODOS PRIVADOS *****/
-    private AvaliacaoPeloIdDTO convertToComIdDTO(Avaliacao avaliacao) {
-        return AvaliacaoMapper.convertToComIdDTO(avaliacao);
-    }
+
 }

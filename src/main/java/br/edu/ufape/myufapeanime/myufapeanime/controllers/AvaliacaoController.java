@@ -242,6 +242,7 @@ public class AvaliacaoController {
                     )
             }
     )
+
     public ResponseEntity<List<AvaliacaoDTO>> findAll() {
         List<Avaliacao> avaliacao = gerenciador.findAllAvaliacao();
         List<AvaliacaoDTO> result = avaliacao.stream()
