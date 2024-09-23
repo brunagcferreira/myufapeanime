@@ -68,7 +68,7 @@ public class GerenciadorAnimes {
         return cadastroUsuario.findById(id);
     }
 
-    //buscar por nome(pode retornar null)
+    //buscar por nome
     public List<Usuario> findByNomeUsuario(String nome) {
         return cadastroUsuario.findByNome(nome);
     }

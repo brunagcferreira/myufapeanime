@@ -39,6 +39,7 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
      * @param usuario O objeto do tipo Usuario a ser criado.
      * @return O objeto Usuario salvo no banco de dados.
      * @throws UsuarioDuplicadoException Lançada quando o e-mail do usuário já está cadastrado.
+     * @throws UsuarioSenhaInvalidaException Lançada quando a senha do usuário é inválida.
      */
     @Override
     public Usuario create(Usuario usuario) throws UsuarioDuplicadoException, UsuarioSenhaInvalidaException {
@@ -108,18 +109,19 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
 		return repositorioUsuario.findAll();
 	}
 
-    //buscar por id(pode retornar null)
+    //buscar por id
     @Override
     public Usuario findById(Long id) throws UsuarioInexistenteException {
         return repositorioUsuario.findById(id)
                 .orElseThrow(() -> new UsuarioInexistenteException(id));
     }
 
-    //buscar por nome(pode retornar null)
+    //buscar por nome
 	public List<Usuario> findByNome(String nome){
 		return repositorioUsuario.findByNomeContainingIgnoreCase(nome);
 	}
 
+    //buscar por email
     public Usuario findByEmail(String email) throws UsuarioInexistenteException{
         return repositorioUsuario.findUsuarioByEmailIgnoreCase(email).orElseThrow(UsuarioInexistenteException::new);
     }
@@ -145,7 +147,15 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
         return usuario.getQueroAssistir();
     }
 
-    // Método genérico para adicionar anime a uma lista
+    /**
+     * Método genérico para adicionar um anime a uma lista específica do usuário.
+     * 
+     * @param usuario O usuário que deseja adicionar o anime à sua lista.
+     * @param animeId O ID do anime que será adicionado à lista.
+     * @param tipoLista O tipo de lista à qual o anime será adicionado (ASSISTINDO, QUERO_ASSISTIR, COMPLETO).
+     * @throws AnimeInexistenteException Se o anime com o ID fornecido não existir.
+     * @throws IllegalArgumentException Se o anime já estiver em outra lista ou se o tipo de lista for inválido.
+     */
     public void adicionarAnimeLista(Usuario usuario, Long animeId, TipoLista tipoLista)
         throws AnimeInexistenteException {
 
@@ -172,7 +182,15 @@ public class CadastroUsuario implements CadastroInterface<Usuario> {
         repositorioUsuario.save(usuario);
     }
 
-    // Método genérico para remover anime de uma lista
+    /**
+     * Método genérico para remover um anime de uma lista específica do usuário.
+     * 
+     * @param usuario O usuário que deseja remover o anime de sua lista.
+     * @param animeId O ID do anime que será removido da lista.
+     * @param tipoLista O tipo de lista da qual o anime será removido (ASSISTINDO, QUERO_ASSISTIR, COMPLETO).
+     * @throws AnimeInexistenteException Se o anime com o ID fornecido não existir.
+     * @throws IllegalArgumentException Se o tipo de lista for inválido.
+     */
     public void removerAnimeLista(Usuario usuario, Long animeId, TipoLista tipoLista)
         throws AnimeInexistenteException {
 
